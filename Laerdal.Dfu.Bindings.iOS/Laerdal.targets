@@ -106,7 +106,7 @@
         <PackageVersionSuffix Condition="'$(Laerdal_Branch_Name)' != ''">-$(Laerdal_Branch_Name.ToLower()).$(Laerdal_Revision)</PackageVersionSuffix>
 
         <Laerdal_Version_Assembly Condition="'$(Laerdal_Version_Assembly)' == ''">$(Nordic_Package_Version).$(Laerdal_Revision)</Laerdal_Version_Assembly>
-        <Laerdal_Version_Full Condition="'$(Laerdal_Version_Full)' == ''">$(Nordic_Package_Version)$(PackageVersionSuffix).$(Laerdal_Revision)</Laerdal_Version_Full>
+        <Laerdal_Version_Full Condition="'$(Laerdal_Version_Full)' == ''">$(Nordic_Package_Version)$(PackageVersionSuffix)</Laerdal_Version_Full>
         <!-- Apply Version parts according to packaging standards -->
         <AssemblyVersion>$(Laerdal_Version_Assembly)</AssemblyVersion>
         <AssemblyFileVersion>$(Laerdal_Version_Assembly)</AssemblyFileVersion>
