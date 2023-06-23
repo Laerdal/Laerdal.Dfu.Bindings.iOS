@@ -109,7 +109,7 @@
         <Laerdal_Branch_Name Condition="'$(Laerdal_Branch_Name)' == ''">$(BUILD_SOURCEBRANCHNAME)</Laerdal_Branch_Name>
         <Laerdal_Branch_Name Condition="'$(Laerdal_Branch_Name)' == ''">$(SYSTEM_PULLREQUEST_SOURCEBRANCHNAME)</Laerdal_Branch_Name>
         <Laerdal_Branch_Name Condition="'$(Laerdal_Branch_Name)' == 'master'"></Laerdal_Branch_Name> <!-- No suffix for master branch -->
-        <PackageVersionSuffix Condition="'$(Laerdal_Branch_Name)' != ''">-$(Laerdal_Branch_Name.ToLower())</PackageVersionSuffix>
+        <PackageVersionSuffix Condition="'$(Laerdal_Branch_Name)' != ''">-$(Laerdal_Branch_Name.ToLower()).$(Laerdal_Revision)</PackageVersionSuffix>
 
         <Laerdal_Version_Assembly Condition="'$(Laerdal_Version_Assembly)' == ''">$(Nordic_Package_Version).$(Laerdal_Revision)</Laerdal_Version_Assembly>
         <Laerdal_Version_Full Condition="'$(Laerdal_Version_Full)' == ''">$(Nordic_Package_Version)$(PackageVersionSuffix).$(Laerdal_Revision)</Laerdal_Version_Full>
