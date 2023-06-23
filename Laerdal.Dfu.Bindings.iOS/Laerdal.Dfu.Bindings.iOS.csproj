@@ -24,7 +24,7 @@
     </ItemGroup>
 
     <Target Name="_DownloadIosNativeFiles" BeforeTargets="BeforeCompile" Condition="!Exists('Carthage\Carthage\Build\iOSDFULibrary.xcframework')">
-        <WriteLinesToFile File="Carthage\Cartfile" Lines="github &quot;NordicSemiconductor/IOS-Pods-DFU-Library&quot; &quot;$(NordicPackageVersion)&quot;" Overwrite="true" />
+        <WriteLinesToFile File="Carthage\Cartfile" Lines="github &quot;NordicSemiconductor/IOS-Pods-DFU-Library&quot; &quot;4.11.1&quot;" Overwrite="true" />
         <Exec WorkingDirectory="Carthage\" Command="carthage update --use-xcframeworks --platform iOS" />
     </Target>
 
