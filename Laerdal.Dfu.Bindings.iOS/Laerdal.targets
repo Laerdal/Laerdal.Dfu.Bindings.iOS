@@ -105,8 +105,8 @@
     <PropertyGroup>
         <Laerdal_Revision Condition="'$(Laerdal_Revision)' == ''">$(BUILD_BUILDID)</Laerdal_Revision>
         <Laerdal_Revision Condition="'$(Laerdal_Revision)' == ''">0</Laerdal_Revision> <!-- Fallback value -->
-        <Laerdal_Branch_Name Condition="'$(Laerdal_Branch_Name)' == ''">$(BUILD_SOURCEBRANCH)</Laerdal_Branch_Name>
-        <Laerdal_Branch_Name Condition="'$(Laerdal_Branch_Name)' == ''">$(SYSTEM_PULLREQUEST_SOURCEBRANCH)</Laerdal_Branch_Name>
+        <Laerdal_Branch_Name Condition="'$(Laerdal_Branch_Name)' == ''">$(BUILD_SOURCEBRANCHNAME)</Laerdal_Branch_Name>
+        <Laerdal_Branch_Name Condition="'$(Laerdal_Branch_Name)' == ''">$(SYSTEM_PULLREQUEST_SOURCEBRANCHNAME)</Laerdal_Branch_Name>
         <Laerdal_Branch_Name Condition="'$(Laerdal_Branch_Name)' == 'master'"></Laerdal_Branch_Name> <!-- No suffix for master branch -->
         <PackageVersionSuffix Condition="'$(Laerdal_Branch_Name)' != ''">-$(Laerdal_Branch_Name.ToLower())</PackageVersionSuffix>
 
