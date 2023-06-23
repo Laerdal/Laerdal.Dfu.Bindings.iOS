@@ -8,8 +8,9 @@
         <DebugSymbols>true</DebugSymbols>
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
-        <PackOnBuild>true</PackOnBuild>
         <OutputType>Library</OutputType>
+        <PackOnBuild>true</PackOnBuild>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 
         <IncludeSource>True</IncludeSource>
         <IncludeSymbols>True</IncludeSymbols>
