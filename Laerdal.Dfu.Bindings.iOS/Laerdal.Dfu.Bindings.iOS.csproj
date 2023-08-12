@@ -6,13 +6,18 @@
         <Laerdal_Package_Description>Xamarin wrapper around Nordic.Dfu for iOS.</Laerdal_Package_Description>
     
         <Nordic_Package_Version>4.11.1</Nordic_Package_Version>
+        <!-- <BuildWithMSBuildOnMono>false</BuildWithMSBuildOnMono> -->
     </PropertyGroup>
 
     <PropertyGroup>
         <TargetFramework>net6.0-ios</TargetFramework>
 
-        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <MtouchExtraArgs>-v -v -v -v</MtouchExtraArgs>
+        
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
+        <Optimize>false</Optimize>
+        <NoBindingEmbedding>false</NoBindingEmbedding>
         <!-- warning CS0114: 'LegacyDFUServiceInitiator.StartWithTargetWithIdentifier(NSUuid)' hides inherited member 'DFUServiceInitiator.StartWithTargetWithIdentifier(NSUuid)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword. -->
         <!-- warning CS0114: 'SecureDFUServiceInitiator.StartWithTargetWithIdentifier(NSUuid)' hides inherited member 'DFUServiceInitiator.StartWithTargetWithIdentifier(NSUuid)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword. -->
         <NoWarn>CS0114</NoWarn>
@@ -23,11 +28,17 @@
     <ItemGroup>
         <ObjcBindingApiDefinition Include="ApiDefinition.cs" />
         <ObjcBindingCoreSource Include="StructsAndEnums.cs" />
+
+        <Compile Remove="Sharpie/**/*.cs" />
+        <None Include="Sharpie/**/*.cs" />
     </ItemGroup>
 
     <Target Name="_DownloadIosNativeFiles" BeforeTargets="BeforeCompile" Condition="!Exists('Carthage\Carthage\Build\iOSDFULibrary.xcframework')">
         <WriteLinesToFile File="Carthage\Cartfile" Lines="github &quot;NordicSemiconductor/IOS-Pods-DFU-Library&quot; &quot;4.11.1&quot;" Overwrite="true" />
         <Exec WorkingDirectory="Carthage\" Command="carthage update --use-xcframeworks --platform iOS" />
+    </Target>
+    <Target Name="_RunOjectiveSharpie" AfterTargets="_DownloadIosNativeFiles" BeforeTargets="BeforeCompile" Condition="Exists('Carthage\Carthage\Build\iOSDFULibrary.xcframework') AND !Exists('Sharpie\')">
+        <Exec Command="sharpie bind -o Sharpie --namespace=Laerdal.Dfu.Bindings.iOS -f Carthage/Carthage/Build/iOSDFULibrary.xcframework/ios-arm64/iOSDFULibrary.framework" />
     </Target>
 
     <ItemGroup>
@@ -37,12 +48,17 @@
             <SmartLink>False</SmartLink>
             <Frameworks>Foundation</Frameworks>
         </NativeReference>
-
+        
         <!-- Frameworks\ZIPFoundation.framework -->
         <NativeReference Include="Carthage\Carthage\Build\ZIPFoundation.xcframework">
             <Kind>Framework</Kind>
             <SmartLink>False</SmartLink>
             <Frameworks>Foundation</Frameworks>
         </NativeReference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Xamarin.iOS.SwiftRuntimeSupport" Version="0.2.1" />
+      <PackageReference Include="Xamarin.Swift" Version="1.0.11" />
     </ItemGroup>
 </Project>

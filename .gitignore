@@ -406,6 +406,7 @@ ASALocalRun/
 
 Output/
 Laerdal.Dfu.Bindings.iOS/Carthage/
+Laerdal.Dfu.Bindings.iOS/Sharpie/
 
 *.binlog
 *.csproj.xml

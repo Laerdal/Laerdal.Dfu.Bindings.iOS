@@ -1,29 +1,16 @@
-#nullable enable
 using System;
 using CoreBluetooth;
 using CoreFoundation;
 using Foundation;
 using ObjCRuntime;
-//using iOSDFULibrary;
 
 namespace Laerdal.Dfu.Bindings.iOS
 {
-	// [Static]
-	// partial interface Constants
-	// {
-	// 	// extern double iOSDFULibraryVersionNumber;
-	// 	[Field ("iOSDFULibraryVersionNumber", "__Internal")]
-	// 	double iOSDFULibraryVersionNumber { get; }
-	//
-	// 	// extern const unsigned char[] iOSDFULibraryVersionString;
-	// 	[Field ("iOSDFULibraryVersionString", "__Internal")]
-	// 	byte[] iOSDFULibraryVersionString { get; }
-	// }
-
 	// @interface DFUFirmware : NSObject
-	[BaseType (typeof(NSObject), Name = "_TtC13iOSDFULibrary11DFUFirmware")]
+    [BaseType (typeof(NSObject), Name = "_TtC13iOSDFULibrary11DFUFirmware")]
+    [Protocol (Name = "_TtC13iOSDFULibrary11DFUFirmware")]
+    [Model (Name = "_TtC13iOSDFULibrary11DFUFirmware")]
 	[DisableDefaultCtor]
-	[Protocol(Name = "_TtC13iOSDFULibrary11DFUFirmware")]
 	interface DFUFirmware
 	{
 		// @property (readonly, copy, nonatomic) NSString * _Nullable fileName;
@@ -46,44 +33,35 @@ namespace Laerdal.Dfu.Bindings.iOS
 		[Export ("parts")]
 		nint Parts { get; }
 
-		// -(instancetype _Nullable)initWithUrlToZipFile:(NSURL * _Nonnull)urlToZipFile error:(NSError * _Nullable * _Nullable)error;
-		[Export ("initWithUrlToZipFile:error:")]
-		IntPtr Constructor (NSUrl urlToZipFile, [NullAllowed] out NSError error);
+		// -(instancetype _Nullable)initWithUrlToZipFile:(NSURL * _Nonnull)urlToZipFile;
+		[Export ("initWithUrlToZipFile:")]
+		NativeHandle Constructor (NSUrl urlToZipFile);
 
-		// -(instancetype _Nullable)initWithUrlToZipFile:(NSURL * _Nonnull)urlToZipFile type:(enum DFUFirmwareType)type error:(NSError * _Nullable * _Nullable)error __attribute__((objc_designated_initializer));
-		[Export ("initWithUrlToZipFile:type:error:")]
+		// -(instancetype _Nullable)initWithUrlToZipFile:(NSURL * _Nonnull)urlToZipFile type:(enum DFUFirmwareType)type __attribute__((objc_designated_initializer));
+		[Export ("initWithUrlToZipFile:type:")]
 		[DesignatedInitializer]
-		IntPtr Constructor (NSUrl urlToZipFile, DFUFirmwareType type, [NullAllowed] out NSError error);
+		NativeHandle Constructor (NSUrl urlToZipFile, DFUFirmwareType type);
 
-		// -(instancetype _Nullable)initWithZipFile:(NSData * _Nonnull)zipFile error:(NSError * _Nullable * _Nullable)error;
-		[Export ("initWithZipFile:error:")]
-		IntPtr Constructor (NSData zipFile, [NullAllowed] out NSError error);
+		// -(instancetype _Nullable)initWithZipFile:(NSData * _Nonnull)zipFile;
+		[Export ("initWithZipFile:")]
+		NativeHandle Constructor (NSData zipFile);
 
-		// -(instancetype _Nullable)initWithZipFile:(NSData * _Nonnull)zipFile type:(enum DFUFirmwareType)type error:(NSError * _Nullable * _Nullable)error __attribute__((objc_designated_initializer));
-		[Export ("initWithZipFile:type:error:")]
+		// -(instancetype _Nullable)initWithZipFile:(NSData * _Nonnull)zipFile type:(enum DFUFirmwareType)type __attribute__((objc_designated_initializer));
+		[Export ("initWithZipFile:type:")]
 		[DesignatedInitializer]
-		IntPtr Constructor (NSData zipFile, DFUFirmwareType type, [NullAllowed] out NSError error);
+		NativeHandle Constructor (NSData zipFile, DFUFirmwareType type);
 
-		// -(instancetype _Nullable)initWithUrlToBinOrHexFile:(NSURL * _Nonnull)urlToBinOrHexFile urlToDatFile:(NSURL * _Nullable)urlToDatFile type:(enum DFUFirmwareType)type error:(NSError * _Nullable * _Nullable)error __attribute__((objc_designated_initializer));
-		[Export ("initWithUrlToBinOrHexFile:urlToDatFile:type:error:")]
+		// -(instancetype _Nullable)initWithUrlToBinOrHexFile:(NSURL * _Nonnull)urlToBinOrHexFile urlToDatFile:(NSURL * _Nullable)urlToDatFile type:(enum DFUFirmwareType)type __attribute__((objc_designated_initializer));
+		[Export ("initWithUrlToBinOrHexFile:urlToDatFile:type:")]
 		[DesignatedInitializer]
-		IntPtr Constructor (NSUrl urlToBinOrHexFile, [NullAllowed] NSUrl urlToDatFile, DFUFirmwareType type, [NullAllowed] out NSError error);
-
-		// -(instancetype _Nonnull)initWithBinFile:(NSData * _Nonnull)binFile datFile:(NSData * _Nullable)datFile type:(enum DFUFirmwareType)type __attribute__((objc_designated_initializer));
-		[Export ("initWithBinFile:datFile:type:")]
-		[DesignatedInitializer]
-		IntPtr Constructor (NSData binFile, [NullAllowed] NSData datFile, DFUFirmwareType type);
-
-		// -(instancetype _Nullable)initWithHexFile:(NSData * _Nonnull)hexFile datFile:(NSData * _Nullable)datFile type:(enum DFUFirmwareType)type error:(NSError * _Nullable * _Nullable)error __attribute__((objc_designated_initializer));
-		[Export ("initWithHexFile:datFile:type:error:")]
-		[DesignatedInitializer]
-		IntPtr Constructor (NSData hexFile, [NullAllowed] NSData datFile, DFUFirmwareType type, [NullAllowed] out NSError error);
+		NativeHandle Constructor (NSUrl urlToBinOrHexFile, [NullAllowed] NSUrl urlToDatFile, DFUFirmwareType type);
 	}
 
 	// @interface DFUFirmwareSize : NSObject
 	[BaseType (typeof(NSObject), Name = "_TtC13iOSDFULibrary15DFUFirmwareSize")]
+	[Protocol (Name = "_TtC13iOSDFULibrary15DFUFirmwareSize")]
+	[Model (Name = "_TtC13iOSDFULibrary15DFUFirmwareSize")]
 	[DisableDefaultCtor]
-	[Protocol(Name = "_TtC13iOSDFULibrary15DFUFirmwareSize")]
 	interface DFUFirmwareSize
 	{
 		// @property (readonly, nonatomic) uint32_t softdevice;
@@ -100,8 +78,9 @@ namespace Laerdal.Dfu.Bindings.iOS
 	}
 
 	// @protocol DFUPeripheralSelectorDelegate
-	[Protocol (Name = "_TtP13iOSDFULibrary29DFUPeripheralSelectorDelegate_"), Model]
 	[BaseType (typeof(NSObject), Name = "_TtP13iOSDFULibrary29DFUPeripheralSelectorDelegate_")]
+	[Protocol (Name = "_TtP13iOSDFULibrary29DFUPeripheralSelectorDelegate_")]
+	[Model (Name = "_TtP13iOSDFULibrary29DFUPeripheralSelectorDelegate_")]
 	interface DFUPeripheralSelectorDelegate
 	{
 		// @required -(BOOL)select:(CBPeripheral * _Nonnull)peripheral advertisementData:(NSDictionary<NSString *,id> * _Nonnull)advertisementData RSSI:(NSNumber * _Nonnull)RSSI hint:(NSString * _Nullable)name __attribute__((warn_unused_result("")));
@@ -118,8 +97,9 @@ namespace Laerdal.Dfu.Bindings.iOS
 
 	// @interface DFUPeripheralSelector : NSObject <DFUPeripheralSelectorDelegate>
 	[BaseType (typeof(NSObject), Name = "_TtC13iOSDFULibrary21DFUPeripheralSelector")]
-	[Protocol(Name = "_TtC13iOSDFULibrary21DFUPeripheralSelector")]
-	interface DFUPeripheralSelector
+	[Protocol (Name = "_TtC13iOSDFULibrary21DFUPeripheralSelector")]
+	[Model (Name = "_TtC13iOSDFULibrary21DFUPeripheralSelector")]
+	interface DFUPeripheralSelector : DFUPeripheralSelectorDelegate
 	{
 		// -(BOOL)select:(CBPeripheral * _Nonnull)peripheral advertisementData:(NSDictionary<NSString *,id> * _Nonnull)advertisementData RSSI:(NSNumber * _Nonnull)RSSI hint:(NSString * _Nullable)name __attribute__((warn_unused_result("")));
 		[Export ("select:advertisementData:RSSI:hint:")]
@@ -132,8 +112,9 @@ namespace Laerdal.Dfu.Bindings.iOS
 	}
 
 	// @protocol DFUProgressDelegate
-	[Protocol (Name = "_TtP13iOSDFULibrary19DFUProgressDelegate_"), Model]
 	[BaseType (typeof(NSObject), Name = "_TtP13iOSDFULibrary19DFUProgressDelegate_")]
+	[Protocol (Name = "_TtP13iOSDFULibrary19DFUProgressDelegate_")]
+	[Model (Name = "_TtP13iOSDFULibrary19DFUProgressDelegate_")]
 	interface DFUProgressDelegate
 	{
 		// @required -(void)dfuProgressDidChangeFor:(NSInteger)part outOf:(NSInteger)totalParts to:(NSInteger)progress currentSpeedBytesPerSecond:(double)currentSpeedBytesPerSecond avgSpeedBytesPerSecond:(double)avgSpeedBytesPerSecond;
@@ -144,8 +125,9 @@ namespace Laerdal.Dfu.Bindings.iOS
 
 	// @interface DFUServiceController : NSObject
 	[BaseType (typeof(NSObject), Name = "_TtC13iOSDFULibrary20DFUServiceController")]
+	[Protocol (Name = "_TtC13iOSDFULibrary20DFUServiceController")]
+	[Model (Name = "_TtC13iOSDFULibrary20DFUServiceController")]
 	[DisableDefaultCtor]
-	[Protocol(Name = "_TtC13iOSDFULibrary20DFUServiceController")]
 	interface DFUServiceController
 	{
 		// -(void)pause;
@@ -174,8 +156,9 @@ namespace Laerdal.Dfu.Bindings.iOS
 	}
 
 	// @protocol DFUServiceDelegate
-	[Protocol (Name = "_TtP13iOSDFULibrary18DFUServiceDelegate_"), Model]
 	[BaseType (typeof(NSObject), Name = "_TtP13iOSDFULibrary18DFUServiceDelegate_")]
+	[Protocol (Name = "_TtP13iOSDFULibrary18DFUServiceDelegate_")]
+	[Model (Name = "_TtP13iOSDFULibrary18DFUServiceDelegate_")]
 	interface DFUServiceDelegate
 	{
 		// @required -(void)dfuStateDidChangeTo:(enum DFUState)state;
@@ -191,8 +174,9 @@ namespace Laerdal.Dfu.Bindings.iOS
 
 	// @interface DFUServiceInitiator : NSObject
 	[BaseType (typeof(NSObject), Name = "_TtC13iOSDFULibrary19DFUServiceInitiator")]
+	[Protocol (Name = "_TtC13iOSDFULibrary19DFUServiceInitiator")]
+	[Model (Name = "_TtC13iOSDFULibrary19DFUServiceInitiator")]
 	[DisableDefaultCtor]
-	[Protocol(Name = "_TtC13iOSDFULibrary19DFUServiceInitiator")]
 	interface DFUServiceInitiator
 	{
 		[Wrap ("WeakDelegate")]
@@ -262,12 +246,12 @@ namespace Laerdal.Dfu.Bindings.iOS
 		// -(instancetype _Nonnull)initWithCentralManager:(CBCentralManager * _Nonnull)centralManager target:(CBPeripheral * _Nonnull)target __attribute__((objc_designated_initializer)) __attribute__((deprecated("Use init(queue: DispatchQueue?) instead.")));
 		[Export ("initWithCentralManager:target:")]
 		[DesignatedInitializer]
-		IntPtr Constructor (CBCentralManager centralManager, CBPeripheral target);
+		NativeHandle Constructor (CBCentralManager centralManager, CBPeripheral target);
 
-		// -(instancetype _Nonnull)initWithQueue:(dispatch_queue_t _Nullable)queue delegateQueue:(dispatch_queue_t _Nonnull)delegateQueue progressQueue:(dispatch_queue_t _Nonnull)progressQueue loggerQueue:(dispatch_queue_t _Nonnull)loggerQueue centralManagerOptions:(NSDictionary<NSString *,id> * _Nullable)centralManagerOptions __attribute__((objc_designated_initializer));
-		[Export ("initWithQueue:delegateQueue:progressQueue:loggerQueue:centralManagerOptions:")]
+		// -(instancetype _Nonnull)initWithQueue:(dispatch_queue_t _Nullable)queue delegateQueue:(dispatch_queue_t _Nonnull)delegateQueue progressQueue:(dispatch_queue_t _Nonnull)progressQueue loggerQueue:(dispatch_queue_t _Nonnull)loggerQueue __attribute__((objc_designated_initializer));
+		[Export ("initWithQueue:delegateQueue:progressQueue:loggerQueue:")]
 		[DesignatedInitializer]
-		IntPtr Constructor ([NullAllowed] DispatchQueue queue, DispatchQueue delegateQueue, DispatchQueue progressQueue, DispatchQueue loggerQueue, [NullAllowed] NSDictionary<NSString, NSObject> centralManagerOptions);
+		NativeHandle Constructor ([NullAllowed] DispatchQueue queue, DispatchQueue delegateQueue, DispatchQueue progressQueue, DispatchQueue loggerQueue);
 
 		// -(DFUServiceInitiator * _Nonnull)withFirmware:(DFUFirmware * _Nonnull)file __attribute__((warn_unused_result("")));
 		[Export ("withFirmware:")]
@@ -291,8 +275,9 @@ namespace Laerdal.Dfu.Bindings.iOS
 
 	// @interface DFUUuid : NSObject
 	[BaseType (typeof(NSObject), Name = "_TtC13iOSDFULibrary7DFUUuid")]
+	[Protocol (Name = "_TtC13iOSDFULibrary7DFUUuid")]
+	[Model (Name = "_TtC13iOSDFULibrary7DFUUuid")]
 	[DisableDefaultCtor]
-	[Protocol(Name = "_TtC13iOSDFULibrary7DFUUuid")]
 	interface DFUUuid
 	{
 		// @property (readonly, nonatomic, strong) CBUUID * _Nonnull uuid;
@@ -306,12 +291,13 @@ namespace Laerdal.Dfu.Bindings.iOS
 		// -(instancetype _Nonnull)initWithUUID:(CBUUID * _Nonnull)withUUID forType:(enum DFUUuidType)forType __attribute__((objc_designated_initializer));
 		[Export ("initWithUUID:forType:")]
 		[DesignatedInitializer]
-		IntPtr Constructor (CBUUID withUUID, DFUUuidType forType);
+		NativeHandle Constructor (CBUUID withUUID, DFUUuidType forType);
 	}
 
 	// @interface DFUUuidHelper : NSObject
 	[BaseType (typeof(NSObject), Name = "_TtC13iOSDFULibrary13DFUUuidHelper")]
-	[Protocol(Name = "_TtC13iOSDFULibrary13DFUUuidHelper")]
+	[Protocol (Name = "_TtC13iOSDFULibrary13DFUUuidHelper")]
+	[Model (Name = "_TtC13iOSDFULibrary13DFUUuidHelper")]
 	interface DFUUuidHelper
 	{
 		// @property (readonly, nonatomic, strong) CBUUID * _Nonnull legacyDFUService;
@@ -360,19 +346,21 @@ namespace Laerdal.Dfu.Bindings.iOS
 
 		// -(instancetype _Nonnull)initWithCustomUuids:(NSArray<DFUUuid *> * _Nonnull)uuids;
 		[Export ("initWithCustomUuids:")]
-		IntPtr Constructor (DFUUuid[] uuids);
+		NativeHandle Constructor (DFUUuid[] uuids);
 	}
 
 	// @interface IntelHex2BinConverter : NSObject
 	[BaseType (typeof(NSObject), Name = "_TtC13iOSDFULibrary21IntelHex2BinConverter")]
-	[Protocol(Name = "_TtC13iOSDFULibrary21IntelHex2BinConverter")]
+	[Protocol (Name = "_TtC13iOSDFULibrary21IntelHex2BinConverter")]
+	[Model (Name = "_TtC13iOSDFULibrary21IntelHex2BinConverter")]
 	interface IntelHex2BinConverter
 	{
 	}
 
 	// @interface LegacyDFUServiceInitiator : DFUServiceInitiator
 	[BaseType (typeof(DFUServiceInitiator), Name = "_TtC13iOSDFULibrary25LegacyDFUServiceInitiator")]
-	[Protocol(Name = "_TtC13iOSDFULibrary25LegacyDFUServiceInitiator")]
+	[Protocol (Name = "_TtC13iOSDFULibrary25LegacyDFUServiceInitiator")]
+	[Model (Name = "_TtC13iOSDFULibrary25LegacyDFUServiceInitiator")]
 	interface LegacyDFUServiceInitiator
 	{
 		// -(DFUServiceController * _Nullable)startWithTargetWithIdentifier:(NSUUID * _Nonnull)uuid __attribute__((warn_unused_result("")));
@@ -383,17 +371,18 @@ namespace Laerdal.Dfu.Bindings.iOS
 		// -(instancetype _Nonnull)initWithCentralManager:(CBCentralManager * _Nonnull)centralManager target:(CBPeripheral * _Nonnull)target __attribute__((objc_designated_initializer)) __attribute__((deprecated("")));
 		[Export ("initWithCentralManager:target:")]
 		[DesignatedInitializer]
-		IntPtr Constructor (CBCentralManager centralManager, CBPeripheral target);
+		NativeHandle Constructor (CBCentralManager centralManager, CBPeripheral target);
 
-		// -(instancetype _Nonnull)initWithQueue:(dispatch_queue_t _Nullable)queue delegateQueue:(dispatch_queue_t _Nonnull)delegateQueue progressQueue:(dispatch_queue_t _Nonnull)progressQueue loggerQueue:(dispatch_queue_t _Nonnull)loggerQueue centralManagerOptions:(NSDictionary<NSString *,id> * _Nullable)centralManagerOptions __attribute__((objc_designated_initializer));
-		[Export ("initWithQueue:delegateQueue:progressQueue:loggerQueue:centralManagerOptions:")]
+		// -(instancetype _Nonnull)initWithQueue:(dispatch_queue_t _Nullable)queue delegateQueue:(dispatch_queue_t _Nonnull)delegateQueue progressQueue:(dispatch_queue_t _Nonnull)progressQueue loggerQueue:(dispatch_queue_t _Nonnull)loggerQueue __attribute__((objc_designated_initializer));
+		[Export ("initWithQueue:delegateQueue:progressQueue:loggerQueue:")]
 		[DesignatedInitializer]
-		IntPtr Constructor ([NullAllowed] DispatchQueue queue, DispatchQueue delegateQueue, DispatchQueue progressQueue, DispatchQueue loggerQueue, [NullAllowed] NSDictionary<NSString, NSObject> centralManagerOptions);
+		NativeHandle Constructor ([NullAllowed] DispatchQueue queue, DispatchQueue delegateQueue, DispatchQueue progressQueue, DispatchQueue loggerQueue);
 	}
 
 	// @protocol LoggerDelegate
-	[Protocol (Name = "_TtP13iOSDFULibrary14LoggerDelegate_"), Model]
 	[BaseType (typeof(NSObject), Name = "_TtP13iOSDFULibrary14LoggerDelegate_")]
+	[Protocol (Name = "_TtP13iOSDFULibrary14LoggerDelegate_")]
+	[Model (Name = "_TtP13iOSDFULibrary14LoggerDelegate_")]
 	interface LoggerDelegate
 	{
 		// @required -(void)logWith:(enum LogLevel)level message:(NSString * _Nonnull)message;
@@ -404,7 +393,8 @@ namespace Laerdal.Dfu.Bindings.iOS
 
 	// @interface SecureDFUServiceInitiator : DFUServiceInitiator
 	[BaseType (typeof(DFUServiceInitiator), Name = "_TtC13iOSDFULibrary25SecureDFUServiceInitiator")]
-	[Protocol(Name = "_TtC13iOSDFULibrary25SecureDFUServiceInitiator")]
+	[Protocol (Name = "_TtC13iOSDFULibrary25SecureDFUServiceInitiator")]
+	[Model (Name = "_TtC13iOSDFULibrary25SecureDFUServiceInitiator")]
 	interface SecureDFUServiceInitiator
 	{
 		// -(DFUServiceController * _Nullable)startWithTargetWithIdentifier:(NSUUID * _Nonnull)uuid __attribute__((warn_unused_result("")));
@@ -415,77 +405,11 @@ namespace Laerdal.Dfu.Bindings.iOS
 		// -(instancetype _Nonnull)initWithCentralManager:(CBCentralManager * _Nonnull)centralManager target:(CBPeripheral * _Nonnull)target __attribute__((objc_designated_initializer)) __attribute__((deprecated("")));
 		[Export ("initWithCentralManager:target:")]
 		[DesignatedInitializer]
-		IntPtr Constructor (CBCentralManager centralManager, CBPeripheral target);
+		NativeHandle Constructor (CBCentralManager centralManager, CBPeripheral target);
 
-		// -(instancetype _Nonnull)initWithQueue:(dispatch_queue_t _Nullable)queue delegateQueue:(dispatch_queue_t _Nonnull)delegateQueue progressQueue:(dispatch_queue_t _Nonnull)progressQueue loggerQueue:(dispatch_queue_t _Nonnull)loggerQueue centralManagerOptions:(NSDictionary<NSString *,id> * _Nullable)centralManagerOptions __attribute__((objc_designated_initializer));
-		[Export ("initWithQueue:delegateQueue:progressQueue:loggerQueue:centralManagerOptions:")]
+		// -(instancetype _Nonnull)initWithQueue:(dispatch_queue_t _Nullable)queue delegateQueue:(dispatch_queue_t _Nonnull)delegateQueue progressQueue:(dispatch_queue_t _Nonnull)progressQueue loggerQueue:(dispatch_queue_t _Nonnull)loggerQueue __attribute__((objc_designated_initializer));
+		[Export ("initWithQueue:delegateQueue:progressQueue:loggerQueue:")]
 		[DesignatedInitializer]
-		IntPtr Constructor ([NullAllowed] DispatchQueue queue, DispatchQueue delegateQueue, DispatchQueue progressQueue, DispatchQueue loggerQueue, [NullAllowed] NSDictionary<NSString, NSObject> centralManagerOptions);
+		NativeHandle Constructor ([NullAllowed] DispatchQueue queue, DispatchQueue delegateQueue, DispatchQueue progressQueue, DispatchQueue loggerQueue);
 	}
 }
-
-    // The first step to creating a binding is to add your native framework ("MyLibrary.xcframework")
-    // to the project.
-    // Open your binding csproj and add a section like this
-    // <ItemGroup>
-    //   <NativeReference Include="MyLibrary.xcframework">
-    //     <Kind>Framework</Kind>
-    //     <Frameworks></Frameworks>
-    //   </NativeReference>
-    // </ItemGroup>
-    //
-    // Once you've added it, you will need to customize it for your specific library:
-    //  - Change the Include to the correct path/name of your library
-    //  - Change Kind to Static (.a) or Framework (.framework/.xcframework) based upon the library kind and extension.
-    //    - Dynamic (.dylib) is a third option but rarely if ever valid, and only on macOS and Mac Catalyst
-    //  - If your library depends on other frameworks, add them inside <Frameworks></Frameworks>
-    // Example:
-    // <NativeReference Include="libs\MyTestFramework.xcframework">
-    //   <Kind>Framework</Kind>
-    //   <Frameworks>CoreLocation ModelIO</Frameworks>
-    // </NativeReference>
-    // 
-    // Once you've done that, you're ready to move on to binding the API...
-    //
-    // Here is where you'd define your API definition for the native Objective-C library.
-    //
-    // For example, to bind the following Objective-C class:
-    //
-    //     @interface Widget : NSObject {
-    //     }
-    //
-    // The C# binding would look like this:
-    //
-    //     [BaseType (typeof (NSObject))]
-    //     interface Widget {
-    //     }
-    //
-    // To bind Objective-C properties, such as:
-    //
-    //     @property (nonatomic, readwrite, assign) CGPoint center;
-    //
-    // You would add a property definition in the C# interface like so:
-    //
-    //     [Export ("center")]
-    //     CGPoint Center { get; set; }
-    //
-    // To bind an Objective-C method, such as:
-    //
-    //     -(void) doSomething:(NSObject *)object atIndex:(NSInteger)index;
-    //
-    // You would add a method definition to the C# interface like so:
-    //
-    //     [Export ("doSomething:atIndex:")]
-    //     void DoSomething (NSObject object, nint index);
-    //
-    // Objective-C "constructors" such as:
-    //
-    //     -(id)initWithElmo:(ElmoMuppet *)elmo;
-    //
-    // Can be bound as:
-    //
-    //     [Export ("initWithElmo:")]
-    //     NativeHandle Constructor (ElmoMuppet elmo);
-    //
-    // For more information, see https://aka.ms/ios-binding
-    //
