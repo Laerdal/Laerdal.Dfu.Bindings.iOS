@@ -10,7 +10,7 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <TargetFramework>net6.0-ios</TargetFramework>
+        <TargetFramework>net6.0-ios;net7.0-ios</TargetFramework>
 
         <MtouchExtraArgs>-v -v -v -v</MtouchExtraArgs>
         
