@@ -6,7 +6,7 @@
         <Laerdal_Package_Description>Xamarin wrapper around Nordic.Dfu for iOS.</Laerdal_Package_Description>
     
         <Nordic_Package_Version>4.11.1</Nordic_Package_Version>
-        <!-- <BuildWithMSBuildOnMono>false</BuildWithMSBuildOnMono> -->
+        <BuildWithMSBuildOnMono>false</BuildWithMSBuildOnMono>
     </PropertyGroup>
 
     <PropertyGroup>
