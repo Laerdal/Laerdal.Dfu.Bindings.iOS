@@ -1,4 +1,4 @@
-using ObjCRuntime;
+﻿using ObjCRuntime;
 
 namespace Laerdal.Dfu.Bindings.iOS
 {

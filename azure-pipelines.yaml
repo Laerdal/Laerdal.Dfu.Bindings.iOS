@@ -14,10 +14,10 @@ steps:
     inputs:
       checkLatest: true
 
-  - task: DotNetCoreCLI@2
-    displayName: dotnet build
+  - task: MSBuild@1
+    displayName: MSBuild
     inputs:
-      projects: $(Build.SourcesDirectory)/Laerdal.Build.proj
+      solution: Laerdal.Build.proj
       configuration: Release
 
   - publish: $(Build.ArtifactStagingDirectory)
