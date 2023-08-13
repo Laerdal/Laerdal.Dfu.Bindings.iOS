@@ -15,10 +15,17 @@ steps:
       checkLatest: true
 
   - task: DotNetCoreCLI@2
-    displayName: dotnet build
+    displayName: dotnet workload install ios
     inputs:
-      projects: $(Build.SourcesDirectory)/Laerdal.Build.proj
-      configuration: Release
+      command: custom
+      custom: 'workload'
+      arguments: 'install ios'
+        
+    - task: DotNetCoreCLI@2
+      displayName: dotnet build
+      inputs:
+        projects: $(Build.SourcesDirectory)/Laerdal.Build.proj
+        configuration: Release
 
   - publish: $(Build.ArtifactStagingDirectory)
     artifact: output
