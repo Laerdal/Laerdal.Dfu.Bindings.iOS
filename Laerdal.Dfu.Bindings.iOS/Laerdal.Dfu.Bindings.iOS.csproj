@@ -34,10 +34,12 @@
     </ItemGroup>
 
     <Target Name="_DownloadIosNativeFiles" BeforeTargets="BeforeCompile" Condition="!Exists('Carthage\Carthage\Build\iOSDFULibrary.xcframework')">
+        
+        <Message Importance="High" Text="GITHUB_ACCESS_TOKEN: $(GITHUB_ACCESS_TOKEN)" />
         <WriteLinesToFile File="Carthage\Cartfile" Lines="github &quot;NordicSemiconductor/IOS-Pods-DFU-Library&quot; &quot;4.11.1&quot;" Overwrite="true" />
-        <Exec WorkingDirectory="Carthage\" Command="carthage update --use-xcframeworks --platform iOS" />
+        <Exec WorkingDirectory="Carthage\" Command="carthage update --use-xcframeworks --platform iOS" EnvironmentVariables="GITHUB_ACCESS_TOKEN=$(GITHUB_ACCESS_TOKEN)" />
     </Target>
-    <Target Name="_RunOjectiveSharpie" AfterTargets="_DownloadIosNativeFiles" BeforeTargets="BeforeCompile" Condition="Exists('Carthage\Carthage\Build\iOSDFULibrary.xcframework') AND !Exists('Sharpie\')">
+    <Target Name="_RunOjectiveSharpie" AfterTargets="_DownloadIosNativeFiles" BeforeTargets="BeforeCompile" Condition="Exists('Carthage\Carthage\Build\iOSDFULibrary.xcframework') AND !Exists('Sharpie\') AND !$(ContinuousIntegrationBuild)">
         <Exec Command="sharpie bind -o Sharpie --namespace=Laerdal.Dfu.Bindings.iOS -f Carthage/Carthage/Build/iOSDFULibrary.xcframework/ios-arm64/iOSDFULibrary.framework" />
     </Target>
 
