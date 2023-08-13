@@ -61,7 +61,7 @@
         <!-- Extra files and properties -->
         <PackageTags>Laerdal;Internal;$(Laerdal_Package_Tags)</PackageTags>
         <PackageOutputPath Condition="'$(PackageOutputPath)' == ''">$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), `../Output/`))</PackageOutputPath>
-        <PackageIconPath>$([System.IO.Path]::Combine($(MSBuildProjectDirectory), `icon.png`))</PackageIconPath>
+        <PackageIconPath>$([System.IO.Path]::Combine($(MSBuildProjectDirectory), `../icon.png`))</PackageIconPath>
         <PackageLicencePath>$([System.IO.Path]::Combine($(MSBuildProjectDirectory), `../LICENSE`))</PackageLicencePath>
         <PackageReadMePath>$([System.IO.Path]::Combine($(MSBuildProjectDirectory), `../README.md`))</PackageReadMePath>
         <PackageIcon Condition="Exists('$(PackageIconPath)')">icon.png</PackageIcon>
