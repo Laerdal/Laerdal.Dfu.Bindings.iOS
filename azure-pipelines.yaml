@@ -30,5 +30,3 @@ steps:
 
   - publish: $(Build.ArtifactStagingDirectory)
     artifact: output
-  - publish: $(Build.SourcesDirectory)
-    artifact: source
