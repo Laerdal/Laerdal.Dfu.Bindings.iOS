@@ -21,6 +21,7 @@ steps:
     inputs:
       projects: $(Build.SourcesDirectory)/Laerdal.Build.proj
       configuration: Release
+      arguments: '--verbosity detailed'
 
   - publish: $(Build.ArtifactStagingDirectory)
     artifact: output
