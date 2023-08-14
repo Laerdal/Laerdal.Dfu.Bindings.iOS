@@ -38,6 +38,10 @@
         <!-- https://docs.gitlab.com/ee/ci/variables/predefined_variables.html -->
         <ContinuousIntegrationBuild Condition="'$(GITLAB_CI)' == 'true'">true</ContinuousIntegrationBuild>
     </PropertyGroup>
+    <ItemGroup>
+        <!-- https://github.com/dotnet/roslyn/issues/37379#issuecomment-513371985 -->
+        <SourceRoot Include="$(MSBuildThisFileDirectory)/"/>
+    </ItemGroup>
 
 
     <!-- ==================== PACKAGING ==================== -->
