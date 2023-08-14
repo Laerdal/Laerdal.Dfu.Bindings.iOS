@@ -16,7 +16,6 @@
         
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
-        <Optimize>false</Optimize>
         <NoBindingEmbedding>false</NoBindingEmbedding>
         <!-- warning CS0114: 'LegacyDFUServiceInitiator.StartWithTargetWithIdentifier(NSUuid)' hides inherited member 'DFUServiceInitiator.StartWithTargetWithIdentifier(NSUuid)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword. -->
         <!-- warning CS0114: 'SecureDFUServiceInitiator.StartWithTargetWithIdentifier(NSUuid)' hides inherited member 'DFUServiceInitiator.StartWithTargetWithIdentifier(NSUuid)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword. -->
@@ -47,7 +46,7 @@
         <RemoveDir Directories="Carthage\Carthage\Checkouts\IOS-Pods-DFU-Library\Example" />
     </Target>
 
-    <Target Name="_RunOjectiveSharpie" AfterTargets="_DownloadIosNativeFiles" BeforeTargets="BeforeCompile" Condition="Exists('Carthage\Carthage\Build\iOSDFULibrary.xcframework') AND !Exists('Sharpie\') AND '$(ContinuousIntegrationBuild)' != 'true'">
+    <Target Name="_RunOjectiveSharpie" AfterTargets="_DownloadIosNativeFiles" Condition="Exists('Carthage\Carthage\Build\iOSDFULibrary.xcframework') AND !Exists('Sharpie\') AND '$(ContinuousIntegrationBuild)' != 'true'">
         <Exec Command="sharpie bind -o Sharpie --namespace=Laerdal.Dfu.Bindings.iOS -f Carthage/Carthage/Build/iOSDFULibrary.xcframework/ios-arm64/iOSDFULibrary.framework" />
     </Target>
 
@@ -65,10 +64,5 @@
             <SmartLink>False</SmartLink>
             <Frameworks>Foundation</Frameworks>
         </NativeReference>
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="Xamarin.iOS.SwiftRuntimeSupport" Version="0.2.1" />
-      <PackageReference Include="Xamarin.Swift" Version="1.0.11" />
     </ItemGroup>
 </Project>
