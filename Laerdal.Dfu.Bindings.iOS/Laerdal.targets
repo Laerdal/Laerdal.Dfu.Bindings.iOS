@@ -38,11 +38,6 @@
         <!-- https://docs.gitlab.com/ee/ci/variables/predefined_variables.html -->
         <ContinuousIntegrationBuild Condition="'$(GITLAB_CI)' == 'true'">true</ContinuousIntegrationBuild>
     </PropertyGroup>
-    <ItemGroup>
-        <!-- https://github.com/dotnet/roslyn/issues/37379#issuecomment-513371985 -->
-        <SourceRoot Include="$(MSBuildThisFileDirectory)/"/>
-    </ItemGroup>
-
 
     <!-- ==================== PACKAGING ==================== -->
     <PropertyGroup>
@@ -69,7 +64,7 @@
         <PackageLicencePath>$([System.IO.Path]::Combine($(MSBuildProjectDirectory), `../LICENSE`))</PackageLicencePath>
         <PackageReadMePath>$([System.IO.Path]::Combine($(MSBuildProjectDirectory), `../README.md`))</PackageReadMePath>
         <PackageIcon Condition="Exists('$(PackageIconPath)')">icon.png</PackageIcon>
-        <PackageLicense Condition="Exists('$(PackageLicencePath)')">LICENSE</PackageLicense>
+        <PackageLicenseFile Condition="Exists('$(PackageLicencePath)')">LICENSE</PackageLicenseFile>
         <!-- https://github.com/NuGet/Home/issues/10791 -->
         <PackageReadmeFile Condition="Exists('$(PackageReadMePath)')">README.md</PackageReadmeFile>
     </PropertyGroup>
@@ -106,7 +101,7 @@
         <Message Importance="High" Text="MSBuildRuntimeType: $(MSBuildRuntimeType)" />
         <Message Importance="High" Text="##vso[build.updatebuildnumber]$(PackageVersion)" />
     </Target>
-    <Target Name="PrintPlatformBuildInfo" BeforeTargets="CoreCompile">
+    <Target Name="PrintPlatformBuildInfo" BeforeTargets="Compile">
         <Message Importance="High" Text="*** Platform Info ***" />
         <Message Importance="High" Text="TargetFramework: $(TargetFramework)" />
         <Message Importance="High" Text="DefineConstants: $(DefineConstants)" />
