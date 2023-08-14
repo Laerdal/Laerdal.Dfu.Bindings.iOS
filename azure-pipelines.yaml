@@ -16,11 +16,11 @@ steps:
       checkLatest: true
 
   - task: DotNetCoreCLI@2
-    displayName: dotnet workload install ios
+    displayName: dotnet workload restore
     inputs:
       command: custom
       custom: 'workload'
-      arguments: 'install ios'
+      arguments: 'restore Laerdal.Dfu.Bindings.iOS/Laerdal.Dfu.Bindings.iOS.csproj'
 
   - task: DotNetCoreCLI@2
     displayName: dotnet build
