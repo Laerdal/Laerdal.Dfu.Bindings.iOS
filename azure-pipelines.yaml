@@ -21,7 +21,7 @@ steps:
     inputs:
       command: custom
       custom: 'workload'
-      arguments: 'restore $(Build.SourcesDirectory)/Laerdal.Build.proj'
+      arguments: 'restore Laerdal.Dfu.Bindings.iOS/Laerdal.Dfu.Bindings.iOS.csproj'
   
   - task: DotNetCoreCLI@2
     displayName: dotnet build
