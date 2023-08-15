@@ -7,9 +7,9 @@
         <Laerdal_Log_Level>High</Laerdal_Log_Level>
         <Laerdal_Project Condition="'$(Laerdal_Project)' == ''">$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), `Laerdal.Dfu.Bindings.iOS/Laerdal.Dfu.Bindings.iOS.csproj`))</Laerdal_Project>
     </PropertyGroup>
-    
+
     <!-- BUILD -->
-    <Target Name="BuildProjects">
+    <Target Name="Build">
         <Error Text="'Laerdal_Project' has to be set. Please call this script again with the argument '/p:Laerdal_Project=...'"
             Condition=" '$(Laerdal_Project)' == '' " />
 
