@@ -17,11 +17,11 @@ steps:
       checkLatest: true
 
   - task: DotNetCoreCLI@2
-    displayName: dotnet workload restore
+    displayName: dotnet workload install
     inputs:
       command: custom
       custom: 'workload'
-      arguments: 'restore maui ios android'
+      arguments: 'install maui ios android'
   
   - task: DotNetCoreCLI@2
     displayName: dotnet build
