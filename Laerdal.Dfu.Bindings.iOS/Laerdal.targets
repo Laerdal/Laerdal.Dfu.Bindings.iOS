@@ -66,7 +66,7 @@
         <PackageIcon Condition="Exists('$(PackageIconPath)')">icon.png</PackageIcon>
         <PackageLicenseFile Condition="Exists('$(PackageLicencePath)')">LICENSE</PackageLicenseFile>
         <!-- https://github.com/NuGet/Home/issues/10791 -->
-        <PackageReadmeFile Condition="Exists('$(PackageReadMePath)')">README.md</PackageReadmeFile>
+        <PackageReadmeFile Condition="Exists('$(PackageReadMePath)') AND '$(MSBuildRuntimeType)' != 'Mono'">README.md</PackageReadmeFile>
     </PropertyGroup>
     <ItemGroup>
         <None Include="$(PackageIconPath)" Pack="true" PackagePath="\" Condition="Exists('$(PackageIconPath)')" />
