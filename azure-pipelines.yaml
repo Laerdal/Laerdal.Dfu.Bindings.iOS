@@ -21,7 +21,7 @@ steps:
     inputs:
       command: custom
       custom: 'workload'
-      arguments: 'restore Laerdal.Dfu.Bindings.iOS/Laerdal.Dfu.Bindings.iOS.csproj'
+      arguments: 'restore maui ios android'
   
   - task: DotNetCoreCLI@2
     displayName: dotnet build
