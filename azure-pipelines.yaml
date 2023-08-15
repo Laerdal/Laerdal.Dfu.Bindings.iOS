@@ -32,5 +32,13 @@ steps:
 
   - publish: $(Build.ArtifactStagingDirectory)
     artifact: output
-  - publish: $(Build.SourcesDirectory)
+
+  - task: ArchiveFiles@2
+    inputs:
+      rootFolderOrFile: '$(Build.SourcesDirectory)'
+      includeRootFolder: false
+      archiveType: 'zip'
+      archiveFile: '$(Build.ArtifactStagingDirectory)/sources/$(Build.BuildId).zip'
+
+  - publish: '$(Build.ArtifactStagingDirectory)/sources/$(Build.BuildId).zip'
     artifact: source
