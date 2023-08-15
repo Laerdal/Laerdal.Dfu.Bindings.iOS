@@ -17,6 +17,13 @@ steps:
       checkLatest: true
 
   - task: DotNetCoreCLI@2
+    displayName: dotnet workload restore
+    inputs:
+      command: custom
+      custom: 'workload'
+      arguments: 'restore Laerdal.Dfu.Bindings.iOS/Laerdal.Dfu.Bindings.iOS.csproj'
+  
+  - task: DotNetCoreCLI@2
     displayName: dotnet build
     inputs:
       projects: $(Build.SourcesDirectory)/Laerdal.Build.proj
