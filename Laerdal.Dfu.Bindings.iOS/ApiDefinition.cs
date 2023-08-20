@@ -7,9 +7,9 @@ using ObjCRuntime;
 namespace Laerdal.Dfu.Bindings.iOS
 {
 	// @interface DFUFirmware : NSObject
-    [BaseType (typeof(NSObject), Name = "_TtC13iOSDFULibrary11DFUFirmware")]
-    [Protocol (Name = "_TtC13iOSDFULibrary11DFUFirmware")]
-    [Model (Name = "_TtC13iOSDFULibrary11DFUFirmware")]
+	[BaseType (typeof(NSObject), Name = "_TtC13iOSDFULibrary11DFUFirmware")]
+	[Protocol (Name = "_TtC13iOSDFULibrary11DFUFirmware")]
+	[Model (Name = "_TtC13iOSDFULibrary11DFUFirmware")]
 	[DisableDefaultCtor]
 	interface DFUFirmware
 	{
@@ -33,28 +33,38 @@ namespace Laerdal.Dfu.Bindings.iOS
 		[Export ("parts")]
 		nint Parts { get; }
 
-		// -(instancetype _Nullable)initWithUrlToZipFile:(NSURL * _Nonnull)urlToZipFile;
-		[Export ("initWithUrlToZipFile:")]
-		NativeHandle Constructor (NSUrl urlToZipFile);
+		// -(instancetype _Nullable)initWithUrlToZipFile:(NSURL * _Nonnull)urlToZipFile error:(NSError * _Nullable * _Nullable)error;
+		[Export ("initWithUrlToZipFile:error:")]
+		NativeHandle Constructor (NSUrl urlToZipFile, [NullAllowed] out NSError error);
 
-		// -(instancetype _Nullable)initWithUrlToZipFile:(NSURL * _Nonnull)urlToZipFile type:(enum DFUFirmwareType)type __attribute__((objc_designated_initializer));
-		[Export ("initWithUrlToZipFile:type:")]
+		// -(instancetype _Nullable)initWithUrlToZipFile:(NSURL * _Nonnull)urlToZipFile type:(enum DFUFirmwareType)type error:(NSError * _Nullable * _Nullable)error __attribute__((objc_designated_initializer));
+		[Export ("initWithUrlToZipFile:type:error:")]
 		[DesignatedInitializer]
-		NativeHandle Constructor (NSUrl urlToZipFile, DFUFirmwareType type);
+		NativeHandle Constructor (NSUrl urlToZipFile, DFUFirmwareType type, [NullAllowed] out NSError error);
 
-		// -(instancetype _Nullable)initWithZipFile:(NSData * _Nonnull)zipFile;
-		[Export ("initWithZipFile:")]
-		NativeHandle Constructor (NSData zipFile);
+		// -(instancetype _Nullable)initWithZipFile:(NSData * _Nonnull)zipFile error:(NSError * _Nullable * _Nullable)error;
+		[Export ("initWithZipFile:error:")]
+		NativeHandle Constructor (NSData zipFile, [NullAllowed] out NSError error);
 
-		// -(instancetype _Nullable)initWithZipFile:(NSData * _Nonnull)zipFile type:(enum DFUFirmwareType)type __attribute__((objc_designated_initializer));
-		[Export ("initWithZipFile:type:")]
+		// -(instancetype _Nullable)initWithZipFile:(NSData * _Nonnull)zipFile type:(enum DFUFirmwareType)type error:(NSError * _Nullable * _Nullable)error __attribute__((objc_designated_initializer));
+		[Export ("initWithZipFile:type:error:")]
 		[DesignatedInitializer]
-		NativeHandle Constructor (NSData zipFile, DFUFirmwareType type);
+		NativeHandle Constructor (NSData zipFile, DFUFirmwareType type, [NullAllowed] out NSError error);
 
-		// -(instancetype _Nullable)initWithUrlToBinOrHexFile:(NSURL * _Nonnull)urlToBinOrHexFile urlToDatFile:(NSURL * _Nullable)urlToDatFile type:(enum DFUFirmwareType)type __attribute__((objc_designated_initializer));
-		[Export ("initWithUrlToBinOrHexFile:urlToDatFile:type:")]
+		// -(instancetype _Nullable)initWithUrlToBinOrHexFile:(NSURL * _Nonnull)urlToBinOrHexFile urlToDatFile:(NSURL * _Nullable)urlToDatFile type:(enum DFUFirmwareType)type error:(NSError * _Nullable * _Nullable)error __attribute__((objc_designated_initializer));
+		[Export ("initWithUrlToBinOrHexFile:urlToDatFile:type:error:")]
 		[DesignatedInitializer]
-		NativeHandle Constructor (NSUrl urlToBinOrHexFile, [NullAllowed] NSUrl urlToDatFile, DFUFirmwareType type);
+		NativeHandle Constructor (NSUrl urlToBinOrHexFile, [NullAllowed] NSUrl urlToDatFile, DFUFirmwareType type, [NullAllowed] out NSError error);
+
+		// -(instancetype _Nonnull)initWithBinFile:(NSData * _Nonnull)binFile datFile:(NSData * _Nullable)datFile type:(enum DFUFirmwareType)type __attribute__((objc_designated_initializer));
+		[Export ("initWithBinFile:datFile:type:")]
+		[DesignatedInitializer]
+		NativeHandle Constructor (NSData binFile, [NullAllowed] NSData datFile, DFUFirmwareType type);
+
+		// -(instancetype _Nullable)initWithHexFile:(NSData * _Nonnull)hexFile datFile:(NSData * _Nullable)datFile type:(enum DFUFirmwareType)type error:(NSError * _Nullable * _Nullable)error __attribute__((objc_designated_initializer));
+		[Export ("initWithHexFile:datFile:type:error:")]
+		[DesignatedInitializer]
+		NativeHandle Constructor (NSData hexFile, [NullAllowed] NSData datFile, DFUFirmwareType type, [NullAllowed] out NSError error);
 	}
 
 	// @interface DFUFirmwareSize : NSObject
@@ -248,10 +258,10 @@ namespace Laerdal.Dfu.Bindings.iOS
 		[DesignatedInitializer]
 		NativeHandle Constructor (CBCentralManager centralManager, CBPeripheral target);
 
-		// -(instancetype _Nonnull)initWithQueue:(dispatch_queue_t _Nullable)queue delegateQueue:(dispatch_queue_t _Nonnull)delegateQueue progressQueue:(dispatch_queue_t _Nonnull)progressQueue loggerQueue:(dispatch_queue_t _Nonnull)loggerQueue __attribute__((objc_designated_initializer));
-		[Export ("initWithQueue:delegateQueue:progressQueue:loggerQueue:")]
+		// -(instancetype _Nonnull)initWithQueue:(dispatch_queue_t _Nullable)queue delegateQueue:(dispatch_queue_t _Nonnull)delegateQueue progressQueue:(dispatch_queue_t _Nonnull)progressQueue loggerQueue:(dispatch_queue_t _Nonnull)loggerQueue centralManagerOptions:(NSDictionary<NSString *,id> * _Nullable)centralManagerOptions __attribute__((objc_designated_initializer));
+		[Export ("initWithQueue:delegateQueue:progressQueue:loggerQueue:centralManagerOptions:")]
 		[DesignatedInitializer]
-		NativeHandle Constructor ([NullAllowed] DispatchQueue queue, DispatchQueue delegateQueue, DispatchQueue progressQueue, DispatchQueue loggerQueue);
+		NativeHandle Constructor ([NullAllowed] DispatchQueue queue, DispatchQueue delegateQueue, DispatchQueue progressQueue, DispatchQueue loggerQueue, [NullAllowed] NSDictionary<NSString, NSObject> centralManagerOptions);
 
 		// -(DFUServiceInitiator * _Nonnull)withFirmware:(DFUFirmware * _Nonnull)file __attribute__((warn_unused_result("")));
 		[Export ("withFirmware:")]
@@ -373,10 +383,10 @@ namespace Laerdal.Dfu.Bindings.iOS
 		[DesignatedInitializer]
 		NativeHandle Constructor (CBCentralManager centralManager, CBPeripheral target);
 
-		// -(instancetype _Nonnull)initWithQueue:(dispatch_queue_t _Nullable)queue delegateQueue:(dispatch_queue_t _Nonnull)delegateQueue progressQueue:(dispatch_queue_t _Nonnull)progressQueue loggerQueue:(dispatch_queue_t _Nonnull)loggerQueue __attribute__((objc_designated_initializer));
-		[Export ("initWithQueue:delegateQueue:progressQueue:loggerQueue:")]
+		// -(instancetype _Nonnull)initWithQueue:(dispatch_queue_t _Nullable)queue delegateQueue:(dispatch_queue_t _Nonnull)delegateQueue progressQueue:(dispatch_queue_t _Nonnull)progressQueue loggerQueue:(dispatch_queue_t _Nonnull)loggerQueue centralManagerOptions:(NSDictionary<NSString *,id> * _Nullable)centralManagerOptions __attribute__((objc_designated_initializer));
+		[Export ("initWithQueue:delegateQueue:progressQueue:loggerQueue:centralManagerOptions:")]
 		[DesignatedInitializer]
-		NativeHandle Constructor ([NullAllowed] DispatchQueue queue, DispatchQueue delegateQueue, DispatchQueue progressQueue, DispatchQueue loggerQueue);
+		NativeHandle Constructor ([NullAllowed] DispatchQueue queue, DispatchQueue delegateQueue, DispatchQueue progressQueue, DispatchQueue loggerQueue, [NullAllowed] NSDictionary<NSString, NSObject> centralManagerOptions);
 	}
 
 	// @protocol LoggerDelegate
@@ -407,9 +417,9 @@ namespace Laerdal.Dfu.Bindings.iOS
 		[DesignatedInitializer]
 		NativeHandle Constructor (CBCentralManager centralManager, CBPeripheral target);
 
-		// -(instancetype _Nonnull)initWithQueue:(dispatch_queue_t _Nullable)queue delegateQueue:(dispatch_queue_t _Nonnull)delegateQueue progressQueue:(dispatch_queue_t _Nonnull)progressQueue loggerQueue:(dispatch_queue_t _Nonnull)loggerQueue __attribute__((objc_designated_initializer));
-		[Export ("initWithQueue:delegateQueue:progressQueue:loggerQueue:")]
+		// -(instancetype _Nonnull)initWithQueue:(dispatch_queue_t _Nullable)queue delegateQueue:(dispatch_queue_t _Nonnull)delegateQueue progressQueue:(dispatch_queue_t _Nonnull)progressQueue loggerQueue:(dispatch_queue_t _Nonnull)loggerQueue centralManagerOptions:(NSDictionary<NSString *,id> * _Nullable)centralManagerOptions __attribute__((objc_designated_initializer));
+		[Export ("initWithQueue:delegateQueue:progressQueue:loggerQueue:centralManagerOptions:")]
 		[DesignatedInitializer]
-		NativeHandle Constructor ([NullAllowed] DispatchQueue queue, DispatchQueue delegateQueue, DispatchQueue progressQueue, DispatchQueue loggerQueue);
+		NativeHandle Constructor ([NullAllowed] DispatchQueue queue, DispatchQueue delegateQueue, DispatchQueue progressQueue, DispatchQueue loggerQueue, [NullAllowed] NSDictionary<NSString, NSObject> centralManagerOptions);
 	}
 }
