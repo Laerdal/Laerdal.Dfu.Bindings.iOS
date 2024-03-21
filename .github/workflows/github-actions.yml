@@ -1,0 +1,25 @@
+
+name: Builder
+
+env:
+  Build_Repository_LocalPath: ${{ github.workspace }}
+  Laerdal_Test_Results_Folderpath: '$Build_Repository_LocalPath/TestResults'
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+
+  pull_request:
+    branches: [ "main", "develop" ]
+
+jobs:
+  build:
+
+    runs-on: macos-14
+
+    steps:
+
+      - uses: actions/checkout@v3
+      
+      - run: dotnet build -p:PackageOutputPath="$Build_Artifact_Staging_Directory/Artifacts/"
+        shell: bash
