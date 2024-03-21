@@ -36,8 +36,8 @@
     </ItemGroup>
 
     <Target Name="_DownloadIosNativeFiles" BeforeTargets="Restore" Condition="!Exists('Carthage\Carthage\Build\iOSDFULibrary.xcframework')">
-        
-        <Message Importance="High" Text="GITHUB_ACCESS_TOKEN: $(GITHUB_ACCESS_TOKEN)" />
+
+        <Message Importance="High" Text="GITHUB_ACCESS_TOKEN: $(GITHUB_TOKEN)" />
         <WriteLinesToFile File="Carthage\Cartfile" Lines="github &quot;NordicSemiconductor/IOS-Pods-DFU-Library&quot; &quot;$(Nordic_Package_Version)&quot;" Overwrite="true" />
         <Exec Command="carthage update --project-directory Carthage --use-xcframeworks --platform iOS" />
     </Target>
