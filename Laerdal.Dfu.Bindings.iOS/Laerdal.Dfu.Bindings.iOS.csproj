@@ -10,7 +10,7 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <TargetFrameworks>net6.0-ios;net7.0-ios</TargetFrameworks>
+        <TargetFrameworks>net7.0-ios</TargetFrameworks>
 
         <MtouchExtraArgs>-v -v -v -v</MtouchExtraArgs>
         
@@ -49,7 +49,7 @@
         <RemoveDir Directories="Carthage\Carthage\Checkouts\IOS-Pods-DFU-Library\Example" />
     </Target>
 
-    <Target Name="_RunOjectiveSharpie" AfterTargets="_DownloadIosNativeFiles" Condition="Exists('Carthage\Carthage\Build\iOSDFULibrary.xcframework') AND !Exists('Sharpie\') AND '$(ContinuousIntegrationBuild)' != 'true'">
+    <Target Name="_RunOjectiveSharpie" Condition="Exists('Carthage\Carthage\Build\iOSDFULibrary.xcframework') AND !Exists('Sharpie\') AND '$(ContinuousIntegrationBuild)' != 'true'">
         <Exec Command="sharpie bind -o Sharpie --namespace=Laerdal.Dfu.Bindings.iOS -f Carthage/Carthage/Build/iOSDFULibrary.xcframework/ios-arm64/iOSDFULibrary.framework" />
     </Target>
 
