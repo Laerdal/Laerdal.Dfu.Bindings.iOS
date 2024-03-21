@@ -26,5 +26,12 @@ jobs:
       - run: dotnet dotnet workload restore --project Laerdal.Dfu.Bindings.iOS/Laerdal.Dfu.Bindings.iOS.csproj
         shell: bash
         
-      - run: dotnet build -p:PackageOutputPath="$Build_Artifact_Staging_Directory/Artifacts/"
+      - run: dotnet build
         shell: bash
+
+      - name: Publish Output Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: output
+          path: Output
+ 
