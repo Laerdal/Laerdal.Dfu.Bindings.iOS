@@ -37,9 +37,9 @@
 
     <Target Name="_DownloadIosNativeFiles" BeforeTargets="Restore" Condition="!Exists('Carthage\Carthage\Build\iOSDFULibrary.xcframework')">
 
-        <Message Importance="High" Text="GITHUB_ACCESS_TOKEN: $(GITHUB_TOKEN)" />
+        <Message Importance="High" Text="GITHUB_ACCESS_TOKEN: $(GITHUB_ACCESS_TOKEN)" />
         <WriteLinesToFile File="Carthage\Cartfile" Lines="github &quot;NordicSemiconductor/IOS-Pods-DFU-Library&quot; &quot;$(Nordic_Package_Version)&quot;" Overwrite="true" />
-        <Exec Command="carthage update --project-directory Carthage --use-xcframeworks --platform iOS" />
+        <Exec Command="carthage update --project-directory Carthage --use-xcframeworks --platform iOS" EnvironmentVariables="GITHUB_ACCESS_TOKEN=$(GITHUB_ACCESS_TOKEN)" />
     </Target>
     <Target Name="_DeleteExampleFolderCreatingConflicts" AfterTargets="_DownloadIosNativeFiles" Condition="Exists('Carthage\Carthage\Checkouts\IOS-Pods-DFU-Library\Example')">
         <!-- To prevent this error : 
