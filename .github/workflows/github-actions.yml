@@ -4,13 +4,11 @@ name: Builder
 env:
   Build_Repository_LocalPath: ${{ github.workspace }}
   Laerdal_Test_Results_Folderpath: '$Build_Repository_LocalPath/TestResults'
-
+  
 on:
   push:
-    branches: [ "main", "develop" ]
-
-  pull_request:
-    branches: [ "main", "develop" ]
+    branches:
+      - '*'
 
 jobs:
   build:
