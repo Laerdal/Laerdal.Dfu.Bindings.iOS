@@ -98,7 +98,6 @@
         <Message Importance="High" Text="AssemblyVersion: $(AssemblyVersion)" />
         <Message Importance="High" Text="AssemblyFileVersion: $(AssemblyFileVersion)"/>
         <Message Importance="High" Text="Version: $(Version)" />
-        <Message Importance="High" Text="Laerdal_Revision: $([System.Math]::Add(43857, $(GITHUB_RUN_NUMBER))" />
         <Message Importance="High" Text="MSBuildRuntimeType: $(MSBuildRuntimeType)" />
         <Message Importance="High" Text="##vso[build.updatebuildnumber]$(PackageVersion)" />
     </Target>
@@ -110,7 +109,7 @@
 
     <!-- ==================== VERSION ==================== -->
     <PropertyGroup>
-        <Laerdal_Revision Condition="'$(GITHUB_RUN_NUMBER)' != ''">$([System.Math]::Add(43857, $(GITHUB_RUN_NUMBER))</Laerdal_Revision>
+        <Laerdal_Revision Condition="'$(GITHUB_RUN_NUMBER)' != ''">$([MSBuild]::Add(43857, $(GITHUB_RUN_NUMBER))</Laerdal_Revision>
         <Laerdal_Revision Condition="'$(GITHUB_RUN_NUMBER)' == ''">0</Laerdal_Revision> <!-- Fallback value -->
         <Laerdal_Branch_Name Condition="'$(Laerdal_Branch_Name)' == ''">$(BUILD_SOURCEBRANCHNAME)</Laerdal_Branch_Name>
         <Laerdal_Branch_Name Condition="'$(Laerdal_Branch_Name)' == ''">$(SYSTEM_PULLREQUEST_SOURCEBRANCHNAME)</Laerdal_Branch_Name>
