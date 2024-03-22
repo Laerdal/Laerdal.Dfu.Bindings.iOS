@@ -23,9 +23,9 @@
 
     <!-- ==================== VERSION ==================== -->
     <PropertyGroup>
-        <Laerdal_Revision Condition="'$(BUILD_BUILDID)' != ''">$(BUILD_BUILDID)</Laerdal_Revision>
-        <Laerdal_Revision Condition="'$(GITHUB_RUN_NUMBER)' != ''">$([MSBuild]::Add(43857, $(GITHUB_RUN_NUMBER)))</Laerdal_Revision>
-        <Laerdal_Revision Condition="'$(CI_PIPELINE_IID)' != ''">$([MSBuild]::Add(43857, $(CI_PIPELINE_IID)))</Laerdal_Revision>
+        <Laerdal_Revision Condition="'$(BUILD_BUILDID)' != ''">$(BUILD_BUILDID)</Laerdal_Revision> <!-- Azure DevOps, Last build was 43857 -->
+        <Laerdal_Revision Condition="'$(GITHUB_RUN_NUMBER)' != ''">$([MSBuild]::Add(43857, $(GITHUB_RUN_NUMBER)))</Laerdal_Revision> <!-- GitHub Actions, auto-increment from 0 -->
+        <Laerdal_Revision Condition="'$(CI_PIPELINE_IID)' != ''">$([MSBuild]::Add(43857, $(CI_PIPELINE_IID)))</Laerdal_Revision> <!-- GitLab, auto-increment from 0 -->
         <Laerdal_Revision Condition="'$(Laerdal_Revision)' == ''">0</Laerdal_Revision> <!-- Fallback value -->
 
         <Laerdal_Version Condition="'$(Laerdal_Version)' == ''">$(Nordic_Package_Version).$(Laerdal_Revision)</Laerdal_Version>
