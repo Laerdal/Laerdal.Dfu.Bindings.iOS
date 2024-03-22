@@ -2,8 +2,10 @@
 <!-- Run with "msbuild Laerdal.Dfu.proj" -->
 <Project DefaultTargets="Build">
     <PropertyGroup>
-        <PackageOutputPath Condition="'$(PackageOutputPath)' == '' AND '$(TF_BUILD)' == '' ">$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), `Output/`))</PackageOutputPath>
+        <PackageOutputPath Condition="'$(PackageOutputPath)' == '' AND '$(GITHUB_ACTIONS)' != '' ">$(GITHUB_WORKSPACE)/artifacts</PackageOutputPath>
+        <PackageOutputPath Condition="'$(PackageOutputPath)' == '' AND '$(GITLAB_CI)' != '' ">$(CI_PROJECT_DIR)/artifacts</PackageOutputPath>
         <PackageOutputPath Condition="'$(PackageOutputPath)' == '' AND '$(TF_BUILD)' != '' ">$(BUILD_ARTIFACTSTAGINGDIRECTORY)</PackageOutputPath>
+        <PackageOutputPath Condition="'$(PackageOutputPath)' == '' ">$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), `Output/`))</PackageOutputPath>
         <Laerdal_Log_Level>High</Laerdal_Log_Level>
         <Laerdal_Project Condition="'$(Laerdal_Project)' == ''">$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), `Laerdal.Dfu.Bindings.iOS/Laerdal.Dfu.Bindings.iOS.csproj`))</Laerdal_Project>
     </PropertyGroup>

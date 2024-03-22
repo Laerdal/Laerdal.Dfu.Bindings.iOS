@@ -99,7 +99,10 @@
         <Message Importance="High" Text="AssemblyFileVersion: $(AssemblyFileVersion)"/>
         <Message Importance="High" Text="Version: $(Version)" />
         <Message Importance="High" Text="MSBuildRuntimeType: $(MSBuildRuntimeType)" />
-        <Message Importance="High" Text="##vso[build.updatebuildnumber]$(PackageVersion)" />
+
+        <Message Importance="High" Text="##vso[build.updatebuildnumber]$(PackageVersion)" Condition=" '$(TF_BUILD)' != '' " />
+        <Message Importance="High" Text="::set-env name=BUILD_NUMBER::$(PackageVersion)" Condition=" '$(GITHUB_ACTIONS)' != '' " />
+        <Message Importance="High" Text="CI_PIPELINE_IID: $(CI_PIPELINE_IID)" Condition=" '$(GITLAB_CI)' != '' " />
     </Target>
     <Target Name="PrintPlatformBuildInfo" BeforeTargets="Compile">
         <Message Importance="High" Text="*** Platform Info ***" />
@@ -109,20 +112,12 @@
 
     <!-- ==================== VERSION ==================== -->
     <PropertyGroup>
-        <Laerdal_Revision Condition="'$(GITHUB_RUN_NUMBER)' != ''">$([MSBuild]::Add(43857, $(GITHUB_RUN_NUMBER)))</Laerdal_Revision>
-        <Laerdal_Revision Condition="'$(GITHUB_RUN_NUMBER)' == ''">0</Laerdal_Revision> <!-- Fallback value -->
-        <Laerdal_Branch_Name Condition="'$(Laerdal_Branch_Name)' == ''">$(BUILD_SOURCEBRANCHNAME)</Laerdal_Branch_Name>
-        <Laerdal_Branch_Name Condition="'$(Laerdal_Branch_Name)' == ''">$(SYSTEM_PULLREQUEST_SOURCEBRANCHNAME)</Laerdal_Branch_Name>
-        <Laerdal_Branch_Name Condition="'$(Laerdal_Branch_Name)' == 'master'"></Laerdal_Branch_Name> <!-- No suffix for master branch -->
-        <PackageVersionSuffix Condition="'$(Laerdal_Branch_Name)' != ''">-$(Laerdal_Branch_Name.ToLower())</PackageVersionSuffix>
-
-        <Laerdal_Version_Assembly Condition="'$(Laerdal_Version_Assembly)' == ''">$(Nordic_Package_Version).$(Laerdal_Revision)</Laerdal_Version_Assembly>
-        <Laerdal_Version_Full Condition="'$(Laerdal_Version_Full)' == ''">$(Nordic_Package_Version)$(PackageVersionSuffix).$(Laerdal_Revision)</Laerdal_Version_Full>
+        <Laerdal_Version Condition="'$(Laerdal_Version)' == ''">1.0.0-local.0</Laerdal_Version>
         <!-- Apply Version parts according to packaging standards -->
-        <AssemblyVersion>$(Laerdal_Version_Assembly)</AssemblyVersion>
-        <AssemblyFileVersion>$(Laerdal_Version_Assembly)</AssemblyFileVersion>
-        <AssemblyInformationalVersion>$(Laerdal_Version_Full)</AssemblyInformationalVersion>
-        <Version>$(Laerdal_Version_Full)</Version>
-        <PackageVersion>$(Laerdal_Version_Full)</PackageVersion>
+        <AssemblyVersion>$(Laerdal_Version)</AssemblyVersion>
+        <AssemblyFileVersion>$(Laerdal_Version)</AssemblyFileVersion>
+        <AssemblyInformationalVersion>$(Laerdal_Version)</AssemblyInformationalVersion>
+        <Version>$(Laerdal_Version)</Version>
+        <PackageVersion>$(Laerdal_Version)</PackageVersion>
     </PropertyGroup>
 </Project>
