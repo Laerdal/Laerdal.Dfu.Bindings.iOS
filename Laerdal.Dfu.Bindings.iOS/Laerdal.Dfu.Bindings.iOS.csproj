@@ -41,18 +41,21 @@
         <None Include="Sharpie/**/*.cs" />
     </ItemGroup>
 
-    <Target Name="_DownloadIosNativeFiles" BeforeTargets="Restore" Condition="!Exists('Carthage\Carthage\Build\iOSDFULibrary.xcframework')">
-
-        <Message Importance="High" Text="GITHUB_ACCESS_TOKEN: $(GITHUB_ACCESS_TOKEN)" />
-        <WriteLinesToFile File="Carthage\Cartfile" Lines="github &quot;NordicSemiconductor/IOS-Pods-DFU-Library&quot; &quot;$(Nordic_Package_Version)&quot;" Overwrite="true" />
-        <Exec Command="carthage update --project-directory Carthage --use-xcframeworks --platform iOS" EnvironmentVariables="GITHUB_ACCESS_TOKEN=$(GITHUB_ACCESS_TOKEN)" />
-    </Target>
-    <Target Name="_DeleteExampleFolderCreatingConflicts" AfterTargets="_DownloadIosNativeFiles" Condition="Exists('Carthage\Carthage\Checkouts\IOS-Pods-DFU-Library\Example')">
+    <Target Name="_DownloadIosNativeFiles" BeforeTargets="BeforeBuild">
+        <WriteLinesToFile 
+        File="Carthage\Cartfile" 
+        Lines="github &quot;NordicSemiconductor/IOS-Pods-DFU-Library&quot; &quot;$(Nordic_Package_Version)&quot;" 
+        Overwrite="true" />
+        <Exec 
+        Command="carthage update --project-directory Carthage --use-xcframeworks --platform iOS" 
+        EnvironmentVariables="GITHUB_ACCESS_TOKEN=$(GITHUB_ACCESS_TOKEN)" 
+        Condition="!Exists('Carthage\Carthage\Build\iOSDFULibrary.xcframework')" />
         <!-- To prevent this error : 
             Carthage/Carthage/Checkouts/IOS-Pods-DFU-Library/Example/macOS-DFU-Example/Base.lproj/Main.storyboard : error : The file 'Carthage/Carthage/Checkouts/IOS-Pods-DFU-Library/Example/macOS-DFU-Example/Base.lproj/Main.storyboard' conflicts with 'Carthage/Carthage/Checkouts/IOS-Pods-DFU-Library/Example/iOSDFULibrary/UI/Base.lproj/Main.storyboard'. [/Users/framinosona/Desktop/Code/Dfu/Laerdal.Dfu.Bindings.iOS/Laerdal.Dfu.Bindings.iOS/Laerdal.Dfu.Bindings.iOS.csproj::TargetFramework=net6.0-ios]
         -->
-        <Message Importance="High" Text="Deleting Carthage/Carthage/Checkouts/IOS-Pods-DFU-Library/Example" />
-        <RemoveDir Directories="Carthage\Carthage\Checkouts\IOS-Pods-DFU-Library\Example" />
+        <RemoveDir 
+        Directories="Carthage\Carthage\Checkouts\IOS-Pods-DFU-Library\Example"
+        Condition="Exists('Carthage\Carthage\Checkouts\IOS-Pods-DFU-Library\Example')" />
     </Target>
 
     <Target Name="_RunOjectiveSharpie" Condition="Exists('Carthage\Carthage\Build\iOSDFULibrary.xcframework') AND !Exists('Sharpie\') AND '$(ContinuousIntegrationBuild)' != 'true'">
