@@ -1,6 +1,6 @@
 
 name: Build
-run-name: Building on ${{ github.ref_name }} by @${{ github.actor }}
+run-name: ${{ github.job }} #${{ github.run_number }} on ${{ github.ref }} by @${{ github.actor }}
 
 on:
   push:
@@ -16,12 +16,11 @@ jobs:
     timeout-minutes: 5
     steps:
 
-
-      - name: Print Github Context Values
-        run: |
-          echo "GitHub Variables:"
-          printenv | grep -i github
-        shell: bash
+      # - name: Print Github Context Values
+      #   run: |
+      #     echo "GitHub Variables:"
+      #     printenv | grep -i github
+      #   shell: bash
 
       - name: Checkout
         uses: actions/checkout@v4
