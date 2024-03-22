@@ -10,19 +10,25 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <TargetFrameworks>net7.0-ios</TargetFrameworks>
+        <TargetFramework>net7.0-ios</TargetFramework>
 
         <MtouchExtraArgs>-v -v -v -v</MtouchExtraArgs>
         
-        <Nullable>enable</Nullable>
-        <ImplicitUsings>true</ImplicitUsings>
         <IsBindingProject>true</IsBindingProject>
+
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
         <NoBindingEmbedding>false</NoBindingEmbedding>
-        <!-- warning CS0114: 'LegacyDFUServiceInitiator.StartWithTargetWithIdentifier(NSUuid)' hides inherited member 'DFUServiceInitiator.StartWithTargetWithIdentifier(NSUuid)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword. -->
-        <!-- warning CS0114: 'SecureDFUServiceInitiator.StartWithTargetWithIdentifier(NSUuid)' hides inherited member 'DFUServiceInitiator.StartWithTargetWithIdentifier(NSUuid)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword. -->
-        <NoWarn>CS0114</NoWarn>
+    </PropertyGroup>
+
+    <!-- ==================== VERSION ==================== -->
+    <PropertyGroup>
+        <Laerdal_Revision Condition="'$(BUILD_BUILDID)' != ''">$(BUILD_BUILDID)</Laerdal_Revision> <!-- Azure DevOps, Last build was 43857 -->
+        <Laerdal_Revision Condition="'$(GITHUB_RUN_NUMBER)' != ''">$([MSBuild]::Add(43857, $(GITHUB_RUN_NUMBER)))</Laerdal_Revision> <!-- GitHub Actions, auto-increment from 0 -->
+        <Laerdal_Revision Condition="'$(CI_PIPELINE_IID)' != ''">$([MSBuild]::Add(43857, $(CI_PIPELINE_IID)))</Laerdal_Revision> <!-- GitLab, auto-increment from 0 -->
+        <Laerdal_Revision Condition="'$(Laerdal_Revision)' == ''">0</Laerdal_Revision> <!-- Fallback value -->
+
+        <Laerdal_Version Condition="'$(Laerdal_Version)' == ''">$(Nordic_Package_Version).$(Laerdal_Revision)</Laerdal_Version>
     </PropertyGroup>
 
     <Import Project="Laerdal.targets" />
@@ -36,10 +42,10 @@
     </ItemGroup>
 
     <Target Name="_DownloadIosNativeFiles" BeforeTargets="Restore" Condition="!Exists('Carthage\Carthage\Build\iOSDFULibrary.xcframework')">
-        
+
         <Message Importance="High" Text="GITHUB_ACCESS_TOKEN: $(GITHUB_ACCESS_TOKEN)" />
         <WriteLinesToFile File="Carthage\Cartfile" Lines="github &quot;NordicSemiconductor/IOS-Pods-DFU-Library&quot; &quot;$(Nordic_Package_Version)&quot;" Overwrite="true" />
-        <Exec Command="carthage update --project-directory Carthage --use-xcframeworks --platform iOS" />
+        <Exec Command="carthage update --project-directory Carthage --use-xcframeworks --platform iOS" EnvironmentVariables="GITHUB_ACCESS_TOKEN=$(GITHUB_ACCESS_TOKEN)" />
     </Target>
     <Target Name="_DeleteExampleFolderCreatingConflicts" AfterTargets="_DownloadIosNativeFiles" Condition="Exists('Carthage\Carthage\Checkouts\IOS-Pods-DFU-Library\Example')">
         <!-- To prevent this error : 
