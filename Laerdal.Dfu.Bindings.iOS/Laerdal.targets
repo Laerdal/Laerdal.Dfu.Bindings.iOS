@@ -57,16 +57,26 @@
         <Description>$(Laerdal_Package_Description)</Description>
         <PackageDescription>$(Laerdal_Package_Description)</PackageDescription>
 
+        <!-- Laerdal_Package_Description -->
+        <Summary>$(Laerdal_Package_Description)</Summary>
+        <Description>$(Laerdal_Package_Description)</Description>
+        <PackageDescription>$(Laerdal_Package_Description)</PackageDescription>
+
+        <!-- Laerdal_Package_Output -->
+        <PackageOutputPath Condition="'$(PackageOutputPath)' == '' AND '$(Laerdal_Package_Output)' != '' ">$(Laerdal_Package_Output)</PackageOutputPath>
+        <PackageOutputPath Condition="'$(PackageOutputPath)' == '' AND '$(GITHUB_ACTIONS)' != '' ">$(GITHUB_WORKSPACE)/artifacts</PackageOutputPath>
+        <PackageOutputPath Condition="'$(PackageOutputPath)' == '' AND '$(GITLAB_CI)' != '' ">$(CI_PROJECT_DIR)/artifacts</PackageOutputPath>
+        <PackageOutputPath Condition="'$(PackageOutputPath)' == '' AND '$(TF_BUILD)' != '' ">$(BUILD_ARTIFACTSTAGINGDIRECTORY)</PackageOutputPath>
+        <PackageOutputPath Condition="'$(PackageOutputPath)' == '' ">$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), `../Output/`))</PackageOutputPath>
+        
         <!-- Extra files and properties -->
         <PackageTags>Laerdal;Internal;$(Laerdal_Package_Tags)</PackageTags>
-        <PackageOutputPath Condition="'$(PackageOutputPath)' == ''">$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), `../Output/`))</PackageOutputPath>
         <PackageIconPath>$([System.IO.Path]::Combine($(MSBuildProjectDirectory), `../icon.png`))</PackageIconPath>
         <PackageLicencePath>$([System.IO.Path]::Combine($(MSBuildProjectDirectory), `../LICENSE`))</PackageLicencePath>
         <PackageReadMePath>$([System.IO.Path]::Combine($(MSBuildProjectDirectory), `../README.md`))</PackageReadMePath>
         <PackageIcon Condition="Exists('$(PackageIconPath)')">icon.png</PackageIcon>
         <PackageLicenseFile Condition="Exists('$(PackageLicencePath)')">LICENSE</PackageLicenseFile>
-        <!-- https://github.com/NuGet/Home/issues/10791 -->
-        <PackageReadmeFile Condition="Exists('$(PackageReadMePath)') AND '$(MSBuildRuntimeType)' != 'Mono'">README.md</PackageReadmeFile>
+        <PackageReadmeFile Condition="Exists('$(PackageReadMePath)')">README.md</PackageReadmeFile>
     </PropertyGroup>
     <ItemGroup>
         <None Include="$(PackageIconPath)" Pack="true" PackagePath="\" Condition="Exists('$(PackageIconPath)')" />
@@ -89,10 +99,12 @@
     </ItemGroup>
 
     <!-- ==================== LOGGING ==================== -->
-    <Target Name="PrintBuildInfo" BeforeTargets="_IsProjectRestoreSupported">
+    <Target Name="PrintBuildInfo" BeforeTargets="BeforeBuild">
         <Message Importance="High" Text="*** Package Info ***" />
         <Message Importance="High" Text="PackageId: $(PackageId)" />
         <Message Importance="High" Text="Configuration: $(Configuration)" />
+        <Message Importance="High" Text="TargetFramework: $(TargetFramework)" />
+        <Message Importance="High" Text="DefineConstants: $(DefineConstants)" />
         <Message Importance="High" Text="Platform: $(Platform)" />
         <Message Importance="High" Text="PackageVersion: $(PackageVersion)" />
         <Message Importance="High" Text="AssemblyVersion: $(AssemblyVersion)" />
@@ -102,11 +114,6 @@
         <Exec Command="echo 'BUILD_NUMBER=$(PackageVersion)' >> $GITHUB_ENV" Condition="'$(GITHUB_ACTIONS)' == 'true'" />
         <Exec Command="echo 'CI_PIPELINE_IID=$(PackageVersion)' >> $CI_ENVIRONMENT_URL" Condition="'$(GITLAB_CI)' == 'true'" />
         <Message Importance="High" Text="##vso[build.updatebuildnumber]$(PackageVersion)" Condition=" '$(TF_BUILD)' == 'true' " />
-    </Target>
-    <Target Name="PrintPlatformBuildInfo" BeforeTargets="Compile">
-        <Message Importance="High" Text="*** Platform Info ***" />
-        <Message Importance="High" Text="TargetFramework: $(TargetFramework)" />
-        <Message Importance="High" Text="DefineConstants: $(DefineConstants)" />
     </Target>
 
     <!-- ==================== VERSION ==================== -->

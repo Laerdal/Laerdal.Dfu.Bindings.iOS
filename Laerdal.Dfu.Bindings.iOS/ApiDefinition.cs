@@ -91,7 +91,7 @@ namespace Laerdal.Dfu.Bindings.iOS
 	[BaseType (typeof(NSObject), Name = "_TtP13iOSDFULibrary29DFUPeripheralSelectorDelegate_")]
 	[Protocol (Name = "_TtP13iOSDFULibrary29DFUPeripheralSelectorDelegate_")]
 	[Model (Name = "_TtP13iOSDFULibrary29DFUPeripheralSelectorDelegate_")]
-	interface DFUPeripheralSelectorDelegate
+	interface IDFUPeripheralSelectorDelegate
 	{
 		// @required -(BOOL)select:(CBPeripheral * _Nonnull)peripheral advertisementData:(NSDictionary<NSString *,id> * _Nonnull)advertisementData RSSI:(NSNumber * _Nonnull)RSSI hint:(NSString * _Nullable)name __attribute__((warn_unused_result("")));
 		[Abstract]
@@ -100,22 +100,6 @@ namespace Laerdal.Dfu.Bindings.iOS
 
 		// @required -(NSArray<CBUUID *> * _Nullable)filterByHint:(CBUUID * _Nonnull)dfuServiceUUID __attribute__((warn_unused_result("")));
 		[Abstract]
-		[Export ("filterByHint:")]
-		[return: NullAllowed]
-		CBUUID[] FilterByHint (CBUUID dfuServiceUUID);
-	}
-
-	// @interface DFUPeripheralSelector : NSObject <DFUPeripheralSelectorDelegate>
-	[BaseType (typeof(NSObject), Name = "_TtC13iOSDFULibrary21DFUPeripheralSelector")]
-	[Protocol (Name = "_TtC13iOSDFULibrary21DFUPeripheralSelector")]
-	[Model (Name = "_TtC13iOSDFULibrary21DFUPeripheralSelector")]
-	interface DFUPeripheralSelector : DFUPeripheralSelectorDelegate
-	{
-		// -(BOOL)select:(CBPeripheral * _Nonnull)peripheral advertisementData:(NSDictionary<NSString *,id> * _Nonnull)advertisementData RSSI:(NSNumber * _Nonnull)RSSI hint:(NSString * _Nullable)name __attribute__((warn_unused_result("")));
-		[Export ("select:advertisementData:RSSI:hint:")]
-		bool Select (CBPeripheral peripheral, NSDictionary<NSString, NSObject> advertisementData, NSNumber RSSI, [NullAllowed] string name);
-
-		// -(NSArray<CBUUID *> * _Nullable)filterByHint:(CBUUID * _Nonnull)dfuServiceUUID __attribute__((warn_unused_result("")));
 		[Export ("filterByHint:")]
 		[return: NullAllowed]
 		CBUUID[] FilterByHint (CBUUID dfuServiceUUID);
@@ -211,7 +195,7 @@ namespace Laerdal.Dfu.Bindings.iOS
 
 		// @property (nonatomic, strong) id<DFUPeripheralSelectorDelegate> _Nonnull peripheralSelector;
 		[Export ("peripheralSelector", ArgumentSemantic.Strong)]
-		DFUPeripheralSelectorDelegate PeripheralSelector { get; set; }
+		IDFUPeripheralSelectorDelegate PeripheralSelector { get; set; }
 
 		// @property (nonatomic) uint16_t packetReceiptNotificationParameter;
 		[Export ("packetReceiptNotificationParameter")]

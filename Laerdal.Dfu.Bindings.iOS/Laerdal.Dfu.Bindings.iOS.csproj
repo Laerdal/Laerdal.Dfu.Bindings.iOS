@@ -10,21 +10,16 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <TargetFrameworks>net7.0-ios</TargetFrameworks>
+        <TargetFramework>net7.0-ios</TargetFramework>
 
         <MtouchExtraArgs>-v -v -v -v</MtouchExtraArgs>
         
-        <Nullable>enable</Nullable>
-        <ImplicitUsings>true</ImplicitUsings>
         <IsBindingProject>true</IsBindingProject>
+
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
         <NoBindingEmbedding>false</NoBindingEmbedding>
-        <!-- warning CS0114: 'LegacyDFUServiceInitiator.StartWithTargetWithIdentifier(NSUuid)' hides inherited member 'DFUServiceInitiator.StartWithTargetWithIdentifier(NSUuid)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword. -->
-        <!-- warning CS0114: 'SecureDFUServiceInitiator.StartWithTargetWithIdentifier(NSUuid)' hides inherited member 'DFUServiceInitiator.StartWithTargetWithIdentifier(NSUuid)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword. -->
-        <NoWarn>CS0114</NoWarn>
     </PropertyGroup>
-
 
     <!-- ==================== VERSION ==================== -->
     <PropertyGroup>
