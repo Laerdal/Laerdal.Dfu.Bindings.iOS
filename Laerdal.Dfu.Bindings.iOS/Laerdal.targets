@@ -99,10 +99,9 @@
         <Message Importance="High" Text="AssemblyFileVersion: $(AssemblyFileVersion)"/>
         <Message Importance="High" Text="Version: $(Version)" />
         <Message Importance="High" Text="MSBuildRuntimeType: $(MSBuildRuntimeType)" />
-
-        <Message Importance="High" Text="##vso[build.updatebuildnumber]$(PackageVersion)" Condition=" '$(TF_BUILD)' != '' " />
-        <Message Importance="High" Text="::set-env name=BUILD_NUMBER::$(PackageVersion)" Condition=" '$(GITHUB_ACTIONS)' != '' " />
-        <Message Importance="High" Text="CI_PIPELINE_IID: $(CI_PIPELINE_IID)" Condition=" '$(GITLAB_CI)' != '' " />
+        <Exec Command="echo 'BUILD_NUMBER=$(PackageVersion)' >> $GITHUB_ENV" Condition="'$(GITHUB_ACTIONS)' == 'true'" />
+        <Exec Command="echo 'CI_PIPELINE_IID=$(PackageVersion)' >> $CI_ENVIRONMENT_URL" Condition="'$(GITLAB_CI)' == 'true'" />
+        <Message Importance="High" Text="##vso[build.updatebuildnumber]$(PackageVersion)" Condition=" '$(TF_BUILD)' == 'true' " />
     </Target>
     <Target Name="PrintPlatformBuildInfo" BeforeTargets="Compile">
         <Message Importance="High" Text="*** Platform Info ***" />
