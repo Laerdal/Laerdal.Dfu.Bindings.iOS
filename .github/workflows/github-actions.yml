@@ -1,10 +1,6 @@
 
 name: Builder
 
-env:
-  Build_Repository_LocalPath: ${{ github.workspace }}
-  Laerdal_Test_Results_Folderpath: '$Build_Repository_LocalPath/TestResults'
-  
 on:
   push:
     branches:
@@ -26,7 +22,7 @@ jobs:
       - run: dotnet dotnet workload restore --project Laerdal.Dfu.Bindings.iOS/Laerdal.Dfu.Bindings.iOS.csproj
         shell: bash
         
-      - run: dotnet build 
+      - run: dotnet build -p:GITHUB_ACCESS_TOKEN=${{ secrets.GITHUB_TOKEN }}
         shell: bash
         env: 
           GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
