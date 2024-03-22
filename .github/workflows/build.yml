@@ -18,6 +18,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         
+      - name: Restore Workloads
+        run: dotnet workload restore
+        shell: bash
+
       - name: Build
         run: dotnet build -p:GITHUB_ACCESS_TOKEN=${{ secrets.GITHUB_TOKEN }} -p:Laerdal_Package_Output=${GITHUB_WORKSPACE}/artifacts
         shell: bash
