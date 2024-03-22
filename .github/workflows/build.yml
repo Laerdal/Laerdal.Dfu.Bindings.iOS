@@ -23,18 +23,6 @@ jobs:
           printenv | grep -i github
         shell: bash
 
-      - name: Print Input Context Values
-        run: |
-          echo "GitHub Variables:"
-          printenv | grep -i input
-        shell: bash
-        
-      - name: Print Input Context Values
-        run: |
-          echo "GitHub Variables:"
-          printenv | grep -i input
-        shell: bash
-
       - name: Checkout
         uses: actions/checkout@v4
         
