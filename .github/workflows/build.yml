@@ -1,5 +1,6 @@
 
 name: Build
+run-name: Building on ${{ github.ref_name }} by @${{ github.actor }}
 
 on:
   push:
@@ -14,6 +15,13 @@ jobs:
     runs-on: macos-14
     timeout-minutes: 5
     steps:
+
+
+      - name: Print Github Context Values
+        run: |
+          echo "GitHub Variables:"
+          printenv | grep -i github
+        shell: bash
 
       - name: Checkout
         uses: actions/checkout@v4
