@@ -32,4 +32,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: output
-          path: Output
+          path: ${GITHUB_WORKSPACE}/artifacts
+          if-no-files-found: error
