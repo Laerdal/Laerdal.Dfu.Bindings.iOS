@@ -63,11 +63,8 @@
         <PackageDescription>$(Laerdal_Package_Description)</PackageDescription>
 
         <!-- Laerdal_Package_Output -->
-        <PackageOutputPath Condition="'$(PackageOutputPath)' == '' AND '$(Laerdal_Package_Output)' != '' ">$(Laerdal_Package_Output)</PackageOutputPath>
-        <PackageOutputPath Condition="'$(PackageOutputPath)' == '' AND '$(GITHUB_ACTIONS)' != '' ">$(GITHUB_WORKSPACE)/artifacts</PackageOutputPath>
-        <PackageOutputPath Condition="'$(PackageOutputPath)' == '' AND '$(GITLAB_CI)' != '' ">$(CI_PROJECT_DIR)/artifacts</PackageOutputPath>
-        <PackageOutputPath Condition="'$(PackageOutputPath)' == '' AND '$(TF_BUILD)' != '' ">$(BUILD_ARTIFACTSTAGINGDIRECTORY)</PackageOutputPath>
-        <PackageOutputPath Condition="'$(PackageOutputPath)' == '' ">$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), `../Output/`))</PackageOutputPath>
+        <PackageOutputPath Condition="'$(PackageOutputPath)' == ''" >$(Laerdal_Package_Output)</PackageOutputPath>
+        <PackageOutputPath Condition="'$(PackageOutputPath)' == '' ">$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), `../Output/`))</PackageOutputPath> <!-- default -->
         
         <!-- Extra files and properties -->
         <PackageTags>Laerdal;Internal;$(Laerdal_Package_Tags)</PackageTags>
