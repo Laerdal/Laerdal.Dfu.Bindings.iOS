@@ -44,6 +44,7 @@ Fix : https://github.com/Laerdal/Laerdal.Dfu.iOS/issues/3#issuecomment-783298581
 
 ```shell
 #!/usr/bin/env sh
+
 xcode_lib_path="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-5.0/iphoneos"
 app_path=$1
 app_name=<insert app name>
