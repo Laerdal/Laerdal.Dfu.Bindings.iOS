@@ -4,8 +4,7 @@
         <Laerdal_Package_Tags>Ble;Tools;Xamarin;Dfu;Bluetooth;Nordic;Semiconductor</Laerdal_Package_Tags>
         <Laerdal_Package_Copyright>Laerdal Medical, Francois Raminosona</Laerdal_Package_Copyright>
         <Laerdal_Package_Description>Xamarin wrapper around Nordic.Dfu for iOS.</Laerdal_Package_Description>
-    
-        <Nordic_Package_Version>4.13.0</Nordic_Package_Version>
+        
         <!-- <BuildWithMSBuildOnMono>false</BuildWithMSBuildOnMono> -->
     </PropertyGroup>
 
@@ -23,12 +22,12 @@
 
     <!-- ==================== VERSION ==================== -->
     <PropertyGroup>
-        <Laerdal_Revision Condition="'$(BUILD_BUILDID)' != ''">$(BUILD_BUILDID)</Laerdal_Revision> <!-- Azure DevOps, Last build was 43857 -->
-        <Laerdal_Revision Condition="'$(GITHUB_RUN_NUMBER)' != ''">$([MSBuild]::Add(43857, $(GITHUB_RUN_NUMBER)))</Laerdal_Revision> <!-- GitHub Actions, auto-increment from 0 -->
-        <Laerdal_Revision Condition="'$(CI_PIPELINE_IID)' != ''">$([MSBuild]::Add(43857, $(CI_PIPELINE_IID)))</Laerdal_Revision> <!-- GitLab, auto-increment from 0 -->
-        <Laerdal_Revision Condition="'$(Laerdal_Revision)' == ''">0</Laerdal_Revision> <!-- Fallback value -->
+        <!-- when updating this version it is imperative to also update it manually inside laerdal.builder.targets too -->
+        <!-- failing to do so will cause the release mechanism to fail in terms of creating a new release on github    -->
+        <Nordic_Package_Version Condition=" '$(Nordic_Package_Version)' == '' ">4.13.0</Nordic_Package_Version>
+        <Laerdal_Revision Condition="       '$(Laerdal_Revision)'       == '' ">0</Laerdal_Revision>
 
-        <Laerdal_Version Condition="'$(Laerdal_Version)' == ''">$(Nordic_Package_Version).$(Laerdal_Revision)</Laerdal_Version>
+        <Laerdal_Version Condition=" '$(Laerdal_Version)' == '' ">$(Nordic_Package_Version).$(Laerdal_Revision)</Laerdal_Version>
     </PropertyGroup>
 
     <Import Project="Laerdal.targets" />
