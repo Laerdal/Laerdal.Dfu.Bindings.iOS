@@ -28,9 +28,9 @@
     <!-- BUILD -->
     <Target Name="BuildProjects">
         <!-- REQUIRED PARAMETERS -->
-        <Error Condition=" '$(Laerdal_Project)'          == '' " Text="'Laerdal_Project' has to be set. Please call this script again with the argument '/p:Laerdal_Project=...'" />
-        <Error Condition=" '$(Laerdal_Version_Full)'     == '' " Text="'Laerdal_Version_Full' has to be set. Please call this script again with the argument '/p:Laerdal_Version_Full=...'" />
-        <Error Condition=" '$(Laerdal_Version_Assembly)' == '' " Text="'Laerdal_Version_Assembly' has to be set. Please call this script again with the argument '/p:Laerdal_Version_Assembly=...'" />
+        <Error Condition=" '$(Configuration)'     == '' " Text="'Configuration' has to be set. Please call this script again with the argument '/p:Configuration=...'" />
+        <Error Condition=" '$(Laerdal_Project)'   == '' " Text="'Laerdal_Project' has to be set. Please call this script again with the argument '/p:Laerdal_Project=...'" />
+        <Error Condition=" '$(PackageOutputPath)' == '' " Text="'PackageOutputPath' has to be set. Please call this script again with the argument '/p:PackageOutputPath=...'" />
         
         <!-- PARAMETERS -->
         <PropertyGroup>
