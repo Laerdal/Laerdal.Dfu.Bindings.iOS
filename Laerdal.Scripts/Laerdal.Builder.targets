@@ -7,6 +7,8 @@
 
     <PropertyGroup>
         <Laerdal_Log_Level>High</Laerdal_Log_Level>
+
+        <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
         
         <PackageOutputPath Condition=" '$(PackageOutputPath)' == '' AND '$(TF_BUILD)' == '' ">$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), `..`, `Output`))</PackageOutputPath>
         <PackageOutputPath Condition=" '$(PackageOutputPath)' == '' AND '$(TF_BUILD)' != '' ">$(BUILD_ARTIFACTSTAGINGDIRECTORY)</PackageOutputPath>
@@ -34,8 +36,6 @@
         
         <!-- PARAMETERS -->
         <PropertyGroup>
-            <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
-
             <_Laerdal_Build_Parameters>$(_Laerdal_Build_Parameters);Configuration=$(Configuration)</_Laerdal_Build_Parameters>
             <_Laerdal_Build_Parameters>$(_Laerdal_Build_Parameters);Laerdal_Version=$(Laerdal_Version)</_Laerdal_Build_Parameters>
             <_Laerdal_Build_Parameters>$(_Laerdal_Build_Parameters);PackageOutputPath=$(PackageOutputPath)</_Laerdal_Build_Parameters>
