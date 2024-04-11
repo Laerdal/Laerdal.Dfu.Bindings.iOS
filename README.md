@@ -1,10 +1,10 @@
-# Laerdal.Dfu.Bindings.iOS
+# 🏠 Laerdal.Dfu.Bindings.iOS
 
 This is an Xamarin binding library for the Nordic Semiconductors iOS library for updating the firmware of their devices over the air via Bluetooth Low Energy.
 
 The native iOS Pod library is located here: https://github.com/NordicSemiconductor/IOS-Pods-DFU-Library
 
-## Requirements
+## 🚀 Getting Started
 
 You'll need :
 
@@ -13,6 +13,8 @@ You'll need :
   - with **.NET6-ios**
   - with **Carthage**
   - [with **ObjectiveSharpie**] (optional)
+
+## 🛠️ Build
 
 ```bash
 brew cask install objectivesharpie
@@ -36,7 +38,7 @@ dotnet build
 
 You'll find the nuget in `Output/`
 
-### Known issues
+### ❗ Known issues
 
 - [**Invalid Swift support when submitted to the Apple AppStore**](https://github.com/Laerdal/Laerdal.Dfu.iOS/issues/3) |
 
