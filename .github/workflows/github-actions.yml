@@ -60,7 +60,7 @@ jobs:
                 &&                                                                                               \
                      "${{env.BUILD_REPOSITORY_FOLDERPATH}}/Laerdal.Scripts/Laerdal.SetupBuildEnvironment.sh"     \
                              "https://nuget.pkg.github.com/Laerdal/index.json"                                   \
-                             "__nuget_server_username_doesnt_matter__"                                           \
+                             "${{env.SCL_GITHUB_NUGET_FEED_USERNAME}}"                                           \
                              "${{env.SCL_GITHUB_ACCESS_TOKEN}}"                                                  \
                              "${{env.BUILD_REPOSITORY_FOLDERPATH}}/Artifacts"
 
