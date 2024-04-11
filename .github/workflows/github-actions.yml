@@ -97,3 +97,19 @@ jobs:
                   --source   "https://nuget.pkg.github.com/Laerdal/index.json"                    \
                   --api-key  "${{env.SCL_GITHUB_ACCESS_TOKEN}}"                                   \
                   *nupkg
+
+      - name: '🚀 Publish to the Nuget.org'
+        shell: 'bash'
+        if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
+        run: |
+          cd "${{env.BUILD_REPOSITORY_FOLDERPATH}}/Artifacts/"                                    \
+                    &&                                                                            \
+          ls .                                                                                    \
+                    &&                                                                            \
+          dotnet                                                                                  \
+                  nuget                                                                           \
+                  push                                                                            \
+                  --source   "https://api.nuget.org/v3/index.json"                                \
+                  --api-key  "${{env.SCL_NUGET_ORG_FEED_API_KEY}}"                                \
+                  *nupkg
+
