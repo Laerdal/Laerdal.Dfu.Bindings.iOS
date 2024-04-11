@@ -7,6 +7,8 @@
 
     <PropertyGroup>
         <Laerdal_Log_Level>High</Laerdal_Log_Level>
+
+        <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
         
         <PackageOutputPath Condition=" '$(PackageOutputPath)' == '' AND '$(TF_BUILD)' == '' ">$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), `..`, `Output`))</PackageOutputPath>
         <PackageOutputPath Condition=" '$(PackageOutputPath)' == '' AND '$(TF_BUILD)' != '' ">$(BUILD_ARTIFACTSTAGINGDIRECTORY)</PackageOutputPath>
@@ -28,14 +30,12 @@
     <!-- BUILD -->
     <Target Name="BuildProjects">
         <!-- REQUIRED PARAMETERS -->
-        <Error Condition=" '$(Laerdal_Project)'          == '' " Text="'Laerdal_Project' has to be set. Please call this script again with the argument '/p:Laerdal_Project=...'" />
-        <Error Condition=" '$(Laerdal_Version_Full)'     == '' " Text="'Laerdal_Version_Full' has to be set. Please call this script again with the argument '/p:Laerdal_Version_Full=...'" />
-        <Error Condition=" '$(Laerdal_Version_Assembly)' == '' " Text="'Laerdal_Version_Assembly' has to be set. Please call this script again with the argument '/p:Laerdal_Version_Assembly=...'" />
+        <Error Condition=" '$(Configuration)'     == '' " Text="'Configuration' has to be set. Please call this script again with the argument '/p:Configuration=...'" />
+        <Error Condition=" '$(Laerdal_Project)'   == '' " Text="'Laerdal_Project' has to be set. Please call this script again with the argument '/p:Laerdal_Project=...'" />
+        <Error Condition=" '$(PackageOutputPath)' == '' " Text="'PackageOutputPath' has to be set. Please call this script again with the argument '/p:PackageOutputPath=...'" />
         
         <!-- PARAMETERS -->
         <PropertyGroup>
-            <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
-
             <_Laerdal_Build_Parameters>$(_Laerdal_Build_Parameters);Configuration=$(Configuration)</_Laerdal_Build_Parameters>
             <_Laerdal_Build_Parameters>$(_Laerdal_Build_Parameters);Laerdal_Version=$(Laerdal_Version)</_Laerdal_Build_Parameters>
             <_Laerdal_Build_Parameters>$(_Laerdal_Build_Parameters);PackageOutputPath=$(PackageOutputPath)</_Laerdal_Build_Parameters>

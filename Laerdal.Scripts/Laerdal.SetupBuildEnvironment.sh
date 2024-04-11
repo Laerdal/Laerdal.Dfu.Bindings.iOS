@@ -57,10 +57,10 @@ fi
 # we do our best to explicitly version-pin our workloads so as to preemptively avoid problems that
 # would be bound to crop up sooner or later by blindly auto-upgrading to bleeding-edge workloads
 #
-cd "Laerdal.Dfu"
+cd "Laerdal.Dfu.Bindings.iOS"
 declare exitCode=$?
 if [ $exitCode != 0 ]; then
-  echo "##vso[task.logissue type=error]Failed to cd to Laerdal.Dfu."
+  echo "##vso[task.logissue type=error]Failed to cd to Laerdal.Dfu.Bindings.iOS."
   exit 30
 fi
 
@@ -102,7 +102,8 @@ dotnet   nuget   add                                \
     source      "${NUGET_FEED_URL}"                 \
     --name      "LaerdalMedical"                    \
     --username  "${NUGET_FEED_USERNAME}"            \
-    --password  "${NUGET_FEED_ACCESSTOKEN}"
+    --password  "${NUGET_FEED_ACCESSTOKEN}"         \
+    --store-password-in-clear-text
 declare exitCode=$?
 if [ $exitCode != 0 ]; then
   echo "##vso[task.logissue type=error]Failed to add 'Laerdal Nuget Feed' as a nuget source."
