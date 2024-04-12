@@ -45,19 +45,18 @@
                 File="Carthage\Cartfile"
                 Lines="github &quot;NordicSemiconductor/IOS-Pods-DFU-Library&quot; &quot;$(Nordic_Package_Version)&quot;"
                 Overwrite="true"/>
+
         <Exec
+                Condition="!Exists('Carthage\Carthage\Build\iOSDFULibrary.xcframework')"
                 Command="carthage update --project-directory Carthage --use-xcframeworks --platform iOS"
-                EnvironmentVariables="GITHUB_ACCESS_TOKEN=$(GITHUB_ACCESS_TOKEN)"
-                Condition="!Exists('Carthage\Carthage\Build\iOSDFULibrary.xcframework')"/>
-        <!-- To prevent this error : 
-            Carthage/Carthage/Checkouts/IOS-Pods-DFU-Library/Example/macOS-DFU-Example/Base.lproj/Main.storyboard : error : The file 'Carthage/Carthage/Checkouts/IOS-Pods-DFU-Library/Example/macOS-DFU-Example/Base.lproj/Main.storyboard' conflicts with 'Carthage/Carthage/Checkouts/IOS-Pods-DFU-Library/Example/iOSDFULibrary/UI/Base.lproj/Main.storyboard'. [/Users/framinosona/Desktop/Code/Dfu/Laerdal.Dfu.Bindings.iOS/Laerdal.Dfu.Bindings.iOS/Laerdal.Dfu.Bindings.iOS.csproj::TargetFramework=net6.0-ios]
-        -->
+                EnvironmentVariables="GITHUB_ACCESS_TOKEN=$(GITHUB_ACCESS_TOKEN)"/>
+
         <RemoveDir
-                Directories="Carthage\Carthage\Checkouts\IOS-Pods-DFU-Library\Example"
-                Condition="Exists('Carthage\Carthage\Checkouts\IOS-Pods-DFU-Library\Example')"/>
+                Condition="Exists('Carthage\Carthage\Checkouts\IOS-Pods-DFU-Library\Example')"
+                Directories="Carthage\Carthage\Checkouts\IOS-Pods-DFU-Library\Example"/>
     </Target>
 
-    <Target Name="_RunOjectiveSharpie" Condition="Exists('Carthage\Carthage\Build\iOSDFULibrary.xcframework') AND !Exists('Sharpie\') AND '$(ContinuousIntegrationBuild)' != 'true'">
+    <Target Name="_RunOjectiveSharpie" Condition=" Exists('Carthage\Carthage\Build\iOSDFULibrary.xcframework') and !Exists('Sharpie\') and '$(ContinuousIntegrationBuild)' != 'true' ">
         <Exec Command="sharpie bind -o Sharpie --namespace=Laerdal.Dfu.Bindings.iOS -f Carthage/Carthage/Build/iOSDFULibrary.xcframework/ios-arm64/iOSDFULibrary.framework"/>
     </Target>
 
