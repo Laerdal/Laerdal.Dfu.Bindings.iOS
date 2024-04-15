@@ -69,8 +69,8 @@ dotnet                                \
              workload                 \
              install                  \
                  maui                 \
-                 ios                  \
-                 android
+                 android              \
+                 wasm-tools-net7
 #                    --from-rollback-file=https://maui.blob.core.windows.net/metadata/rollbacks/${dotnet_8_workload_version}.json   # we need to install additional packages manually
 declare exitCode=$?
 if [ $exitCode != 0 ]; then
