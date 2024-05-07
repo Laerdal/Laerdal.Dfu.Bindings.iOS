@@ -102,7 +102,6 @@ jobs:
 
       - name: '🚀 Publish to the Nuget.org'
         shell: 'bash'
-        if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
         run: |
           cd "${{env.BUILD_REPOSITORY_FOLDERPATH}}/Artifacts/"                                    \
                     &&                                                                            \
