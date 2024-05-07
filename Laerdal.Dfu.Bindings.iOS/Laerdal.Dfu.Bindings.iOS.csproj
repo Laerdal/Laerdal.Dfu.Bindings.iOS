@@ -49,7 +49,7 @@
         <Exec
                 Condition="!Exists('Carthage\Carthage\Build\iOSDFULibrary.xcframework')"
                 Command="carthage update --project-directory Carthage --use-xcframeworks --platform iOS"
-                EnvironmentVariables="GITHUB_ACCESS_TOKEN=$(GITHUB_ACCESS_TOKEN)"/>
+                EnvironmentVariables="GITHUB_ACCESS_TOKEN=$(Laerdal_Github_Access_Token)"/>
 
         <RemoveDir
                 Condition="Exists('Carthage\Carthage\Checkouts\IOS-Pods-DFU-Library\Example')"
