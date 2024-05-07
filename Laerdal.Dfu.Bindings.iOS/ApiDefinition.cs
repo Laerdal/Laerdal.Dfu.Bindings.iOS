@@ -8,6 +8,7 @@ namespace Laerdal.Dfu.Bindings.iOS
 {
 	// @interface DFUFirmware : NSObject
 	[BaseType (typeof(NSObject), Name = "_TtC13iOSDFULibrary11DFUFirmware")]
+	[Model (Name = "_TtC13iOSDFULibrary11DFUFirmware")]
 	[DisableDefaultCtor]
 	interface DFUFirmware
 	{
@@ -67,6 +68,7 @@ namespace Laerdal.Dfu.Bindings.iOS
 
 	// @interface DFUFirmwareSize : NSObject
 	[BaseType (typeof(NSObject), Name = "_TtC13iOSDFULibrary15DFUFirmwareSize")]
+	[Model (Name = "_TtC13iOSDFULibrary15DFUFirmwareSize")]
 	[DisableDefaultCtor]
 	interface DFUFirmwareSize
 	{
@@ -115,6 +117,7 @@ namespace Laerdal.Dfu.Bindings.iOS
 
 	// @interface DFUServiceController : NSObject
 	[BaseType (typeof(NSObject), Name = "_TtC13iOSDFULibrary20DFUServiceController")]
+	[Model (Name = "_TtC13iOSDFULibrary20DFUServiceController")]
 	[DisableDefaultCtor]
 	interface DFUServiceController
 	{
@@ -162,6 +165,7 @@ namespace Laerdal.Dfu.Bindings.iOS
 
 	// @interface DFUServiceInitiator : NSObject
 	[BaseType (typeof(NSObject), Name = "_TtC13iOSDFULibrary19DFUServiceInitiator")]
+	[Model (Name = "_TtC13iOSDFULibrary19DFUServiceInitiator")]
 	[DisableDefaultCtor]
 	interface DFUServiceInitiator
 	{
@@ -261,6 +265,7 @@ namespace Laerdal.Dfu.Bindings.iOS
 
 	// @interface DFUUuid : NSObject
 	[BaseType (typeof(NSObject), Name = "_TtC13iOSDFULibrary7DFUUuid")]
+	[Model (Name = "_TtC13iOSDFULibrary7DFUUuid")]
 	[DisableDefaultCtor]
 	interface DFUUuid
 	{
@@ -280,6 +285,7 @@ namespace Laerdal.Dfu.Bindings.iOS
 
 	// @interface DFUUuidHelper : NSObject
 	[BaseType (typeof(NSObject), Name = "_TtC13iOSDFULibrary13DFUUuidHelper")]
+	[Model (Name = "_TtC13iOSDFULibrary13DFUUuidHelper")]
 	[DisableDefaultCtor]
 	interface DFUUuidHelper
 	{
@@ -334,6 +340,7 @@ namespace Laerdal.Dfu.Bindings.iOS
 
 	// @interface IntelHex2BinConverter : NSObject
 	[BaseType (typeof(NSObject), Name = "_TtC13iOSDFULibrary21IntelHex2BinConverter")]
+	[Model (Name = "_TtC13iOSDFULibrary21IntelHex2BinConverter")]
 	[DisableDefaultCtor]
 	interface IntelHex2BinConverter
 	{
@@ -341,6 +348,7 @@ namespace Laerdal.Dfu.Bindings.iOS
 
 	// @interface LegacyDFUServiceInitiator : DFUServiceInitiator
 	[BaseType (typeof(DFUServiceInitiator), Name = "_TtC13iOSDFULibrary25LegacyDFUServiceInitiator")]
+	[Model (Name = "_TtC13iOSDFULibrary25LegacyDFUServiceInitiator")]
 	[DisableDefaultCtor]
 	interface LegacyDFUServiceInitiator
 	{
@@ -374,6 +382,7 @@ namespace Laerdal.Dfu.Bindings.iOS
 
 	// @interface SecureDFUServiceInitiator : DFUServiceInitiator
 	[BaseType (typeof(DFUServiceInitiator), Name = "_TtC13iOSDFULibrary25SecureDFUServiceInitiator")]
+	[Model (Name = "_TtC13iOSDFULibrary25SecureDFUServiceInitiator")]
 	[DisableDefaultCtor]
 	interface SecureDFUServiceInitiator
 	{
