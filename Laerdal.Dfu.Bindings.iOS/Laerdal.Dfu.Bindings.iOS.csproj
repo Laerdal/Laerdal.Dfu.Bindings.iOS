@@ -56,7 +56,8 @@
                 Directories="Carthage\Carthage\Checkouts\IOS-Pods-DFU-Library\Example"/>
     </Target>
 
-    <Target Name="_RunOjectiveSharpie" Condition=" Exists('Carthage\Carthage\Build\iOSDFULibrary.xcframework') and !Exists('Sharpie\') and '$(ContinuousIntegrationBuild)' != 'true' ">
+    <Target Name="_RunOjectiveSharpie"
+            Condition=" Exists('Carthage\Carthage\Build\iOSDFULibrary.xcframework') and !Exists('Sharpie\') and '$(ContinuousIntegrationBuild)' != 'true' ">
         <Exec Command="sharpie bind -o Sharpie --namespace=Laerdal.Dfu.Bindings.iOS -f Carthage/Carthage/Build/iOSDFULibrary.xcframework/ios-arm64/iOSDFULibrary.framework"/>
     </Target>
 
