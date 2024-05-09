@@ -42,7 +42,12 @@
         <Compile Remove="Sharpie/**/*.cs"/>
     </ItemGroup>
 
-    <Target Name="_DownloadIosNativeFiles" BeforeTargets="BeforeBuild">
+    <Target Condition=" '$(DesignTimeBuild)' != 'true' and '$(BuildingProject)' == 'true' "
+            Name="_DownloadIosNativeFiles"
+            BeforeTargets="BeforeBuild">
+
+        <Message Importance="High" Text="** Downloading Carthage iOS packages ..."/>
+
         <WriteLinesToFile
                 File="Carthage\Cartfile"
                 Lines="github &quot;NordicSemiconductor/IOS-Pods-DFU-Library&quot; &quot;$(Nordic_Package_Version)&quot;"
