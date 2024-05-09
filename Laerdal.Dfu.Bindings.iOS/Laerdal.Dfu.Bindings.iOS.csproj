@@ -57,10 +57,12 @@
                 Directories="Carthage\Carthage\Checkouts\IOS-Pods-DFU-Library\Example"/>
     </Target>
 
-    <Target Name="_RunOjectiveSharpie"
-            Condition=" Exists('Carthage\Carthage\Build\iOSDFULibrary.xcframework') and !Exists('Sharpie\') and '$(ContinuousIntegrationBuild)' != 'true' ">
-        <Exec Command="sharpie bind -o Sharpie --namespace=Laerdal.Dfu.Bindings.iOS -f Carthage/Carthage/Build/iOSDFULibrary.xcframework/ios-arm64/iOSDFULibrary.framework"/>
-    </Target>
+    <!--    use this whenever you need to refresh apidefinition.cs and structsandenums.cs                                                                                                      -->
+    <!--                                                                                                                                                                                       -->
+    <!--    <Target Name="_RunObjectiveSharpie"                                                                                                                                                 -->
+    <!--            Condition=" Exists('Carthage\Carthage\Build\iOSDFULibrary.xcframework') and !Exists('Sharpie\') and '$(ContinuousIntegrationBuild)' != 'true' ">                           -->
+    <!--        <Exec Command="sharpie bind -o Sharpie &#45;&#45;namespace=Laerdal.Dfu.Bindings.iOS -f Carthage/Carthage/Build/iOSDFULibrary.xcframework/ios-arm64/iOSDFULibrary.framework"/>  -->
+    <!--    </Target>                                                                                                                                                                          -->
 
     <ItemGroup>
         <!-- Frameworks\iOSDFULibrary.framework -->
