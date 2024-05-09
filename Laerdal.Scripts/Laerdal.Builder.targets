@@ -44,7 +44,8 @@
         
         <!-- BUILD -->
         <MSBuild Projects="$(Laerdal_Project)" Properties="$(_Laerdal_Build_Parameters)" Targets="Restore"/>
-        <MSBuild Projects="$(Laerdal_Project)" Properties="$(_Laerdal_Build_Parameters);BuildingProject=true" Targets="_DownloadIosNativeFiles"/>
+        
+        <!-- <MSBuild Projects="$(Laerdal_Project)" Properties="$(_Laerdal_Build_Parameters);BuildingProject=true" Targets="_DownloadIosNativeFiles"/> -->
         <MSBuild Projects="$(Laerdal_Project)" Properties="$(_Laerdal_Build_Parameters);BuildingProject=true" Targets="Build"/>
     </Target>
 

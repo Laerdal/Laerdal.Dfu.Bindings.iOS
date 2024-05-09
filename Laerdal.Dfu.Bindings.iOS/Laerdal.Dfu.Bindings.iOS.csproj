@@ -55,7 +55,7 @@
                 Lines="github    &quot;NordicSemiconductor/IOS-Pods-DFU-Library&quot;    &quot;$(Nordic_Package_Version)&quot;"
                 Overwrite="true"/>
 
-        <Exec Command="GITHUB_ACCESS_TOKEN=&quot;github.com=$(Laerdal_Github_Access_Token)&quot; carthage update --project-directory Carthage --use-xcframeworks --platform iOS --no-use-binaries" />
+        <Exec Command="GITHUB_ACCESS_TOKEN=&quot;github.com=$(Laerdal_Github_Access_Token)&quot;   carthage update --project-directory Carthage --use-xcframeworks --platform iOS --no-use-binaries" />
         
         <RemoveDir
                 Condition="Exists('Carthage\Carthage\Checkouts\IOS-Pods-DFU-Library\Example')"
