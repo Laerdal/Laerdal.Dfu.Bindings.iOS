@@ -60,6 +60,7 @@
         <RemoveDir
                 Condition="Exists('Carthage\Carthage\Checkouts\IOS-Pods-DFU-Library\Example')"
                 Directories="Carthage\Carthage\Checkouts\IOS-Pods-DFU-Library\Example"/>
+
     </Target>
 
     <!--    use this whenever you need to refresh apidefinition.cs and structsandenums.cs                                                                                                      -->
