@@ -42,9 +42,9 @@
         <Compile Remove="Sharpie/**/*.cs"/>
     </ItemGroup>
 
-    <Target Condition=" '$(DesignTimeBuild)' != 'true' and '$(BuildingProject)' == 'true' "
+    <Target Condition=" '$(DesignTimeBuild)' != 'true' and '$(BuildingProject)' == 'true' and !Exists('Carthage\Carthage\Build\iOSDFULibrary.xcframework\Package.swift') "
             Name="_DownloadIosNativeFiles"
-            BeforeTargets="BeforeBuild">
+            BeforeTargets="PrepareForBuild">
         
         <Error Condition=" '$(Laerdal_Github_Access_Token)' == '' " Text="'Laerdal_Github_Access_Token' is not defined. Please define it in your environment variables otherwise Carthage will fail most of the times." />
 
@@ -55,9 +55,8 @@
                 Lines="github    &quot;NordicSemiconductor/IOS-Pods-DFU-Library&quot;    &quot;$(Nordic_Package_Version)&quot;"
                 Overwrite="true"/>
 
-        <Exec Condition=" !Exists('Carthage\Carthage\Build\iOSDFULibrary.xcframework\Package.swift') "
-              Command="GITHUB_ACCESS_TOKEN=&quot;github.com=$(Laerdal_Github_Access_Token)&quot; carthage update --project-directory Carthage --use-xcframeworks --platform iOS --no-use-binaries" />
-
+        <Exec Command="GITHUB_ACCESS_TOKEN=&quot;github.com=$(Laerdal_Github_Access_Token)&quot; carthage update --project-directory Carthage --use-xcframeworks --platform iOS --no-use-binaries" />
+        
         <RemoveDir
                 Condition="Exists('Carthage\Carthage\Checkouts\IOS-Pods-DFU-Library\Example')"
                 Directories="Carthage\Carthage\Checkouts\IOS-Pods-DFU-Library\Example"/>
