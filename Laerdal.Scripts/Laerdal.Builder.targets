@@ -42,8 +42,10 @@
             <_Laerdal_Build_Parameters>$(_Laerdal_Build_Parameters);Laerdal_Github_Access_Token=$(Laerdal_Github_Access_Token)</_Laerdal_Build_Parameters>
         </PropertyGroup>
         
-        <!-- RUN -->
-        <MSBuild Projects="$(Laerdal_Project)" Properties="$(_Laerdal_Build_Parameters)" Targets="Restore;Build"/>
+        <!-- BUILD -->
+        <MSBuild Projects="$(Laerdal_Project)" Properties="$(_Laerdal_Build_Parameters)" Targets="Restore"/>
+        <MSBuild Projects="$(Laerdal_Project)" Properties="$(_Laerdal_Build_Parameters);BuildingProject=true" Targets="_DownloadIosNativeFiles"/>
+        <MSBuild Projects="$(Laerdal_Project)" Properties="$(_Laerdal_Build_Parameters);BuildingProject=true" Targets="Build"/>
     </Target>
 
     <!-- GITHUB RELEASE -->
