@@ -45,17 +45,18 @@
     <Target Condition=" '$(DesignTimeBuild)' != 'true' and '$(BuildingProject)' == 'true' "
             Name="_DownloadIosNativeFiles"
             BeforeTargets="BeforeBuild">
+        
+        <Error Condition=" '$(Laerdal_Github_Access_Token)' == '' " Text="'Laerdal_Github_Access_Token' is not defined. Please define it in your environment variables otherwise Carthage will fail most of the times." />
 
         <Message Importance="High" Text="** Downloading Carthage iOS packages ..."/>
 
         <WriteLinesToFile
                 File="Carthage\Cartfile"
-                Lines="github &quot;NordicSemiconductor/IOS-Pods-DFU-Library&quot; &quot;$(Nordic_Package_Version)&quot;"
+                Lines="github    &quot;NordicSemiconductor/IOS-Pods-DFU-Library&quot;    &quot;$(Nordic_Package_Version)&quot;"
                 Overwrite="true"/>
 
         <Exec Condition=" !Exists('Carthage\Carthage\Build\iOSDFULibrary.xcframework\Package.swift') "
-              Command="carthage update --project-directory Carthage --use-xcframeworks --platform iOS"
-              EnvironmentVariables="GITHUB_ACCESS_TOKEN=github.com=$(Laerdal_Github_Access_Token)"/>
+              Command="GITHUB_ACCESS_TOKEN=&quot;github.com=$(Laerdal_Github_Access_Token)&quot; carthage update --project-directory Carthage --use-xcframeworks --platform iOS --no-use-binaries" />
 
         <RemoveDir
                 Condition="Exists('Carthage\Carthage\Checkouts\IOS-Pods-DFU-Library\Example')"
@@ -65,7 +66,7 @@
 
     <!--    use this whenever you need to refresh apidefinition.cs and structsandenums.cs                                                                                                      -->
     <!--                                                                                                                                                                                       -->
-    <!--    <Target Name="_RunObjectiveSharpie"                                                                                                                                                 -->
+    <!--    <Target Name="_RunObjectiveSharpie"                                                                                                                                                -->
     <!--            Condition=" Exists('Carthage\Carthage\Build\iOSDFULibrary.xcframework') and !Exists('Sharpie\') and '$(ContinuousIntegrationBuild)' != 'true' ">                           -->
     <!--        <Exec Command="sharpie bind -o Sharpie &#45;&#45;namespace=Laerdal.Dfu.Bindings.iOS -f Carthage/Carthage/Build/iOSDFULibrary.xcframework/ios-arm64/iOSDFULibrary.framework"/>  -->
     <!--    </Target>                                                                                                                                                                          -->
