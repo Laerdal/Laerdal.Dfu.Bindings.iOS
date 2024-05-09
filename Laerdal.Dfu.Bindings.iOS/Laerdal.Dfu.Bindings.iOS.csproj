@@ -17,6 +17,8 @@
 
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
+
+        <!-- see : https://github.com/xamarin/xamarin-macios/pull/12694    todo    test if we still need this in the dotnet8 era -->
         <NoBindingEmbedding>false</NoBindingEmbedding>
     </PropertyGroup>
 
@@ -33,11 +35,11 @@
     <Import Project="Laerdal.targets"/>
 
     <ItemGroup>
-        <ObjcBindingApiDefinition Include="ApiDefinition.cs"/>
         <ObjcBindingCoreSource Include="StructsAndEnums.cs"/>
+        <ObjcBindingApiDefinition Include="ApiDefinition.cs"/>
 
-        <Compile Remove="Sharpie/**/*.cs"/>
         <None Include="Sharpie/**/*.cs"/>
+        <Compile Remove="Sharpie/**/*.cs"/>
     </ItemGroup>
 
     <Target Name="_DownloadIosNativeFiles" BeforeTargets="BeforeBuild">
@@ -46,10 +48,9 @@
                 Lines="github &quot;NordicSemiconductor/IOS-Pods-DFU-Library&quot; &quot;$(Nordic_Package_Version)&quot;"
                 Overwrite="true"/>
 
-        <Exec
-                Condition="!Exists('Carthage\Carthage\Build\iOSDFULibrary.xcframework\Package.swift')"
-                Command="carthage update --project-directory Carthage --use-xcframeworks --platform iOS"
-                EnvironmentVariables="GITHUB_ACCESS_TOKEN=github.com=$(Laerdal_Github_Access_Token)"/>
+        <Exec Condition=" !Exists('Carthage\Carthage\Build\iOSDFULibrary.xcframework\Package.swift') "
+              Command="carthage update --project-directory Carthage --use-xcframeworks --platform iOS"
+              EnvironmentVariables="GITHUB_ACCESS_TOKEN=github.com=$(Laerdal_Github_Access_Token)"/>
 
         <RemoveDir
                 Condition="Exists('Carthage\Carthage\Checkouts\IOS-Pods-DFU-Library\Example')"
