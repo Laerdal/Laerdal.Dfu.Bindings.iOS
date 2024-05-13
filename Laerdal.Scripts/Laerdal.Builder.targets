@@ -1,8 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!--                                                                                  -->
-<!--        dotnet    msbuild    "Laerdal.Scripts\Laerdal.Builder.targets"            -->
-<!--                                                                                  -->
+<!-- to test stuff out on your localdev try these                                                              -->
+<!--                                                                                                           -->
+<!--   - to build with an explicit version specified in the cli:                                               -->
+<!--                                                                                                           -->
+<!--        # on macos                                                                                         -->
+<!--        dotnet    msbuild                                    \                                             -->
+<!--            Laerdal.Scripts/Laerdal.Builder.targets          \                                             -->
+<!--            '"/m:1"'  '"/p:Laerdal_Version=1.0.x.0"'                                                       -->
+<!--                                                                                                           -->
+<!--        # on windows powershell                                                                            -->
+<!--        dotnet   msbuild                                     ^                                             -->
+<!--            Laerdal.Scripts\Laerdal.Builder.targets          ^                                             -->
+<!--            /m:1   /p:Laerdal_Version=1.0.x.0                                                              -->
+<!--                                                                                                           -->
+
 <Project DefaultTargets="BuildProjects">
 
     <PropertyGroup>
