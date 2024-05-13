@@ -45,7 +45,7 @@
     <Target Condition=" '$(DesignTimeBuild)' != 'true' and '$(BuildingProject)' == 'true' and !Exists('Carthage\Carthage\Build\iOSDFULibrary.xcframework\Package.swift') "
             Name="_DownloadIosNativeFiles"
             BeforeTargets="PrepareForBuild">
-        
+
         <Error Condition=" '$(Laerdal_Github_Access_Token)' == '' " Text="'Laerdal_Github_Access_Token' is not defined. Please define it in your environment variables otherwise Carthage will fail most of the times." />
 
         <Message Importance="High" Text="** Downloading Carthage iOS packages ..."/>
@@ -55,7 +55,7 @@
                 Lines="github    &quot;NordicSemiconductor/IOS-Pods-DFU-Library&quot;    &quot;$(Nordic_Package_Version)&quot;"
                 Overwrite="true"/>
 
-        <Exec Command="GITHUB_ACCESS_TOKEN=&quot;github.com=$(Laerdal_Github_Access_Token)&quot;   carthage update --project-directory Carthage --use-xcframeworks --platform iOS --no-use-binaries" />
+        <Exec WorkingDirectory="$(MSBuildThisFileDirectory)" Command="GITHUB_ACCESS_TOKEN=&quot;github.com=$(Laerdal_Github_Access_Token)&quot;   carthage update --project-directory Carthage --use-xcframeworks --platform iOS --no-use-binaries" />
         
         <RemoveDir
                 Condition="Exists('Carthage\Carthage\Checkouts\IOS-Pods-DFU-Library\Example')"
