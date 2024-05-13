@@ -27,7 +27,8 @@
         <Nordic_Package_Version Condition=" '$(Nordic_Package_Version)' == '' ">4.13.0</Nordic_Package_Version>
         <Laerdal_Revision Condition="       '$(Laerdal_Revision)'       == '' ">0</Laerdal_Revision>
 
-        <Laerdal_Version Condition=" '$(Laerdal_Version)' == '' ">$(Nordic_Package_Version).$(Laerdal_Revision)</Laerdal_Version>
+        <Laerdal_Version Condition=" '$(Laerdal_Version)' == '' ">$(Nordic_Package_Version)-local.$(Laerdal_Revision)</Laerdal_Version>
+        <Laerdal_Assembly_Version Condition=" '$(Laerdal_Assembly_Version)' == '' ">$(Nordic_Package_Version).$(Laerdal_Revision)</Laerdal_Assembly_Version>
     </PropertyGroup>
 
     <Import Project="Laerdal.targets"/>

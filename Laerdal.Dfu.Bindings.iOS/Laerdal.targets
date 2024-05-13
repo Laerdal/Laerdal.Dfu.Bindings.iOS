@@ -101,10 +101,11 @@
     <!-- ==================== VERSION ==================== -->
     <PropertyGroup>
         <Laerdal_Version Condition="'$(Laerdal_Version)' == ''">1.0.0-local.0</Laerdal_Version>
+        <Laerdal_Assembly_Version Condition="'$(Laerdal_Assembly_Version)' == ''">1.0.0.0</Laerdal_Assembly_Version>
         <!-- Apply Version parts according to packaging standards -->
-        <AssemblyVersion>$(Laerdal_Version)</AssemblyVersion>
-        <AssemblyFileVersion>$(Laerdal_Version)</AssemblyFileVersion>
-        <AssemblyInformationalVersion>$(Laerdal_Version)</AssemblyInformationalVersion>
+        <AssemblyVersion>$(Laerdal_Assembly_Version)</AssemblyVersion>
+        <AssemblyFileVersion>$(Laerdal_Assembly_Version)</AssemblyFileVersion>
+        <AssemblyInformationalVersion>$(Laerdal_Assembly_Version)</AssemblyInformationalVersion>
         <Version>$(Laerdal_Version)</Version>
         <PackageVersion>$(Laerdal_Version)</PackageVersion>
     </PropertyGroup>
