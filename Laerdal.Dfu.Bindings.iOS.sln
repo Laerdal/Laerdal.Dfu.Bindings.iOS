@@ -14,6 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Misc", "_Misc", "{DB8D9BFF
 		Laerdal.Scripts\Laerdal.CreateNewReleaseInGithub.sh = Laerdal.Scripts\Laerdal.CreateNewReleaseInGithub.sh
 		Laerdal.Scripts\Laerdal.Changelog.sh = Laerdal.Scripts\Laerdal.Changelog.sh
 		Laerdal.Scripts\Laerdal.Builder.targets = Laerdal.Scripts\Laerdal.Builder.targets
+		.gitignore = .gitignore
 	EndProjectSection
 EndProject
 Global
