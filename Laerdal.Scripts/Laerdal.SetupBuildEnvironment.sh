@@ -34,6 +34,12 @@ if [ -z "${ARTIFACTS_FOLDER_PATH}" ]; then
   exit 7
 fi
 
+brew   install   --cask   objectivesharpie
+declare exitCode=$?
+if [ $exitCode != 0 ]; then
+  echo "##vso[task.logissue type=error]Failed to install 'objectivesharpie'."
+  exit 10
+fi
 
 echo
 echo "** Dotnet SDKs:"

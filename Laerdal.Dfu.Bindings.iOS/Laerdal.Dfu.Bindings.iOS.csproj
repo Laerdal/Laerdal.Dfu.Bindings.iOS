@@ -17,7 +17,9 @@
 
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
-        <NoBindingEmbedding>false</NoBindingEmbedding>
+
+        <!-- https://github.com/Laerdal/Laerdal.Dfu/issues/29#issuecomment-1904057544 -->
+        <NoBindingEmbedding>true</NoBindingEmbedding>
     </PropertyGroup>
 
     <!-- ==================== VERSION ==================== -->
@@ -33,32 +35,41 @@
     <Import Project="Laerdal.targets"/>
 
     <ItemGroup>
-        <ObjcBindingApiDefinition Include="ApiDefinition.cs"/>
         <ObjcBindingCoreSource Include="StructsAndEnums.cs"/>
+        <ObjcBindingApiDefinition Include="ApiDefinition.cs"/>
 
-        <Compile Remove="Sharpie/**/*.cs"/>
         <None Include="Sharpie/**/*.cs"/>
+        <Compile Remove="Sharpie/**/*.cs"/>
     </ItemGroup>
 
-    <Target Name="_DownloadIosNativeFiles" BeforeTargets="BeforeBuild">
+    <Target Condition=" '$(DesignTimeBuild)' != 'true' and '$(BuildingProject)' == 'true' and !Exists('Carthage\Carthage\Build\iOSDFULibrary.xcframework\Package.swift') "
+            Name="_DownloadIosNativeFiles"
+            BeforeTargets="PrepareForBuild">
+
+        <Error Condition=" '$(Laerdal_Github_Access_Token)' == '' " Text="'Laerdal_Github_Access_Token' is not defined. Please define it in your environment variables otherwise Carthage will fail most of the times." />
+
+        <Message Importance="High" Text="** Downloading Carthage iOS packages ..."/>
+
         <WriteLinesToFile
                 File="Carthage\Cartfile"
-                Lines="github &quot;NordicSemiconductor/IOS-Pods-DFU-Library&quot; &quot;$(Nordic_Package_Version)&quot;"
+                Lines="github    &quot;NordicSemiconductor/IOS-Pods-DFU-Library&quot;    &quot;$(Nordic_Package_Version)&quot;"
                 Overwrite="true"/>
 
-        <Exec
-                Condition="!Exists('Carthage\Carthage\Build\iOSDFULibrary.xcframework\Package.swift')"
-                Command="carthage update --project-directory Carthage --use-xcframeworks --platform iOS"
-                EnvironmentVariables="GITHUB_ACCESS_TOKEN=github.com=$(Laerdal_Github_Access_Token)"/>
-
+        <!-- no-use-binaries -->
+        <Exec WorkingDirectory="$(MSBuildThisFileDirectory)" Command="GITHUB_ACCESS_TOKEN=&quot;github.com=$(Laerdal_Github_Access_Token)&quot;   carthage update --project-directory Carthage --use-xcframeworks --platform iOS" />
+        
         <RemoveDir
                 Condition="Exists('Carthage\Carthage\Checkouts\IOS-Pods-DFU-Library\Example')"
                 Directories="Carthage\Carthage\Checkouts\IOS-Pods-DFU-Library\Example"/>
+
     </Target>
 
-    <Target Name="_RunOjectiveSharpie" Condition=" Exists('Carthage\Carthage\Build\iOSDFULibrary.xcframework') and !Exists('Sharpie\') and '$(ContinuousIntegrationBuild)' != 'true' ">
-        <Exec Command="sharpie bind -o Sharpie --namespace=Laerdal.Dfu.Bindings.iOS -f Carthage/Carthage/Build/iOSDFULibrary.xcframework/ios-arm64/iOSDFULibrary.framework"/>
-    </Target>
+    <!--    use this whenever you need to refresh apidefinition.cs and structsandenums.cs                                                                                                      -->
+    <!--                                                                                                                                                                                       -->
+    <!--    <Target Name="_RunObjectiveSharpie"                                                                                                                                                -->
+    <!--            Condition=" Exists('Carthage\Carthage\Build\iOSDFULibrary.xcframework') and !Exists('Sharpie\') and '$(ContinuousIntegrationBuild)' != 'true' ">                           -->
+    <!--        <Exec Command="sharpie bind -o Sharpie &#45;&#45;namespace=Laerdal.Dfu.Bindings.iOS -f Carthage/Carthage/Build/iOSDFULibrary.xcframework/ios-arm64/iOSDFULibrary.framework"/>  -->
+    <!--    </Target>                                                                                                                                                                          -->
 
     <ItemGroup>
         <!-- Frameworks\iOSDFULibrary.framework -->
