@@ -18,8 +18,8 @@
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
 
-        <!-- see : https://github.com/xamarin/xamarin-macios/pull/12694    todo    test if we still need this in the dotnet8 era -->
-        <NoBindingEmbedding>false</NoBindingEmbedding>
+        <!-- https://github.com/Laerdal/Laerdal.Dfu/issues/29#issuecomment-1904057544 -->
+        <NoBindingEmbedding>true</NoBindingEmbedding>
     </PropertyGroup>
 
     <!-- ==================== VERSION ==================== -->
