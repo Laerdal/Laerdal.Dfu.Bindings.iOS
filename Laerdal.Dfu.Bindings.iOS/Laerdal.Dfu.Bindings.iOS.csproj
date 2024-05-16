@@ -4,8 +4,7 @@
         <Laerdal_Package_Tags>Ble;Tools;Xamarin;Dfu;Bluetooth;Nordic;Semiconductor</Laerdal_Package_Tags>
         <Laerdal_Package_Copyright>Laerdal Medical, Francois Raminosona</Laerdal_Package_Copyright>
         <Laerdal_Package_Description>Xamarin wrapper around Nordic.Dfu for iOS.</Laerdal_Package_Description>
-    
-        <Nordic_Package_Version>4.13.0</Nordic_Package_Version>
+
         <!-- <BuildWithMSBuildOnMono>false</BuildWithMSBuildOnMono> -->
     </PropertyGroup>
 
@@ -13,54 +12,64 @@
         <TargetFramework>net7.0-ios</TargetFramework>
 
         <MtouchExtraArgs>-v -v -v -v</MtouchExtraArgs>
-        
+
         <IsBindingProject>true</IsBindingProject>
 
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
-        <NoBindingEmbedding>false</NoBindingEmbedding>
+
+        <!-- https://github.com/Laerdal/Laerdal.Dfu/issues/29#issuecomment-1904057544 -->
+        <NoBindingEmbedding>true</NoBindingEmbedding>
     </PropertyGroup>
 
     <!-- ==================== VERSION ==================== -->
     <PropertyGroup>
-        <Laerdal_Revision Condition="'$(BUILD_BUILDID)' != ''">$(BUILD_BUILDID)</Laerdal_Revision> <!-- Azure DevOps, Last build was 43857 -->
-        <Laerdal_Revision Condition="'$(GITHUB_RUN_NUMBER)' != ''">$([MSBuild]::Add(43857, $(GITHUB_RUN_NUMBER)))</Laerdal_Revision> <!-- GitHub Actions, auto-increment from 0 -->
-        <Laerdal_Revision Condition="'$(CI_PIPELINE_IID)' != ''">$([MSBuild]::Add(43857, $(CI_PIPELINE_IID)))</Laerdal_Revision> <!-- GitLab, auto-increment from 0 -->
-        <Laerdal_Revision Condition="'$(Laerdal_Revision)' == ''">0</Laerdal_Revision> <!-- Fallback value -->
+        <!-- when updating this version it is imperative to also update it manually inside laerdal.builder.targets too -->
+        <!-- failing to do so will cause the release mechanism to fail in terms of creating a new release on github    -->
+        <Nordic_Package_Version Condition=" '$(Nordic_Package_Version)' == '' ">4.13.0</Nordic_Package_Version>
+        <Laerdal_Revision Condition="       '$(Laerdal_Revision)'       == '' ">0</Laerdal_Revision>
 
-        <Laerdal_Version Condition="'$(Laerdal_Version)' == ''">$(Nordic_Package_Version).$(Laerdal_Revision)</Laerdal_Version>
+        <Laerdal_Version Condition=" '$(Laerdal_Version)' == '' ">$(Nordic_Package_Version).$(Laerdal_Revision)</Laerdal_Version>
     </PropertyGroup>
 
-    <Import Project="Laerdal.targets" />
+    <Import Project="Laerdal.targets"/>
 
     <ItemGroup>
-        <ObjcBindingApiDefinition Include="ApiDefinition.cs" />
-        <ObjcBindingCoreSource Include="StructsAndEnums.cs" />
+        <ObjcBindingCoreSource Include="StructsAndEnums.cs"/>
+        <ObjcBindingApiDefinition Include="ApiDefinition.cs"/>
 
-        <Compile Remove="Sharpie/**/*.cs" />
-        <None Include="Sharpie/**/*.cs" />
+        <None Include="Sharpie/**/*.cs"/>
+        <Compile Remove="Sharpie/**/*.cs"/>
     </ItemGroup>
 
-    <Target Name="_DownloadIosNativeFiles" BeforeTargets="BeforeBuild">
-        <WriteLinesToFile 
-        File="Carthage\Cartfile" 
-        Lines="github &quot;NordicSemiconductor/IOS-Pods-DFU-Library&quot; &quot;$(Nordic_Package_Version)&quot;" 
-        Overwrite="true" />
-        <Exec 
-        Command="carthage update --project-directory Carthage --use-xcframeworks --platform iOS" 
-        EnvironmentVariables="GITHUB_ACCESS_TOKEN=$(GITHUB_ACCESS_TOKEN)" 
-        Condition="!Exists('Carthage\Carthage\Build\iOSDFULibrary.xcframework')" />
-        <!-- To prevent this error : 
-            Carthage/Carthage/Checkouts/IOS-Pods-DFU-Library/Example/macOS-DFU-Example/Base.lproj/Main.storyboard : error : The file 'Carthage/Carthage/Checkouts/IOS-Pods-DFU-Library/Example/macOS-DFU-Example/Base.lproj/Main.storyboard' conflicts with 'Carthage/Carthage/Checkouts/IOS-Pods-DFU-Library/Example/iOSDFULibrary/UI/Base.lproj/Main.storyboard'. [/Users/framinosona/Desktop/Code/Dfu/Laerdal.Dfu.Bindings.iOS/Laerdal.Dfu.Bindings.iOS/Laerdal.Dfu.Bindings.iOS.csproj::TargetFramework=net6.0-ios]
-        -->
-        <RemoveDir 
-        Directories="Carthage\Carthage\Checkouts\IOS-Pods-DFU-Library\Example"
-        Condition="Exists('Carthage\Carthage\Checkouts\IOS-Pods-DFU-Library\Example')" />
+    <Target Condition=" '$(DesignTimeBuild)' != 'true' and '$(BuildingProject)' == 'true' and !Exists('Carthage\Carthage\Build\iOSDFULibrary.xcframework\Package.swift') "
+            Name="_DownloadIosNativeFiles"
+            BeforeTargets="PrepareForBuild">
+
+        <Error Condition=" '$(Laerdal_Github_Access_Token)' == '' " Text="'Laerdal_Github_Access_Token' is not defined. Please define it in your environment variables otherwise Carthage will fail most of the times." />
+
+        <Message Importance="High" Text="** Downloading Carthage iOS packages ..."/>
+
+        <WriteLinesToFile
+                File="Carthage\Cartfile"
+                Lines="github    &quot;NordicSemiconductor/IOS-Pods-DFU-Library&quot;    &quot;$(Nordic_Package_Version)&quot;"
+                Overwrite="true"/>
+
+        <!-- noticed that we had to resort to no-use-bindaries because we would constantly run into ratelimiting problems without it causing our github pipelines to fail -->
+        <Exec WorkingDirectory="$(MSBuildThisFileDirectory)" Command="GITHUB_ACCESS_TOKEN=&quot;github.com=$(Laerdal_Github_Access_Token)&quot;   carthage update --project-directory Carthage --use-xcframeworks --platform iOS --no-use-binaries" />
+        
+        <RemoveDir
+                Condition="Exists('Carthage\Carthage\Checkouts\IOS-Pods-DFU-Library\Example')"
+                Directories="Carthage\Carthage\Checkouts\IOS-Pods-DFU-Library\Example"/>
+
     </Target>
 
-    <Target Name="_RunOjectiveSharpie" Condition="Exists('Carthage\Carthage\Build\iOSDFULibrary.xcframework') AND !Exists('Sharpie\') AND '$(ContinuousIntegrationBuild)' != 'true'">
-        <Exec Command="sharpie bind -o Sharpie --namespace=Laerdal.Dfu.Bindings.iOS -f Carthage/Carthage/Build/iOSDFULibrary.xcframework/ios-arm64/iOSDFULibrary.framework" />
-    </Target>
+    <!--    use this whenever you need to refresh apidefinition.cs and structsandenums.cs                                                                                                      -->
+    <!--                                                                                                                                                                                       -->
+    <!--    <Target Name="_RunObjectiveSharpie"                                                                                                                                                -->
+    <!--            Condition=" Exists('Carthage\Carthage\Build\iOSDFULibrary.xcframework') and !Exists('Sharpie\') and '$(ContinuousIntegrationBuild)' != 'true' ">                           -->
+    <!--        <Exec Command="sharpie bind -o Sharpie &#45;&#45;namespace=Laerdal.Dfu.Bindings.iOS -f Carthage/Carthage/Build/iOSDFULibrary.xcframework/ios-arm64/iOSDFULibrary.framework"/>  -->
+    <!--    </Target>                                                                                                                                                                          -->
 
     <ItemGroup>
         <!-- Frameworks\iOSDFULibrary.framework -->
@@ -69,7 +78,7 @@
             <SmartLink>False</SmartLink>
             <Frameworks>Foundation</Frameworks>
         </NativeReference>
-        
+
         <!-- Frameworks\ZIPFoundation.framework -->
         <NativeReference Include="Carthage\Carthage\Build\ZIPFoundation.xcframework">
             <Kind>Framework</Kind>

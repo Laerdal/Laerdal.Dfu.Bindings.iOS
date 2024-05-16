@@ -1,10 +1,10 @@
-# Laerdal.Dfu.Bindings.iOS
+# 🏠 Laerdal.Dfu.Bindings.iOS
 
 This is an Xamarin binding library for the Nordic Semiconductors iOS library for updating the firmware of their devices over the air via Bluetooth Low Energy.
 
 The native iOS Pod library is located here: https://github.com/NordicSemiconductor/IOS-Pods-DFU-Library
 
-## Requirements
+## 🚀 Getting Started
 
 You'll need :
 
@@ -13,6 +13,8 @@ You'll need :
   - with **.NET6-ios**
   - with **Carthage**
   - [with **ObjectiveSharpie**] (optional)
+
+## 🛠️ Build
 
 ```bash
 brew cask install objectivesharpie
@@ -31,12 +33,30 @@ git clone https://github.com/Laerdal/Laerdal.Dfu.Bindings.iOS.git
 ### 2) Build
 
 ```bash
-dotnet build
+
+# Note    If carthage fails in macos try cleaning up your carthage cache like so and then try again
+# Note
+# Note                       rm -rf ~/Library/Caches/org.carthage.CarthageKit
+# Note
+# 
+# on macos
+dotnet    msbuild                                    \
+    Laerdal.Scripts/Laerdal.Builder.targets          \
+    '"/m:1"'                                         \
+    '"/p:Laerdal_Version=1.0.x.0"'                   \
+    '"/p:Laerdal_Github_Access_Token=<place your github access token here - its needed by carthage>"'  
+
+# on windows powershell
+dotnet   msbuild                                     ^
+    Laerdal.Scripts\Laerdal.Builder.targets          ^
+    /m:1                                             ^
+    /p:Laerdal_Version=1.0.x.0                       ^
+    /p:Laerdal_Github_Access_Token="<place your github access token here - its needed by carthage>"
 ```
 
 You'll find the nuget in `Output/`
 
-### Known issues
+### ❗ Known issues
 
 - [**Invalid Swift support when submitted to the Apple AppStore**](https://github.com/Laerdal/Laerdal.Dfu.iOS/issues/3) |
 
@@ -44,6 +64,7 @@ Fix : https://github.com/Laerdal/Laerdal.Dfu.iOS/issues/3#issuecomment-783298581
 
 ```shell
 #!/usr/bin/env sh
+
 xcode_lib_path="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-5.0/iphoneos"
 app_path=$1
 app_name=<insert app name>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- to test stuff out on your localdev try these                                                              -->
+<!--                                                                                                           -->
+<!--   - to build with an explicit version specified in the cli:                                               -->
+<!--                                                                                                           -->
+<!--                                                                                                           -->
+<!--    # Note    If carthage fails in macos try cleaning up your carthage cache like so and then try again    -->
+<!--    # Note                                                                                                 -->
+<!--    # Note                       rm -rf ~/Library/Caches/org.carthage.CarthageKit                          -->
+<!--    # Note                                                                                                 -->
+<!--    #                                                                                                      -->
+<!--    # on macos                                                                                             -->
+<!--    dotnet    msbuild                                    \                                                 -->
+<!--        Laerdal.Scripts/Laerdal.Builder.targets          \                                                 -->
+<!--        '"/m:1"'                                         \                                                 -->
+<!--        '"/p:Laerdal_Version=1.0.x.0"'                   \                                                 -->
+<!--        '"/p:Laerdal_Github_Access_Token=<place your github access token here - its needed by carthage>"'  -->
+<!--                                                                                                           -->
+<!--    # on windows powershell                                                                                -->
+<!--    dotnet   msbuild                                     ^                                                 -->
+<!--        Laerdal.Scripts\Laerdal.Builder.targets          ^                                                 -->
+<!--        /m:1                                             ^                                                 -->
+<!--        /p:Laerdal_Version=1.0.x.0                       ^                                                 -->
+<!--        /p:Laerdal_Github_Access_Token="<place your github access token here - its needed by carthage>"    -->
+<!--                                                                                                           -->
+
+<Project DefaultTargets="BuildProjects">
+
+    <PropertyGroup>
+        <Laerdal_Log_Level>High</Laerdal_Log_Level>
+
+        <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+        
+        <PackageOutputPath Condition=" '$(PackageOutputPath)' == '' AND '$(TF_BUILD)' == '' ">$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), `..`, `Output`))</PackageOutputPath>
+        <PackageOutputPath Condition=" '$(PackageOutputPath)' == '' AND '$(TF_BUILD)' != '' ">$(BUILD_ARTIFACTSTAGINGDIRECTORY)</PackageOutputPath>
+
+        <Laerdal_Project Condition=" '$(Laerdal_Project)' == '' ">$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), `..`, `Laerdal.Dfu.Bindings.iOS`, `Laerdal.Dfu.Bindings.iOS.csproj`))</Laerdal_Project>
+        
+        <Laerdal_Script_FolderPath>$(MSBuildThisFileDirectory)</Laerdal_Script_FolderPath>
+
+        <!-- version -->
+        <Nordic_Package_Version Condition=" '$(Nordic_Package_Version)' == '' ">4.13.0</Nordic_Package_Version>
+        <Laerdal_Revision Condition=" '$(Laerdal_Revision)'  == '' and '$(BUILD_BUILDID)'     != '' ">$(BUILD_BUILDID)</Laerdal_Revision> <!-- Azure DevOps, Last build was 43857 -->
+        <Laerdal_Revision Condition=" '$(Laerdal_Revision)'  == '' and '$(GITHUB_RUN_NUMBER)' != '' ">$([MSBuild]::Add(43857, $(GITHUB_RUN_NUMBER)))</Laerdal_Revision> <!-- GitHub Actions, auto-increment from 0 -->
+        <Laerdal_Revision Condition=" '$(Laerdal_Revision)'  == '' and '$(CI_PIPELINE_IID)'   != '' ">$([MSBuild]::Add(43857, $(CI_PIPELINE_IID)))</Laerdal_Revision> <!-- GitLab, auto-increment from 0 -->
+        <Laerdal_Revision Condition=" '$(Laerdal_Revision)'  == ''                                  ">0</Laerdal_Revision> <!-- Fallback value -->
+
+        <Laerdal_Version Condition=" '$(Laerdal_Version)' == '' ">$(Nordic_Package_Version).$(Laerdal_Revision)</Laerdal_Version>
+    </PropertyGroup>
+
+    <!-- BUILD -->
+    <Target Name="BuildProjects">
+        <!-- REQUIRED PARAMETERS -->
+        <Error Condition=" '$(Configuration)'     == '' " Text="'Configuration' has to be set. Please call this script again with the argument '/p:Configuration=...'" />
+        <Error Condition=" '$(Laerdal_Project)'   == '' " Text="'Laerdal_Project' has to be set. Please call this script again with the argument '/p:Laerdal_Project=...'" />
+        <Error Condition=" '$(PackageOutputPath)' == '' " Text="'PackageOutputPath' has to be set. Please call this script again with the argument '/p:PackageOutputPath=...'" />
+        
+        <!-- PARAMETERS -->
+        <PropertyGroup>
+            <_Laerdal_Build_Parameters>$(_Laerdal_Build_Parameters);Configuration=$(Configuration)</_Laerdal_Build_Parameters>
+            <_Laerdal_Build_Parameters>$(_Laerdal_Build_Parameters);Laerdal_Version=$(Laerdal_Version)</_Laerdal_Build_Parameters>
+            <_Laerdal_Build_Parameters>$(_Laerdal_Build_Parameters);PackageOutputPath=$(PackageOutputPath)</_Laerdal_Build_Parameters>
+            <_Laerdal_Build_Parameters>$(_Laerdal_Build_Parameters);Laerdal_Github_Access_Token=$(Laerdal_Github_Access_Token)</_Laerdal_Build_Parameters>
+        </PropertyGroup>
+        
+        <!-- BUILD -->
+        <MSBuild Projects="$(Laerdal_Project)" Properties="$(_Laerdal_Build_Parameters)" Targets="Restore"/>
+        
+        <!-- <MSBuild Projects="$(Laerdal_Project)" Properties="$(_Laerdal_Build_Parameters);BuildingProject=true" Targets="_DownloadIosNativeFiles"/> -->
+        <MSBuild Projects="$(Laerdal_Project)" Properties="$(_Laerdal_Build_Parameters);BuildingProject=true" Targets="Build"/>
+    </Target>
+
+    <!-- GITHUB RELEASE -->
+    <Target Name="CreateGithubReleaseWithTag"
+            Condition=" '$(Laerdal_Should_Tag_And_Release)' == 'True' "
+            AfterTargets="BuildProjects">
+
+        <Error Condition=" '$(Laerdal_Version)'             == '' " Text="'Laerdal_Version' has to be set. Please call this script again with the argument '/p:Laerdal_Version=...'" />
+        <Error Condition=" '$(Laerdal_Source_Branch)'       == '' " Text="'Laerdal_Source_Branch' has to be set. Please call this script again with the argument '/p:Laerdal_Source_Branch=...'" />
+        <Error Condition=" '$(Laerdal_Repository_Path)'     == '' " Text="'Laerdal_Repository_Path' has to be set. Please call this script again with the argument '/p:Laerdal_Repository_Path=...'" />
+        <Error Condition=" '$(Laerdal_Github_Access_Token)' == '' " Text="'Laerdal_Github_Access_Token' has to be set. Please call this script again with the argument '/p:Laerdal_Github_Access_Token=...'" />
+
+        <PropertyGroup>
+            <Laerdal_Create_Github_Release_Script_Filepath Condition=" '$(Laerdal_Create_Github_Release_Script_Filepath)' == '' ">$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), `Laerdal.CreateNewReleaseInGithub.sh`))</Laerdal_Create_Github_Release_Script_Filepath>
+
+            <_Laerdal_Create_Github_Release_Script_Parameters>$(_Laerdal_Create_Github_Release_Script_Parameters) --git-branch       '$(Laerdal_Source_Branch)'</_Laerdal_Create_Github_Release_Script_Parameters>
+            <_Laerdal_Create_Github_Release_Script_Parameters>$(_Laerdal_Create_Github_Release_Script_Parameters) --tag-version      '$(Laerdal_Version)'</_Laerdal_Create_Github_Release_Script_Parameters>
+            <_Laerdal_Create_Github_Release_Script_Parameters>$(_Laerdal_Create_Github_Release_Script_Parameters) --access-token     '$(Laerdal_Github_Access_Token)'</_Laerdal_Create_Github_Release_Script_Parameters>
+            <_Laerdal_Create_Github_Release_Script_Parameters>$(_Laerdal_Create_Github_Release_Script_Parameters) --repository-path  '$(Laerdal_Repository_Path)'</_Laerdal_Create_Github_Release_Script_Parameters>
+        </PropertyGroup>
+
+        <Message Importance="High" Text="   bash    '$(Laerdal_Create_Github_Release_Script_Filepath)'    $(_Laerdal_Create_Github_Release_Script_Parameters) "/>
+
+        <Exec Command="   bash    '$(Laerdal_Create_Github_Release_Script_Filepath)'    $(_Laerdal_Create_Github_Release_Script_Parameters) "
+              EchoOff="true"
+              ConsoleToMSBuild="true"
+              WorkingDirectory="$(MSBuildThisFileDirectory)/.."/>
+    </Target>
+
+</Project>

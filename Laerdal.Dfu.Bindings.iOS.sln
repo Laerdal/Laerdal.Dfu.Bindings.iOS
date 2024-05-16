@@ -5,6 +5,18 @@ VisualStudioVersion = 17.5.002.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Laerdal.Dfu.Bindings.iOS", "Laerdal.Dfu.Bindings.iOS\Laerdal.Dfu.Bindings.iOS.csproj", "{A9FE8625-F74F-431E-BED5-A50AAD22FB88}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Misc", "_Misc", "{DB8D9BFF-ABFA-4C39-AAD8-416338998414}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE = LICENSE
+		README.md = README.md
+		.github\workflows\github-actions.yml = .github\workflows\github-actions.yml
+		Laerdal.Scripts\Laerdal.SetupBuildEnvironment.sh = Laerdal.Scripts\Laerdal.SetupBuildEnvironment.sh
+		Laerdal.Scripts\Laerdal.CreateNewReleaseInGithub.sh = Laerdal.Scripts\Laerdal.CreateNewReleaseInGithub.sh
+		Laerdal.Scripts\Laerdal.Changelog.sh = Laerdal.Scripts\Laerdal.Changelog.sh
+		Laerdal.Scripts\Laerdal.Builder.targets = Laerdal.Scripts\Laerdal.Builder.targets
+		.gitignore = .gitignore
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Release|Any CPU = Release|Any CPU
