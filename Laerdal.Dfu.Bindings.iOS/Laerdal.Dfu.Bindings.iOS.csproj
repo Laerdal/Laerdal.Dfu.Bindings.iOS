@@ -55,8 +55,8 @@
                 Lines="github    &quot;NordicSemiconductor/IOS-Pods-DFU-Library&quot;    &quot;$(Nordic_Package_Version)&quot;"
                 Overwrite="true"/>
 
-        <!-- no-use-binaries -->
-        <Exec WorkingDirectory="$(MSBuildThisFileDirectory)" Command="GITHUB_ACCESS_TOKEN=&quot;github.com=$(Laerdal_Github_Access_Token)&quot;   carthage update --project-directory Carthage --use-xcframeworks --platform iOS" />
+        <!-- noticed that we had to resort to no-use-bindaries because we would constantly run into ratelimiting problems without it causing our github pipelines to fail -->
+        <Exec WorkingDirectory="$(MSBuildThisFileDirectory)" Command="GITHUB_ACCESS_TOKEN=&quot;github.com=$(Laerdal_Github_Access_Token)&quot;   carthage update --project-directory Carthage --use-xcframeworks --platform iOS --no-use-binaries" />
         
         <RemoveDir
                 Condition="Exists('Carthage\Carthage\Checkouts\IOS-Pods-DFU-Library\Example')"
