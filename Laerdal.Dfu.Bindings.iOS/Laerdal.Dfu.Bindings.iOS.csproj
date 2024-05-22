@@ -20,6 +20,8 @@
 
         <!-- https://github.com/Laerdal/Laerdal.Dfu/issues/29#issuecomment-1904057544 -->
         <NoBindingEmbedding>true</NoBindingEmbedding>
+
+        <IsOSX Condition="      '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))'     == 'true' ">true</IsOSX>
     </PropertyGroup>
 
     <!-- ==================== VERSION ==================== -->
@@ -46,6 +48,7 @@
             Name="_DownloadIosNativeFiles"
             BeforeTargets="PrepareForBuild">
 
+        <Error Condition=" '$(IsOSX)' != 'true'                   " Text="This project can only be built on MacOS because it relies on the Carthage family of cli utils." />
         <Error Condition=" '$(Laerdal_Github_Access_Token)' == '' " Text="'Laerdal_Github_Access_Token' is not defined. Please define it in your environment variables otherwise Carthage will fail most of the times." />
 
         <Message Importance="High" Text="** Downloading Carthage iOS packages ..."/>
