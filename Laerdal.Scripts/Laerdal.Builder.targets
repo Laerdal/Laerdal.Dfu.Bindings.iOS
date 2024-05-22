@@ -31,9 +31,9 @@
         <Laerdal_Log_Level>High</Laerdal_Log_Level>
 
         <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
-        
-        <PackageOutputPath Condition=" '$(PackageOutputPath)' == '' AND '$(TF_BUILD)' == '' ">$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), `..`, `Output`))</PackageOutputPath>
-        <PackageOutputPath Condition=" '$(PackageOutputPath)' == '' AND '$(TF_BUILD)' != '' ">$(BUILD_ARTIFACTSTAGINGDIRECTORY)</PackageOutputPath>
+
+        <PackageOutputPath Condition=" '$(PackageOutputPath)' == '' ">$(BUILD_ARTIFACTSTAGINGDIRECTORY)</PackageOutputPath>
+        <PackageOutputPath Condition=" '$(PackageOutputPath)' == '' ">$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), `..`, `Artifacts/`))</PackageOutputPath>
 
         <Laerdal_Project Condition=" '$(Laerdal_Project)' == '' ">$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), `..`, `Laerdal.Dfu.Bindings.iOS`, `Laerdal.Dfu.Bindings.iOS.csproj`))</Laerdal_Project>
         
