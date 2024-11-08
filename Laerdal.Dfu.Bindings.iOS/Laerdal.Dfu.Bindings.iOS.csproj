@@ -31,7 +31,7 @@
     <PropertyGroup>
         <!-- when updating this version it is imperative to also update it manually inside laerdal.builder.targets too -->
         <!-- failing to do so will cause the release mechanism to fail in terms of creating a new release on github    -->
-        <Nordic_Package_Version Condition=" '$(Nordic_Package_Version)' == '' ">4.13.0</Nordic_Package_Version>
+        <Nordic_Package_Version Condition=" '$(Nordic_Package_Version)' == '' ">4.15.3</Nordic_Package_Version>
         <Laerdal_Revision Condition="       '$(Laerdal_Revision)'       == '' ">0</Laerdal_Revision>
 
         <Laerdal_Version Condition=" '$(Laerdal_Version)' == '' ">$(Nordic_Package_Version).$(Laerdal_Revision)</Laerdal_Version>
