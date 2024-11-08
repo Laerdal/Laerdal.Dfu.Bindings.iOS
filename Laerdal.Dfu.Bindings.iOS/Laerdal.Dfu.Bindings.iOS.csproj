@@ -37,6 +37,14 @@
         <Laerdal_Version Condition=" '$(Laerdal_Version)' == '' ">$(Nordic_Package_Version).$(Laerdal_Revision)</Laerdal_Version>
     </PropertyGroup>
 
+    <!-- ==================== TARGET PLATFORM VERSION ======================= -->
+    <PropertyGroup>
+        <!-- ios   you will need specific workloads though    dotnet workload install maui -/-version 8.0.402   -->
+        <TargetPlatformVersion>17.5</TargetPlatformVersion>
+        <TargetPlatformMinVersion>14.2</TargetPlatformMinVersion>
+        <SupportedOSPlatformVersion>14.2</SupportedOSPlatformVersion>
+    </PropertyGroup>
+
     <Import Project="Laerdal.targets"/>
 
     <ItemGroup>
