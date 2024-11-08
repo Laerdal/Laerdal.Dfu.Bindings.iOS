@@ -70,14 +70,12 @@ if [ $exitCode != 0 ]; then
   exit 30
 fi
 
-# declare dotnet_8_workload_version="8.0.3"
 dotnet                                \
              workload                 \
              install                  \
                  maui                 \
                  ios                  \
-                 maui-ios
-#                    --from-rollback-file=https://maui.blob.core.windows.net/metadata/rollbacks/${dotnet_8_workload_version}.json   # we need to install additional packages manually
+                 maui-ios   --version "${DOTNET_TARGET_WORKLOAD_VERSION}"
 declare exitCode=$?
 if [ $exitCode != 0 ]; then
   echo "##vso[task.logissue type=error]Failed to restore dotnet workloads."
