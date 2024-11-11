@@ -107,7 +107,7 @@ namespace Laerdal.Dfu.Bindings.iOS
 	[Model (Name = "_TtP9NordicDFU29DFUPeripheralSelectorDelegate_")]
 	[Protocol (Name = "_TtP9NordicDFU29DFUPeripheralSelectorDelegate_")]
 	[BaseType (typeof(NSObject), Name = "_TtP9NordicDFU29DFUPeripheralSelectorDelegate_")]
-	interface DFUPeripheralSelectorDelegate
+	interface IDFUPeripheralSelectorDelegate
 	{
 		// @required -(BOOL)select:(CBPeripheral * _Nonnull)peripheral advertisementData:(NSDictionary<NSString *,id> * _Nonnull)advertisementData RSSI:(NSNumber * _Nonnull)RSSI hint:(NSString * _Nullable)name __attribute__((warn_unused_result("")));
 		[Abstract]
@@ -207,7 +207,7 @@ namespace Laerdal.Dfu.Bindings.iOS
 
 		// @property (nonatomic, strong) id<DFUPeripheralSelectorDelegate> _Nonnull peripheralSelector;
 		[Export ("peripheralSelector", ArgumentSemantic.Strong)]
-		DFUPeripheralSelectorDelegate PeripheralSelector { get; set; }
+		IDFUPeripheralSelectorDelegate PeripheralSelector { get; set; }
 
 		// @property (nonatomic) uint16_t packetReceiptNotificationParameter;
 		[Export ("packetReceiptNotificationParameter")]
