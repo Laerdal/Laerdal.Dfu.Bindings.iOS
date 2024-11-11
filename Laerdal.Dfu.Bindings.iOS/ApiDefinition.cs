@@ -25,8 +25,8 @@ using ObjCRuntime;
 namespace Laerdal.Dfu.Bindings.iOS
 {
 	// @interface DFUFirmware : NSObject
-	// [Model (Name = "_TtC13iOSDFULibrary11DFUFirmware")] // [Protocol (Name = "_TtC13iOSDFULibrary11DFUFirmware")]
-	[BaseType (typeof(NSObject), Name = "_TtC13iOSDFULibrary11DFUFirmware")]
+	// [Model (Name = "_TtC9NordicDFU11DFUFirmware")] // [Protocol (Name = "_TtC9NordicDFU11DFUFirmware")]
+	[BaseType (typeof(NSObject), Name = "_TtC9NordicDFU11DFUFirmware")]
 	[DisableDefaultCtor]
 	interface DFUFirmware
 	{
@@ -86,8 +86,7 @@ namespace Laerdal.Dfu.Bindings.iOS
 	}
 
 	// @interface DFUFirmwareSize : NSObject
-	// [Model (Name = "_TtC13iOSDFULibrary15DFUFirmwareSize")] // [Protocol (Name = "_TtC13iOSDFULibrary15DFUFirmwareSize")]
-	[BaseType (typeof(NSObject), Name = "_TtC13iOSDFULibrary15DFUFirmwareSize")]
+	[BaseType (typeof(NSObject), Name = "_TtC9NordicDFU15DFUFirmwareSize")]
 	[DisableDefaultCtor]
 	interface DFUFirmwareSize
 	{
@@ -105,9 +104,9 @@ namespace Laerdal.Dfu.Bindings.iOS
 	}
 
 	// @protocol DFUPeripheralSelectorDelegate
-	[Model (Name = "_TtP13iOSDFULibrary29DFUPeripheralSelectorDelegate_")]
-	[Protocol (Name = "_TtP13iOSDFULibrary29DFUPeripheralSelectorDelegate_")]
-	[BaseType (typeof(NSObject), Name = "_TtP13iOSDFULibrary29DFUPeripheralSelectorDelegate_")]
+	[Model (Name = "_TtP9NordicDFU29DFUPeripheralSelectorDelegate_")]
+	[Protocol (Name = "_TtP9NordicDFU29DFUPeripheralSelectorDelegate_")]
+	[BaseType (typeof(NSObject), Name = "_TtP9NordicDFU29DFUPeripheralSelectorDelegate_")]
 	interface IDFUPeripheralSelectorDelegate
 	{
 		// @required -(BOOL)select:(CBPeripheral * _Nonnull)peripheral advertisementData:(NSDictionary<NSString *,id> * _Nonnull)advertisementData RSSI:(NSNumber * _Nonnull)RSSI hint:(NSString * _Nullable)name __attribute__((warn_unused_result("")));
@@ -123,9 +122,9 @@ namespace Laerdal.Dfu.Bindings.iOS
 	}
 
 	// @protocol DFUProgressDelegate
-	[Model (Name = "_TtP13iOSDFULibrary19DFUProgressDelegate_")]
-	[Protocol (Name = "_TtP13iOSDFULibrary19DFUProgressDelegate_")]
-	[BaseType (typeof(NSObject), Name = "_TtP13iOSDFULibrary19DFUProgressDelegate_")]
+	[Model (Name = "_TtP9NordicDFU19DFUProgressDelegate_")]
+	[Protocol (Name = "_TtP9NordicDFU19DFUProgressDelegate_")]
+	[BaseType (typeof(NSObject), Name = "_TtP9NordicDFU19DFUProgressDelegate_")]
 	interface DFUProgressDelegate
 	{
 		// @required -(void)dfuProgressDidChangeFor:(NSInteger)part outOf:(NSInteger)totalParts to:(NSInteger)progress currentSpeedBytesPerSecond:(double)currentSpeedBytesPerSecond avgSpeedBytesPerSecond:(double)avgSpeedBytesPerSecond;
@@ -135,9 +134,8 @@ namespace Laerdal.Dfu.Bindings.iOS
 	}
 
 	// @interface DFUServiceController : NSObject
-	// [Model (Name = "_TtC13iOSDFULibrary20DFUServiceController")] // [Protocol (Name = "_TtC13iOSDFULibrary20DFUServiceController")]
-	[BaseType (typeof(NSObject), Name = "_TtC13iOSDFULibrary20DFUServiceController")]
 	[DisableDefaultCtor]
+	[BaseType (typeof(NSObject), Name = "_TtC9NordicDFU20DFUServiceController")]
 	interface DFUServiceController
 	{
 		// -(void)pause;
@@ -166,9 +164,9 @@ namespace Laerdal.Dfu.Bindings.iOS
 	}
 
 	// @protocol DFUServiceDelegate
-	[Model (Name = "_TtP13iOSDFULibrary18DFUServiceDelegate_")]
-	[Protocol (Name = "_TtP13iOSDFULibrary18DFUServiceDelegate_")]
-	[BaseType (typeof(NSObject), Name = "_TtP13iOSDFULibrary18DFUServiceDelegate_")]
+	[Model (Name = "_TtP9NordicDFU18DFUServiceDelegate_")]
+	[Protocol (Name = "_TtP9NordicDFU18DFUServiceDelegate_")]
+	[BaseType (typeof(NSObject), Name = "_TtP9NordicDFU18DFUServiceDelegate_")]
 	interface DFUServiceDelegate
 	{
 		// @required -(void)dfuStateDidChangeTo:(enum DFUState)state;
@@ -183,9 +181,8 @@ namespace Laerdal.Dfu.Bindings.iOS
 	}
 
 	// @interface DFUServiceInitiator : NSObject
-	// [Model (Name = "_TtC13iOSDFULibrary19DFUServiceInitiator")] [Protocol (Name = "_TtC13iOSDFULibrary19DFUServiceInitiator")]
-	[BaseType (typeof(NSObject), Name = "_TtC13iOSDFULibrary19DFUServiceInitiator")]
 	[DisableDefaultCtor]
+	[BaseType (typeof(NSObject), Name = "_TtC9NordicDFU19DFUServiceInitiator")]
 	interface DFUServiceInitiator
 	{
 		[Wrap ("WeakDelegate")]
@@ -283,9 +280,8 @@ namespace Laerdal.Dfu.Bindings.iOS
 	}
 
 	// @interface DFUUuid : NSObject
-	// [Model (Name = "_TtC13iOSDFULibrary7DFUUuid")] // [Protocol (Name = "_TtC13iOSDFULibrary7DFUUuid")]
-	[BaseType (typeof(NSObject), Name = "_TtC13iOSDFULibrary7DFUUuid")]
 	[DisableDefaultCtor]
+	[BaseType (typeof(NSObject), Name = "_TtC9NordicDFU7DFUUuid")]
 	interface DFUUuid
 	{
 		// @property (readonly, nonatomic, strong) CBUUID * _Nonnull uuid;
@@ -303,9 +299,8 @@ namespace Laerdal.Dfu.Bindings.iOS
 	}
 
 	// @interface DFUUuidHelper : NSObject
-	// [Model (Name = "_TtC13iOSDFULibrary13DFUUuidHelper")] // [Protocol (Name = "_TtC13iOSDFULibrary13DFUUuidHelper")]
-	[BaseType (typeof(NSObject), Name = "_TtC13iOSDFULibrary13DFUUuidHelper")]
 	[DisableDefaultCtor]
+	[BaseType (typeof(NSObject), Name = "_TtC9NordicDFU13DFUUuidHelper")]
 	interface DFUUuidHelper
 	{
 		// @property (readonly, nonatomic, strong) CBUUID * _Nonnull legacyDFUService;
@@ -358,17 +353,15 @@ namespace Laerdal.Dfu.Bindings.iOS
 	}
 
 	// @interface IntelHex2BinConverter : NSObject
-	// [Model (Name = "_TtC13iOSDFULibrary21IntelHex2BinConverter")] // [Protocol (Name = "_TtC13iOSDFULibrary21IntelHex2BinConverter")]
-	[BaseType (typeof(NSObject), Name = "_TtC13iOSDFULibrary21IntelHex2BinConverter")]
 	[DisableDefaultCtor]
+	[BaseType (typeof(NSObject), Name = "_TtC9NordicDFU21IntelHex2BinConverter")]
 	interface IntelHex2BinConverter
 	{
 	}
 
 	// @interface LegacyDFUServiceInitiator : DFUServiceInitiator
-	// [Model (Name = "_TtC13iOSDFULibrary25LegacyDFUServiceInitiator")] // [Protocol (Name = "_TtC13iOSDFULibrary25LegacyDFUServiceInitiator")]
-	[BaseType (typeof(DFUServiceInitiator), Name = "_TtC13iOSDFULibrary25LegacyDFUServiceInitiator")]
 	[DisableDefaultCtor]
+	[BaseType (typeof(DFUServiceInitiator), Name = "_TtC9NordicDFU25LegacyDFUServiceInitiator")]
 	interface LegacyDFUServiceInitiator
 	{
 		// -(DFUServiceController * _Nullable)startWithTargetWithIdentifier:(NSUUID * _Nonnull)uuid __attribute__((warn_unused_result("")));
@@ -376,7 +369,7 @@ namespace Laerdal.Dfu.Bindings.iOS
 		[return: NullAllowed]
 		DFUServiceController StartWithTargetWithIdentifier (NSUuid uuid);
 
-		// -(instancetype _Nonnull)initWithCentralManager:(CBCentralManager * _Nonnull)centralManager target:(CBPeripheral * _Nonnull)target __attribute__((objc_designated_initializer)) __attribute__((deprecated("")));
+		// -(instancetype _Nonnull)initWithCentralManager:(CBCentralManager * _Nonnull)centralManager target:(CBPeripheral * _Nonnull)target __attribute__((objc_designated_initializer)) __attribute__((deprecated("Use init(queue: DispatchQueue?) instead.")));
 		[Export ("initWithCentralManager:target:")]
 		[DesignatedInitializer]
 		NativeHandle Constructor (CBCentralManager centralManager, CBPeripheral target);
@@ -388,9 +381,8 @@ namespace Laerdal.Dfu.Bindings.iOS
 	}
 
 	// @protocol LoggerDelegate
-	[Model (Name = "_TtP13iOSDFULibrary14LoggerDelegate_")]
-	[Protocol (Name = "_TtP13iOSDFULibrary14LoggerDelegate_")]
-	[BaseType (typeof(NSObject), Name = "_TtP13iOSDFULibrary14LoggerDelegate_")]
+	[Model (Name = "_TtP9NordicDFU14LoggerDelegate_")]
+	[BaseType (typeof(NSObject), Name = "_TtP9NordicDFU14LoggerDelegate_")]
 	interface LoggerDelegate
 	{
 		// @required -(void)logWith:(enum LogLevel)level message:(NSString * _Nonnull)message;
@@ -400,9 +392,8 @@ namespace Laerdal.Dfu.Bindings.iOS
 	}
 
 	// @interface SecureDFUServiceInitiator : DFUServiceInitiator
-	// [Model (Name = "_TtC13iOSDFULibrary25SecureDFUServiceInitiator")] // [Protocol (Name = "_TtC13iOSDFULibrary25SecureDFUServiceInitiator")]
-	[BaseType (typeof(DFUServiceInitiator), Name = "_TtC13iOSDFULibrary25SecureDFUServiceInitiator")]
 	[DisableDefaultCtor]
+	[BaseType (typeof(DFUServiceInitiator), Name = "_TtC9NordicDFU25SecureDFUServiceInitiator")]
 	interface SecureDFUServiceInitiator
 	{
 		// -(DFUServiceController * _Nullable)startWithTargetWithIdentifier:(NSUUID * _Nonnull)uuid __attribute__((warn_unused_result("")));
@@ -410,7 +401,7 @@ namespace Laerdal.Dfu.Bindings.iOS
 		[return: NullAllowed]
 		DFUServiceController StartWithTargetWithIdentifier (NSUuid uuid);
 
-		// -(instancetype _Nonnull)initWithCentralManager:(CBCentralManager * _Nonnull)centralManager target:(CBPeripheral * _Nonnull)target __attribute__((objc_designated_initializer)) __attribute__((deprecated("")));
+		// -(instancetype _Nonnull)initWithCentralManager:(CBCentralManager * _Nonnull)centralManager target:(CBPeripheral * _Nonnull)target __attribute__((objc_designated_initializer)) __attribute__((deprecated("Use init(queue: DispatchQueue?) instead.")));
 		[Export ("initWithCentralManager:target:")]
 		[DesignatedInitializer]
 		NativeHandle Constructor (CBCentralManager centralManager, CBPeripheral target);
