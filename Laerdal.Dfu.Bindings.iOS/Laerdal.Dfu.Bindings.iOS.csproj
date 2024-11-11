@@ -12,9 +12,9 @@
         <TargetFramework>net8.0-ios</TargetFramework>
         <IsBindingProject>true</IsBindingProject>
 
-        <IsOSX Condition="      '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))'     == 'true' ">true</IsOSX>
+        <IsOSX Condition=" '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' == 'true' ">true</IsOSX>
     </PropertyGroup>
-    
+
     <PropertyGroup>
         <DebugType>full</DebugType>
         <Optimized>false</Optimized>
@@ -22,6 +22,8 @@
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <NoBindingEmbedding>true</NoBindingEmbedding>
         <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
+
+        <DefaultItemExcludes>$(DefaultItemExcludes);Carthage\**</DefaultItemExcludes>
 
         <!-- 1. under net8 we need Optimized=false otherwise release builds cause the resulting apps to crash right upon getting launched in the iphone! -->
         <!-- 2. NoBindingEmbedding=true per https://github.com/Laerdal/Laerdal.Dfu/issues/29#issuecomment-1904057544 -->
@@ -34,7 +36,7 @@
         <Nordic_Package_Version Condition=" '$(Nordic_Package_Version)' == '' ">4.15.3</Nordic_Package_Version>
         <Laerdal_Revision Condition="       '$(Laerdal_Revision)'       == '' ">0</Laerdal_Revision>
 
-        <Laerdal_Version Condition=" '$(Laerdal_Version)' == '' ">$(Nordic_Package_Version).$(Laerdal_Revision)</Laerdal_Version>
+        <Laerdal_Version_Full Condition=" '$(Laerdal_Version_Full)' == '' ">$(Nordic_Package_Version).$(Laerdal_Revision)</Laerdal_Version_Full>
     </PropertyGroup>
 
     <!-- ==================== TARGET PLATFORM VERSION ======================= -->
@@ -48,19 +50,36 @@
     <Import Project="Laerdal.targets"/>
 
     <ItemGroup>
+        <None Include="Sharpie\**\*.cs"/>
+        <Compile Remove="Sharpie\**\*.cs"/>
+
         <ObjcBindingCoreSource Include="StructsAndEnums.cs"/>
         <ObjcBindingApiDefinition Include="ApiDefinition.cs"/>
+        
+        <!-- ================================================================ -->
 
-        <None Include="Sharpie/**/*.cs"/>
-        <Compile Remove="Sharpie/**/*.cs"/>
+        <!--        <ObjcBindingCoreSource Include="Sharpie\StructsAndEnums.cs"/>-->
+        <!--        <ObjcBindingApiDefinition Include="Sharpie\ApiDefinitions.cs"/>-->
+
+        <!--        <Compile Remove="ApiDefinition.cs"/>-->
+        <!--        <Compile Remove="StructsAndEnums.cs"/>-->
     </ItemGroup>
 
-    <Target Condition=" '$(DesignTimeBuild)' != 'true' and '$(BuildingProject)' == 'true' and !Exists('Carthage\Carthage\Checkouts\IOS-Pods-DFU-Library\Package.swift') "
+    <ItemGroup>
+        <NativeReference Include="Carthage/Carthage/Build/NordicDFU.xcframework/ios-arm64/NordicDFU.framework">
+            <Kind>Framework</Kind>
+            <SmartLink>False</SmartLink>
+            <Frameworks>Foundation</Frameworks>
+        </NativeReference>
+    </ItemGroup>
+
+    <!-- and !Exists('Carthage\Carthage\Checkouts\IOS-Pods-DFU-Library\Package.swift') -->
+    <Target Condition=" '$(DesignTimeBuild)' != 'true' and '$(BuildingProject)' == 'true' "
             Name="_DownloadAndBuildIosNativeLibraries"
             BeforeTargets="PrepareForBuild">
 
-        <Error Condition=" '$(IsOSX)' != 'true'                   " Text="This project can only be built on MacOS because it relies on the Carthage family of cli utils." />
-        <Error Condition=" '$(Laerdal_Github_Access_Token)' == '' " Text="'Laerdal_Github_Access_Token' is not defined. Please define it in your environment variables otherwise Carthage will fail most of the times." />
+        <Error Condition=" '$(IsOSX)' != 'true'                   " Text="This project can only be built on MacOS because it relies on the Carthage family of cli utils."/>
+        <Error Condition=" '$(Laerdal_Github_Access_Token)' == '' " Text="'Laerdal_Github_Access_Token' is not defined. Please define it in your environment variables otherwise Carthage will fail most of the times."/>
 
         <Message Importance="High" Text="** Downloading Carthage iOS packages ..."/>
 
@@ -69,24 +88,37 @@
                 Lines="github    &quot;NordicSemiconductor/IOS-Pods-DFU-Library&quot;    &quot;$(Nordic_Package_Version)&quot;"
                 Overwrite="true"/>
 
-        <!-- noticed that we had to resort to no-use-bindaries because we would constantly run into ratelimiting problems without it causing our github pipelines to fail -->
-        <Exec WorkingDirectory="$(MSBuildThisFileDirectory)" Command="GITHUB_ACCESS_TOKEN=&quot;github.com=$(Laerdal_Github_Access_Token)&quot;   carthage update --project-directory Carthage --use-xcframeworks --platform iOS --no-use-binaries" />
-        
+        <PropertyGroup>
+            <_CarthageBuildCommand>$(_CarthageBuildCommand) GITHUB_ACCESS_TOKEN=&quot;github.com=$(Laerdal_Github_Access_Token)&quot;</_CarthageBuildCommand>
+            <_CarthageBuildCommand>$(_CarthageBuildCommand) carthage update</_CarthageBuildCommand>
+            <_CarthageBuildCommand>$(_CarthageBuildCommand) --platform iOS</_CarthageBuildCommand>
+            <_CarthageBuildCommand>$(_CarthageBuildCommand) --no-use-binaries</_CarthageBuildCommand>
+            <_CarthageBuildCommand>$(_CarthageBuildCommand) --use-xcframeworks</_CarthageBuildCommand>
+            <_CarthageBuildCommand>$(_CarthageBuildCommand) --project-directory Carthage</_CarthageBuildCommand>
+        </PropertyGroup>
+
+        <!-- noticed that we had to resort to no-use-bindaries because we would constantly -->
+        <!-- into ratelimiting problems without it causing our github pipelines to fail    -->
+        <Exec WorkingDirectory="$(MSBuildThisFileDirectory)" Command=" $(_CarthageBuildCommand) "/>
+
         <RemoveDir
                 Condition="Exists('Carthage\Carthage\Checkouts\IOS-Pods-DFU-Library\Example')"
                 Directories="Carthage\Carthage\Checkouts\IOS-Pods-DFU-Library\Example"/>
 
-    </Target>
-
-    <!--    use this whenever you need to refresh apidefinition.cs and structsandenums.cs                                                                                                      -->
-    <!--                                                                                                                                                                                       -->
-    <!--             Condition=" Exists('Carthage\Carthage\Build\NordicDFU.xcframework') and !Exists('Sharpie\') and '$(ContinuousIntegrationBuild)' != 'true' "                    -->
-    <Target Name="_RunObjectiveSharpie"
-            AfterTargets="_DownloadAndBuildIosNativeLibraries"
-            BeforeTargets="PrepareForBuild"
-            DependsOnTargets="_DownloadAndBuildIosNativeLibraries">
         <Message Importance="High" Text="** Regenerating sharpie files ..."/>
 
         <Exec Command="sharpie bind -o Sharpie --namespace=Laerdal.Dfu.Bindings.iOS -f Carthage/Carthage/Build/NordicDFU.xcframework/ios-arm64/NordicDFU.framework"/>
     </Target>
+
+    <!--    use this whenever you need to refresh apidefinition.cs and structsandenums.cs                                                                                             -->
+    <!--                                                                                                                                                                              -->
+    <!--             Condition=" Exists('Carthage\Carthage\Build\NordicDFU.xcframework') and !Exists('Sharpie\') and '$(ContinuousIntegrationBuild)' != 'true' "                      -->
+    <!--                                                                                                                                                                              -->
+    <!--    <Target Name="_RunObjectiveSharpie"-->
+    <!--            BeforeTargets="PrepareForBuild"-->
+    <!--            DependsOnTargets="_DownloadAndBuildIosNativeLibraries">-->
+    <!--        <Message Importance="High" Text="** Regenerating sharpie files ..."/>-->
+    <!--                                                                                                                                                                              -->
+    <!--        <Exec Command="sharpie bind -o Sharpie &#45;&#45;namespace=Laerdal.Dfu.Bindings.iOS -f Carthage/Carthage/Build/NordicDFU.xcframework/ios-arm64/NordicDFU.framework"/> -->
+    <!--    </Target>-->
 </Project>
