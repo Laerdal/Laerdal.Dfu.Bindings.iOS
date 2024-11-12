@@ -183,7 +183,7 @@ function install_tools() {
   fi
 
   # we need to install the CycloneDX tool too in order to sign the artifacts
-  curl         --output cyclonedx    --url https://github.com/CycloneDX/cyclonedx-cli/releases/download/v0.26.0/cyclonedx-osx-arm64 \
+  curl         --output cyclonedx    --url https://github.com/CycloneDX/cyclonedx-cli/releases/download/v0.26.0/cyclonedx-win-x64.exe \
     && chmod   +x       cyclonedx
   declare exitCode=$?
   if [ $exitCode != 0 ]; then
