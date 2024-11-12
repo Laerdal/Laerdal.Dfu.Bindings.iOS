@@ -12,9 +12,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Misc", "_Misc", "{DB8D9BFF
 		.github\workflows\github-actions.yml = .github\workflows\github-actions.yml
 		Laerdal.Scripts\Laerdal.SetupBuildEnvironment.sh = Laerdal.Scripts\Laerdal.SetupBuildEnvironment.sh
 		Laerdal.Scripts\Laerdal.CreateNewReleaseInGithub.sh = Laerdal.Scripts\Laerdal.CreateNewReleaseInGithub.sh
-		Laerdal.Scripts\Laerdal.Changelog.sh = Laerdal.Scripts\Laerdal.Changelog.sh
 		Laerdal.Scripts\Laerdal.Builder.targets = Laerdal.Scripts\Laerdal.Builder.targets
 		.gitignore = .gitignore
+		Laerdal.Scripts\Laerdal.GenerateSignAndUploadSbom.sh = Laerdal.Scripts\Laerdal.GenerateSignAndUploadSbom.sh
 	EndProjectSection
 EndProject
 Global
