@@ -68,7 +68,7 @@ function parse_arguments() {
 
 function validate_tag_format() {
   local -r tag="$1"
-  local -r pattern='^[0-9]+\.[0-9]+(\.[0-9]+)?$'
+  local -r pattern='^[0-9]+\.[0-9]+(\.[0-9]+)?(\.[0-9]+)?$'
 
   if ! [[ $tag =~ $pattern ]]; then
     exit_with_error "Tag format is invalid: '$tag'"
