@@ -1,281 +1,135 @@
 #!/bin/bash
 
-# set -x
+declare VERBOSE=0
+declare TAG_VERSION=""
 
-declare project_name=""
-declare project_version=""
-
-declare parent_project_name=""
-declare parent_project_version=""
-
-declare csproj_file_path=""
-declare csproj_classifier=""
-declare output_directory_path=""
-declare output_sbom_file_name=""
-declare sbom_signing_key_file_path=""
-
-declare dependency_tracker_url=""
-declare dependency_tracker_api_key_file_path=""
+declare GIT_BRANCH=""
+declare GITHUB_ACCESS_TOKEN=""
+declare GITHUB_REPOSITORY_PATH=""
 
 function parse_arguments() {
-
   while [[ $# -gt 0 ]]; do
-    case $1 in
-    
-    --project-name)
-      project_name="$2"
-      shift
-      ;;
-    
-    --project-version)
-      project_version="$2"
-      shift
-      ;;
-    
-    --parent-project-name)
-      parent_project_name="$2"
-      shift
-      ;;
-
-    --parent-project-version)
-      parent_project_version="$2"
-      shift
-      ;;
-
-    --csproj-file-path)
-      csproj_file_path="$2"
-      shift
-      ;;
-
-    --csproj-classifier)
-      csproj_classifier="$2"
-      shift
-      ;;
-
-    --output-directory-path)
-      output_directory_path="$2"
-      shift
-      ;;
-    
-    --output-sbom-file-name)
-      output_sbom_file_name="$2"
-      shift
-      ;;
-
-    --sbom-signing-key-file-path)
-      sbom_signing_key_file_path="$2"
-      shift
-      ;;
-
-    --dependency-tracker-url)
-      dependency_tracker_url="$2"
-      shift
-      ;;
-
-    --dependency-tracker-api-key-file-path)
-      dependency_tracker_api_key_file_path="$2"
-      shift
-      ;;
-
-    *)
-      echo "Unknown option: $1"
-      usage
-      exit 1
-      ;;
-    esac
-
-    shift
-  done
-
-  if [[ -z ${project_name} ]]; then
-    echo "Specifying --project-name is mandatory!"
-    usage
-    exit 1
-  fi
-
-  if [[ -z ${project_version} ]]; then
-    echo "Specifying --project-version is mandatory!"
-    usage
-    exit 1
-  fi
-
-  # if [[ -z ${parent_project_name} ]]; then         this is optional
-  #      ...
-
-  # if [[ -z ${parent_project_version} ]]; then         this is optional
-  #      ...
+      case $1 in
+      -v | --log)
+        VERBOSE=1
+        # shift   dont shift   no need for this one
+        ;;
   
-  # if [[ -n ${parent_project_name} && -z ${parent_project_version} ]]; then # nah   better not to enforce this
-  #   echo "Specifying --parent-project-version is mandatory when --parent-project-name has been used!"
-  #   usage
-  #   exit 1    
-  # fi
-
-  if [[ -z ${csproj_file_path} ]]; then
-    echo "Specifying --csproj-file-path is mandatory!"
-    usage
-    exit 1
-  fi
-
-  if [[ -z ${csproj_classifier} ]]; then
-    echo "Specifying --csproj-classifier is mandatory!"
-    usage
-    exit 1
-  fi
-
-  if [[ -z ${output_directory_path} ]]; then
-    echo "Specifying --output-directory-path is mandatory!"
-    usage
-    exit 1
-  fi
-
-  if [[ -z ${output_sbom_file_name} ]]; then
-    echo "Specifying --output-sbom-file-name is mandatory!"
-    usage
-    exit 1
-  fi
+      -r | --repository-path)
+        GITHUB_REPOSITORY_PATH="$2"
+        shift
+        ;;
   
-  if [[ -z ${sbom_signing_key_file_path} ]]; then
-    echo "Specifying --sbom-signing-key-file-path is mandatory!"
-    usage
-    exit 1
-  fi
+      -t | --tag-version)
+        TAG_VERSION="$2"
+        shift
+        ;;
   
-  if [[ -z ${dependency_tracker_url} ]]; then
-    echo "Specifying --dependency-tracker-url is mandatory!"
+      -b | --git-branch)
+        GIT_BRANCH="$2"
+        shift
+        ;;
+  
+      -a | --access-token)
+        GITHUB_ACCESS_TOKEN="$2"
+        shift
+        ;;
+  
+      *)
+        echo "Unknown option: $1"
+        usage
+        exit 1
+        ;;
+      esac
+  
+      shift
+    done
+
+  if [[ -z $GIT_BRANCH ]]; then
+    echo "Missing git-branch."
     usage
     exit 1
   fi
 
-  if [[ -z ${dependency_tracker_api_key_file_path} ]]; then
-    echo "Specifying --dependency-tracker-api-key-file-path is mandatory!"
+  if [[ -z $GITHUB_REPOSITORY_PATH ]]; then
+    echo "Missing github-repository."
     usage
     exit 1
+  fi
+
+  if [[ -z $GITHUB_ACCESS_TOKEN ]]; then
+    echo "Missing github-access-token."
+    usage
+    exit 1
+  fi
+
+  validate_tag_format "$TAG_VERSION"
+}
+
+function validate_tag_format() {
+  local -r tag="$1"
+  local -r pattern='^[0-9]+\.[0-9]+(\.[0-9]+)?$'
+
+  if ! [[ $tag =~ $pattern ]]; then
+    exit_with_error "Tag format is invalid: '$tag'"
   fi
 }
 
 function usage() {
   local -r script_name=$(basename "$0")
 
-  echo "Usage: ${script_name}  --project-name  <name>   --project-version <version>   [--parent-project-name  <name>   --parent-project-version <version>]   --csproj-file-path <path>    --csproj-file-path <path>   --output-directory-path <path>  --output-sbom-file-name <name>   --sbom-signing-key-file-path <path>   --dependency-tracker-url <url>   --dependency-tracker-api-key-file-path <api_key>  "
+  echo "Usage: $script_name [--verbose|-v] [--repository-path|-r]=<repository_path> [--git-branch|-b]=<branch> [--access-token|-a]=<token> [--tag-version|-t]=<version>"
 }
 
-function install_tools() {
+function create_release_on_github() {
+  # https://docs.github.com/en/rest/releases/releases?apiVersion=2022-11-28#create-a-release
 
-  echo
-  echo "** Installing CycloneDX as a dotnet tool:"
-  dotnet   tool       \
-           install    \
-               --global   CycloneDX
-  declare exitCode=$?
-  if [ $exitCode != 0 ]; then
-    echo "##vso[task.logissue type=error]Something went wrong with the CycloneDX tool for dotnet."
-    exit 10
+  local eventual_tag_name=""
+  local eventual_singleline_summary=""
+  if [[ $GIT_BRANCH == "refs/heads/main" || $GIT_BRANCH == "refs/heads/master" ]]; then
+    eventual_tag_name="v$TAG_VERSION" # builds targeting main have this simple and straightforward tag name
+    eventual_singleline_summary="Release $eventual_tag_name"
+
+  elif [[ $GIT_BRANCH == "refs/heads/develop" ]]; then # all builds that target develop are beta builds
+    eventual_tag_name="v$TAG_VERSION-beta"
+    eventual_singleline_summary="Beta $eventual_tag_name"
+
+  else # all other builds that dont target main are alpha builds    should rarely happen in practice but just in case
+    eventual_tag_name="v$TAG_VERSION-alpha"
+    eventual_singleline_summary="Alpha $eventual_tag_name"
   fi
 
-  echo
-  echo "** CycloneDX:"
-  which    dotnet-CycloneDX   &&   dotnet-CycloneDX   --version
-  declare exitCode=$?
-  if [ $exitCode != 0 ]; then
-    echo "##vso[task.logissue type=error]Something's wrong with 'dotnet-CycloneDX'."
-    exit 12
+  gh    auth      login   --with-token   <<<"$GITHUB_ACCESS_TOKEN"
+  local -r gh_auth_login_exit_code=$?
+  if [[ $gh_auth_login_exit_code -ne 0 ]]; then
+    exit_with_error "GitHub CLI exited with code '$gh_auth_login_exit_code' upon attempting to login using a github access token!"
   fi
 
-  # we need to install the CycloneDX tool too in order to sign the artifacts
-  curl         --output cyclonedx    --url https://github.com/CycloneDX/cyclonedx-cli/releases/download/v0.26.0/cyclonedx-osx-arm64 \
-    && chmod   +x       cyclonedx
-  declare exitCode=$?
-  if [ $exitCode != 0 ]; then
-    echo "##vso[task.logissue type=error]Failed to install 'cyclonedx'."
-    exit 13
+  gh    release   create         "$eventual_tag_name"              \
+        --title                  "$eventual_singleline_summary"    \
+        --target                 "$GIT_BRANCH"                     \
+        --generate-notes
+  local -r gh_create_release_exit_code=$?
+  if [[ $gh_create_release_exit_code -ne 0 ]]; then
+    exit_with_error "GitHub CLI exited with code '$gh_create_release_exit_code' upon attempting to create a new release!"
   fi
-
 }
 
-function generate_sign_and_upload_sbom() {
-  # set -x
 
-  # GENERATE SBOM   we intentionally disable package restore because the packages are already restored at this point
-  dotnet-CycloneDX      "${csproj_file_path}"             \
-        --exclude-dev                                     \
-        --disable-package-restore                         \
-        --include-project-references                      \
-                                                          \
-        --output      "${output_directory_path}"          \
-        --set-type    "${csproj_classifier}"              \
-        --set-version "${project_version}"                \
-                                                          \
-        --filename "${output_sbom_file_name}"
-  declare exitCode=$?
-  if [ ${exitCode} != 0 ]; then
-    echo "##vso[task.logissue type=error]Failed to generate the SBOM!"
-    exit 20
+function log() {
+  if [[ $VERBOSE -ne 0 ]]; then
+    echo -e "$*"
   fi
+}
 
-
-
-  # SIGN SBOM     todo  figure out why this doesnt actually sign anything on windows even though on macos it works as intended
-  declare -r bom_file_path="${output_directory_path}/${output_sbom_file_name}"
-  ./cyclonedx  sign   bom             \
-               "${bom_file_path}"     \
-               --key-file   "${sbom_signing_key_file_path}"
-  declare exitCode=$?
-  if [ ${exitCode} != 0 ]; then
-    echo "##vso[task.logissue type=error]Singing the SBOM failed!"
-    exit 30
-  fi
-  #  echo -e "\n\n"
-  #  tail "${bom_file_path}"
-  #  echo -e "\n\n"
-
-
-
-  # UPLOAD SBOM
-  declare optional_parent_project_name_parameter=""
-  if [[ -n ${parent_project_name} ]]; then
-      optional_parent_project_name_parameter="--form parentName=${parent_project_name}"
-  fi
-  
-  declare optional_parent_project_version_parameter=""
-  if [[ -n ${parent_project_version} ]]; then
-      optional_parent_project_version_parameter="--form parentVersion=${parent_project_version}"
-  fi
-
-  declare -r http_response_code=$(                                                                       \
-      curl   "${dependency_tracker_url}"                                                                 \
-                                --location                                                               \
-                                --request "POST"                                                         \
-                                                                                                         \
-                                --header "Content-Type: multipart/form-data"                             \
-                                --header "X-API-Key: $(cat "${dependency_tracker_api_key_file_path}")"   \
-                                                                                                         \
-                                --form "bom=@${bom_file_path}"                                           \
-                                --form "autoCreate=true"                                                 \
-                                                                                                         \
-                                --form "projectName=${project_name}"                                     \
-                                --form "projectVersion=${project_version}"                               \
-                                                                                                         \
-                                ${optional_parent_project_name_parameter}                                \
-                                ${optional_parent_project_version_parameter}                             \
-                                                                                                         \
-                                -w "%{http_code}"                                                        \
-  )
-  declare exitCode=$?
-  set +x
-  
-  echo "** Curl sbom-uploading HTTP Response Code: ${http_response_code}"
-  
-  if [ ${exitCode} != 0 ]; then
-    echo "##vso[task.logissue type=error]SBOM Uploading failed!"
-    exit 40
-  fi
+function exit_with_error() {
+  echo "Error: $1"
+  exit 1
 }
 
 function main() {
   parse_arguments "$@"
-  install_tools
-  generate_sign_and_upload_sbom
+  create_release_on_github
 }
 
 main "$@"
