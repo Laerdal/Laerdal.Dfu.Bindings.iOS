@@ -15,6 +15,7 @@
 <!--        Laerdal.Scripts/Laerdal.Builder.targets          \                                                 -->
 <!--        '"/p:Laerdal_Version_Full=1.0.x.0"'              \                                                 -->
 <!--        '"/p:Laerdal_Github_Access_Token=<place your github access token here - its needed by carthage>"'  -->
+<!--        '"/m:1"'                                                                                           -->
 <!--                                                                                                           -->
 
 <Project DefaultTargets="BuildProjects">
