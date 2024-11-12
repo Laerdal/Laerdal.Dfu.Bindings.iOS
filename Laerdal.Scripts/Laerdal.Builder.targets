@@ -53,7 +53,8 @@
         <Laerdal_Should_Tag_And_Release Condition="           '$(Laerdal_Should_Tag_And_Release)'           == ''  and    '$(Is_Core_Branch)' == 'true' ">True</Laerdal_Should_Tag_And_Release>
         <Laerdal_Should_Generate_and_Upload_Sbom Condition="  '$(Laerdal_Should_Generate_and_Upload_Sbom)'  == ''  and  ( '$(Is_Core_Branch)' == 'true'  or  '$(Is_Pull_Request)' == 'true' ) ">True</Laerdal_Should_Generate_and_Upload_Sbom>
 
-        <Laerdal_Version_Full Condition=" '$(Laerdal_Version_Full)' == '' ">$(Nordic_Package_Version).$(Laerdal_Revision)</Laerdal_Version_Full>
+        <Laerdal_Version_Full     Condition=" '$(Laerdal_Version_Full)'     == '' ">$(Nordic_Package_Version).$(Laerdal_Revision)</Laerdal_Version_Full>
+        <Laerdal_Version_Assembly Condition=" '$(Laerdal_Version_Assembly)' == '' ">$(Laerdal_Version_Full)</Laerdal_Version_Assembly>        
     </PropertyGroup>
 
     <!-- BUILD -->
