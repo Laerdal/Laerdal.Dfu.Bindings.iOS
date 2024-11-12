@@ -135,9 +135,9 @@
             <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --csproj-file-path &quot;$(Laerdal_Project)&quot;</_Laerdal_Sbom_Script_Parameters>
 
             <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --project-name &quot;$(_Laerdal_Project_Name)&quot;</_Laerdal_Sbom_Script_Parameters>
-            <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --output-sbom-file-name &quot;sbom.laerdal.dfu.xml&quot;</_Laerdal_Sbom_Script_Parameters>
+            <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --output-sbom-file-name &quot;sbom.laerdal.dfu.bindings.ios.xml&quot;</_Laerdal_Sbom_Script_Parameters>
 
-            <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --parent-project-name &quot;[Group(Legacy)::Laerdal.Dfu]&quot;</_Laerdal_Sbom_Script_Parameters>
+            <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --parent-project-name &quot;[Group(Legacy)::Laerdal.Dfu.Bindings.iOS]&quot;</_Laerdal_Sbom_Script_Parameters>
         </PropertyGroup>
 
         <!-- https://docs.dependencytrack.org/usage/cicd/#large-payloads   also notice that we are forced to target           -->
