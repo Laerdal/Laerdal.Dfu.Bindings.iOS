@@ -43,14 +43,14 @@ git clone https://github.com/Laerdal/Laerdal.Dfu.Bindings.iOS.git
 dotnet    msbuild                                    \
     Laerdal.Scripts/Laerdal.Builder.targets          \
     '"/m:1"'                                         \
-    '"/p:Laerdal_Version=1.0.x.0"'                   \
+    '"/p:Laerdal_Version_Full=1.0.x.0"'              \
     '"/p:Laerdal_Github_Access_Token=<place your github access token here - its needed by carthage>"'  
 
 # on windows powershell
 dotnet   msbuild                                     ^
     Laerdal.Scripts\Laerdal.Builder.targets          ^
     /m:1                                             ^
-    /p:Laerdal_Version=1.0.x.0                       ^
+    /p:Laerdal_Version_Full=1.0.x.0                  ^
     /p:Laerdal_Github_Access_Token="<place your github access token here - its needed by carthage>"
 ```
 
