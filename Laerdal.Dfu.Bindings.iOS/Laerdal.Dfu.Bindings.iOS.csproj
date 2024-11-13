@@ -16,8 +16,8 @@
 
         <IsOSX Condition=" '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' == 'true' ">true</IsOSX>
 
-        <IsNet8IOS Condition="           $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'         ">true</IsNet8IOS>
-        <IsNet8MacCatalyst Condition="   $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst' ">true</IsNet8MacCatalyst>
+        <IsNetIOS Condition="           $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'         ">true</IsNetIOS>
+        <IsNetMacCatalyst Condition="   $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst' ">true</IsNetMacCatalyst>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -51,11 +51,13 @@
         <!-- #1 these properties must be kept in sync between this file and laerdal.mcumgr.bindings.[android|ios|maccatalyst].csproj   -->
         <!-- #2 even though this is library is pure csharp we still have to specify the target-plaform-version for each target because -->
         <!--    if we dont dont the build system throws a tantrum from oct 2024 onwards                                                -->
-        <TargetPlatformVersion Condition="       '$(IsNet8IOS)'         == 'true' ">17.0</TargetPlatformVersion>
-        <SupportedOSPlatformVersion  Condition=" '$(IsNet8IOS)'         == 'true' ">11.0</SupportedOSPlatformVersion>
+        <TargetPlatformVersion Condition="       '$(IsNetIOS)'         == 'true' ">17.0</TargetPlatformVersion>
+        <TargetPlatformMinVersion Condition="    '$(IsNetIOS)'         == 'true' ">14.2</TargetPlatformMinVersion>
+        <SupportedOSPlatformVersion  Condition=" '$(IsNetIOS)'         == 'true' ">14.2</SupportedOSPlatformVersion>
 
-        <TargetPlatformVersion Condition="       '$(IsNet8MacCatalyst)' == 'true' ">17.0</TargetPlatformVersion>
-        <SupportedOSPlatformVersion  Condition=" '$(IsNet8MacCatalyst)' == 'true' ">13.1</SupportedOSPlatformVersion>
+        <TargetPlatformVersion Condition="       '$(IsNetMacCatalyst)' == 'true' ">17.0</TargetPlatformVersion>
+        <TargetPlatformMinVersion Condition="    '$(IsNetMacCatalyst)' == 'true' ">13.1</TargetPlatformMinVersion>
+        <SupportedOSPlatformVersion  Condition=" '$(IsNetMacCatalyst)' == 'true' ">13.1</SupportedOSPlatformVersion>
     </PropertyGroup>
 
     <Import Project="Laerdal.targets"/>
