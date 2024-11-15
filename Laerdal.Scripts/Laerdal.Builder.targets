@@ -13,9 +13,9 @@
 <!--    # on macos                                                                                             -->
 <!--    dotnet    msbuild                                    \                                                 -->
 <!--        Laerdal.Scripts/Laerdal.Builder.targets          \                                                 -->
+<!--        '"/m:1"'                                         \                                                 -->
 <!--        '"/p:Laerdal_Version_Full=1.0.x.0"'              \                                                 -->
 <!--        '"/p:Laerdal_Github_Access_Token=<place your github access token here - its needed by carthage>"'  -->
-<!--        '"/m:1"'                                                                                           -->
 <!--                                                                                                           -->
 
 <Project DefaultTargets="BuildProjects">
@@ -43,6 +43,16 @@
         <Is_Core_Branch Condition="  '$(Laerdal_Source_Branch)' == 'refs/heads/main'  or  '$(Laerdal_Source_Branch)' == 'refs/heads/master'  or  '$(Laerdal_Source_Branch)' == 'refs/heads/develop' ">true</Is_Core_Branch>
         <Is_Pull_Request Condition=" '$(Laerdal_Source_Branch.StartsWith(refs/pull))' == 'true'  and  '$(Laerdal_Source_Branch.EndsWith(/merge))' == 'true' ">true</Is_Pull_Request>
 
+        <!-- in github-ci these variables are provided by the .yml file   in localdev you can set them here if you want to experiment  just dont commit them                                                            -->
+        <!--                                                                                                                                                                                                            -->
+        <!-- <Laerdal_Bindings_iOS___Sdk_Version Condition="           '$(Laerdal_Bindings_iOS___Sdk_Version)'           == '' ">17.2</Laerdal_Bindings_iOS___Sdk_Version>                                              -->
+        <!-- <Laerdal_Bindings_iOS___Xcode_Ide_Dev_Path Condition="    '$(Laerdal_Bindings_iOS___Xcode_Ide_Dev_Path)'    == '' ">/Applications/Xcode.app/Contents/Developer</Laerdal_Bindings_iOS___Xcode_Ide_Dev_Path> -->
+
+        <!-- in github-ci these variables are provided by the .yml file   in localdev you can set them here if you want to experiment  just dont commit them                                                                               -->
+        <!--                                                                                                                                                                                                                               -->
+        <!-- <Laerdal_Bindings_MacCatalyst___Sdk_Version Condition="        '$(Laerdal_Bindings_MacCatalyst___Sdk_Version)'        == '' ">14.2</Laerdal_Bindings_MacCatalyst___Sdk_Version>                                               -->
+        <!-- <Laerdal_Bindings_MacCatalyst___Xcode_Ide_Dev_Path Condition=" '$(Laerdal_Bindings_MacCatalyst___Xcode_Ide_Dev_Path)' == '' ">/Applications/Xcode.app/Contents/Developer</Laerdal_Bindings_MacCatalyst___Xcode_Ide_Dev_Path>  -->
+
         <!-- version -->
         <Nordic_Package_Version Condition=" '$(Nordic_Package_Version)' == '' ">4.15.3</Nordic_Package_Version>
         <Laerdal_Revision Condition=" '$(Laerdal_Revision)'  == '' and '$(BUILD_BUILDID)'     != '' ">$(BUILD_BUILDID)</Laerdal_Revision> <!-- Azure DevOps, Last build was 43857 -->
@@ -53,7 +63,8 @@
         <Laerdal_Should_Tag_And_Release Condition="           '$(Laerdal_Should_Tag_And_Release)'           == ''  and    '$(Is_Core_Branch)' == 'true' ">True</Laerdal_Should_Tag_And_Release>
         <Laerdal_Should_Generate_and_Upload_Sbom Condition="  '$(Laerdal_Should_Generate_and_Upload_Sbom)'  == ''  and  ( '$(Is_Core_Branch)' == 'true'  or  '$(Is_Pull_Request)' == 'true' ) ">True</Laerdal_Should_Generate_and_Upload_Sbom>
 
-        <Laerdal_Version_Full Condition=" '$(Laerdal_Version_Full)' == '' ">$(Nordic_Package_Version).$(Laerdal_Revision)</Laerdal_Version_Full>
+        <Laerdal_Version_Full     Condition=" '$(Laerdal_Version_Full)'     == '' ">$(Nordic_Package_Version).$(Laerdal_Revision)</Laerdal_Version_Full>
+        <Laerdal_Version_Assembly Condition=" '$(Laerdal_Version_Assembly)' == '' ">$(Laerdal_Version_Full)</Laerdal_Version_Assembly>        
     </PropertyGroup>
 
     <!-- BUILD -->
@@ -67,15 +78,22 @@
         <PropertyGroup>
             <_Laerdal_Build_Parameters>$(_Laerdal_Build_Parameters);Configuration=$(Configuration)</_Laerdal_Build_Parameters>
             <_Laerdal_Build_Parameters>$(_Laerdal_Build_Parameters);PackageOutputPath=$(PackageOutputPath)</_Laerdal_Build_Parameters>
+            <_Laerdal_Build_Parameters>$(_Laerdal_Build_Parameters);SourceRoot=$(Laerdal_RootDirectory_Folderpath)/Laerdal.McuMgr.Bindings.MacCatalyst/</_Laerdal_Build_Parameters>
+
             <_Laerdal_Build_Parameters>$(_Laerdal_Build_Parameters);Laerdal_Version_Full=$(Laerdal_Version_Full)</_Laerdal_Build_Parameters>
             <_Laerdal_Build_Parameters>$(_Laerdal_Build_Parameters);Laerdal_Github_Access_Token=$(Laerdal_Github_Access_Token)</_Laerdal_Build_Parameters>
+            <_Laerdal_Build_Parameters>$(_Laerdal_Build_Parameters);Laerdal_Bindings_MacCatalyst___Sdk_Version=$(Laerdal_Bindings_MacCatalyst___Sdk_Version)</_Laerdal_Build_Parameters>
+            <_Laerdal_Build_Parameters>$(_Laerdal_Build_Parameters);Laerdal_Bindings_MacCatalyst___Sdk_Version=$(Laerdal_Bindings_MacCatalyst___Sdk_Version)</_Laerdal_Build_Parameters>
+            <_Laerdal_Build_Parameters>$(_Laerdal_Build_Parameters);Laerdal_Bindings_MacCatalyst___Xcode_Ide_Dev_Path=$(Laerdal_Bindings_MacCatalyst___Xcode_Ide_Dev_Path)</_Laerdal_Build_Parameters>
+            <_Laerdal_Build_Parameters>$(_Laerdal_Build_Parameters);Laerdal_Bindings_MacCatalyst___DotnetTargetPlatformVersion=$(Laerdal_Bindings_MacCatalyst___DotnetTargetPlatformVersion)</_Laerdal_Build_Parameters>
         </PropertyGroup>
         
         <!-- BUILD -->
-        <MSBuild Projects="$(Laerdal_Project)" Properties="$(_Laerdal_Build_Parameters)" Targets="Restore"/>
-        
-        <!-- <MSBuild Projects="$(Laerdal_Project)" Properties="$(_Laerdal_Build_Parameters);BuildingProject=true" Targets="_DownloadAndBuildIosNativeLibraries"/> -->
-        <MSBuild Projects="$(Laerdal_Project)" Properties="$(_Laerdal_Build_Parameters);BuildingProject=true" Targets="Build"/>
+        <!-- [warning] its absolute vital to first call the EnsureFrameworkFolderIsCreated target explicitly and separately from the main          -->
+        <!-- [warning] build otherwise the resulting nugets will be poisoned and will not work in maui apps at all due to missing native symbols   -->
+        <MSBuild Projects="$(Laerdal_Project)" Targets="EnsureFrameworkFolderIsCreated" Properties="$(_Laerdal_Build_Parameters)"/>
+        <MSBuild Projects="$(Laerdal_Project)" Targets="Restore" Properties="$(_Laerdal_Build_Parameters)"/>
+        <MSBuild Projects="$(Laerdal_Project)" Targets="Rebuild" Properties="$(_Laerdal_Build_Parameters);BuildingProject=true"/>
     </Target>
 
     <!-- GITHUB RELEASE -->
@@ -134,9 +152,9 @@
             <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --csproj-file-path &quot;$(Laerdal_Project)&quot;</_Laerdal_Sbom_Script_Parameters>
 
             <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --project-name &quot;$(_Laerdal_Project_Name)&quot;</_Laerdal_Sbom_Script_Parameters>
-            <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --output-sbom-file-name &quot;sbom.laerdal.dfu.xml&quot;</_Laerdal_Sbom_Script_Parameters>
+            <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --output-sbom-file-name &quot;sbom.laerdal.dfu.bindings.ios.xml&quot;</_Laerdal_Sbom_Script_Parameters>
 
-            <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --parent-project-name &quot;[Group(Legacy)::Laerdal.Dfu]&quot;</_Laerdal_Sbom_Script_Parameters>
+            <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --parent-project-name &quot;[Group(Legacy)::Laerdal.Dfu.Bindings.iOS]&quot;</_Laerdal_Sbom_Script_Parameters>
         </PropertyGroup>
 
         <!-- https://docs.dependencytrack.org/usage/cicd/#large-payloads   also notice that we are forced to target           -->

@@ -82,19 +82,26 @@
 
     <!-- ==================== LOGGING ==================== -->
     <Target Name="PrintBuildInfo" BeforeTargets="BeforeBuild">
-        <Message Importance="High" Text="*** Package Info ***" />
-        <Message Importance="High" Text="PackageId: $(PackageId)" />
-        <Message Importance="High" Text="DesignTimeBuild: $(DesignTimeBuild)" />
-        <Message Importance="High" Text="BuildingProject: $(BuildingProject)" />
-        <Message Importance="High" Text="Configuration: $(Configuration)" />
-        <Message Importance="High" Text="TargetFramework: $(TargetFramework)" />
-        <Message Importance="High" Text="DefineConstants: $(DefineConstants)" />
-        <Message Importance="High" Text="Platform: $(Platform)" />
-        <Message Importance="High" Text="PackageVersion: $(PackageVersion)" />
-        <Message Importance="High" Text="AssemblyVersion: $(AssemblyVersion)" />
-        <Message Importance="High" Text="AssemblyFileVersion: $(AssemblyFileVersion)"/>
-        <Message Importance="High" Text="Version: $(Version)" />
-        <Message Importance="High" Text="MSBuildRuntimeType: $(MSBuildRuntimeType)" />
+        <Message Importance="High" Text="*** Package Info ***"/>
+        <Message Importance="High" Text="Version :                                              $(Version)                                           "/>
+        <Message Importance="High" Text="Platform :                                             $(Platform)                                          "/>
+        <Message Importance="High" Text="PackageId :                                            $(PackageId)                                         "/>
+        <Message Importance="High" Text="Configuration :                                        $(Configuration)                                     "/>
+        <Message Importance="High" Text="PackageVersion :                                       $(PackageVersion)                                    "/>
+        <Message Importance="High" Text="DesignTimeBuild :                                      $(DesignTimeBuild)                                   "/>
+        <Message Importance="High" Text="BuildingProject :                                      $(BuildingProject)                                   "/>
+        <Message Importance="High" Text="TargetFramework :                                      $(TargetFramework)                                   "/>
+        <Message Importance="High" Text="DefineConstants :                                      $(DefineConstants)                                   "/>
+        <Message Importance="High" Text="AssemblyVersion :                                      $(AssemblyVersion)                                   "/>
+        <Message Importance="High" Text="MSBuildRuntimeType :                                   $(MSBuildRuntimeType)                                "/>
+        <Message Importance="High" Text="AssemblyFileVersion :                                  $(AssemblyFileVersion)                               "/>
+        <Message Importance="High" Text="NativeFrameworkActualTargetFolderpath :                $(NativeFrameworkActualTargetFolderpath)             "/>
+        <Message Importance="High" Text="                                                                                                            "/>
+        <Message Importance="High" Text="Laerdal_Bindings_iOS___Sdk_Version :                   $(Laerdal_Bindings_iOS___Sdk_Version)                "/>
+        <Message Importance="High" Text="Laerdal_Bindings_iOS___Xcode_Ide_Dev_Path :            $(Laerdal_Bindings_iOS___Xcode_Ide_Dev_Path)         "/>
+        <Message Importance="High" Text="Laerdal_Bindings_MacCatalyst___Sdk_Version :           $(Laerdal_Bindings_MacCatalyst___Sdk_Version)        "/>
+        <Message Importance="High" Text="Laerdal_Bindings_MacCatalyst___Xcode_Ide_Dev_Path :    $(Laerdal_Bindings_MacCatalyst___Xcode_Ide_Dev_Path) "/>
+
         <Exec Command="echo 'BUILD_NUMBER=$(PackageVersion)' >> $GITHUB_ENV" Condition="'$(GITHUB_ACTIONS)' == 'true'" />
         <Exec Command="echo 'CI_PIPELINE_IID=$(PackageVersion)' >> $CI_ENVIRONMENT_URL" Condition="'$(GITLAB_CI)' == 'true'" />
         <Message Importance="High" Text="##vso[build.updatebuildnumber]$(PackageVersion)" Condition=" '$(TF_BUILD)' == 'true' " />

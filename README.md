@@ -1,6 +1,6 @@
 # 🏠 Laerdal.Dfu.Bindings.iOS
 
-This is an Xamarin binding library for the Nordic Semiconductors iOS library for updating the firmware of their devices over the air via Bluetooth Low Energy.
+This is an MAUI binding library for iOS/MacCatalyst fueled by Nordic's native iOS-DFU library for updating the firmware of their devices over the air via BLE.
 
 The native iOS Pod library is located here: https://github.com/NordicSemiconductor/IOS-Pods-DFU-Library
 
@@ -9,8 +9,8 @@ The native iOS Pod library is located here: https://github.com/NordicSemiconduct
 You'll need :
 
 - **MacOS**
-  - with **XCode**
-  - with **.NET6-ios**
+  - with **XCode 16.1+**
+  - with **.NET8-ios**
   - with **Carthage**
   - [with **ObjectiveSharpie**] (optional)
 

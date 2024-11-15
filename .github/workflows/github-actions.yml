@@ -30,6 +30,14 @@ env:
 
   DOTNET_TARGET_WORKLOAD_VERSION: "8.0.402" # dont upgrade this lightheartedly   the workload snapshot implicitly defines which versions of Android/iOS/MacCatalyst SDKs are supported
 
+  BINDINGS_IOS___SDK_VERSION: "18.1" # for xcodebuild
+  BINDINGS_IOS___XCODE_IDE_DEV_PATH: "/Applications/Xcode_16.1.app/Contents/Developer" # for xcodebuild
+  BINDINGS_IOS___DOTNET_TARGET_PLATFORM_VERSION: "17.0" # for the csproj file
+
+  BINDINGS_MACCATALYST___SDK_VERSION: "15.1" # for xcodebuild
+  BINDINGS_MACCATALYST___XCODE_IDE_DEV_PATH: "/Applications/Xcode_16.1.app/Contents/Developer" # for xcodebuild
+  BINDINGS_MACCATALYST___DOTNET_TARGET_PLATFORM_VERSION: "17.0" # for the csproj file
+
 
 on:
   workflow_call: #     so that other workflows can trigger this
@@ -48,7 +56,7 @@ jobs:
   
   build:
 
-    runs-on: 'macos-14'
+    runs-on: 'macos-15'
     timeout-minutes: 20
 
     steps:
@@ -88,6 +96,15 @@ jobs:
                                                     -p:Laerdal_Source_Branch="${{ env.LAERDAL_SOURCE_BRANCH       }}"                                                                   \
                                                   -p:Laerdal_Repository_Path="${{ env.LAERDAL_REPOSITORY_PATH     }}"                                                                   \
                                               -p:Laerdal_Github_Access_Token="${{ env.SCL_GITHUB_ACCESS_TOKEN     }}"                                                                   \
+                                  -p:Laerdal_Should_Generate_and_Upload_Sbom="true"                                                                                                     \
+                                                                                                                                                                                        \
+                                       -p:Laerdal_Bindings_iOS___Sdk_Version="${{env.BINDINGS_IOS___SDK_VERSION}}"                                                                      \
+                                -p:Laerdal_Bindings_iOS___Xcode_Ide_Dev_Path="${{env.BINDINGS_IOS___XCODE_IDE_DEV_PATH}}"                                                               \
+                       -p:Laerdal_Bindings_iOS___DotnetTargetPlatformVersion="${{env.BINDINGS_IOS___DOTNET_TARGET_PLATFORM_VERSION}}"                                                   \
+                                                                                                                                                                                        \
+                               -p:Laerdal_Bindings_MacCatalyst___Sdk_Version="${{env.BINDINGS_MACCATALYST___SDK_VERSION}}"                                                              \
+                        -p:Laerdal_Bindings_MacCatalyst___Xcode_Ide_Dev_Path="${{env.BINDINGS_MACCATALYST___XCODE_IDE_DEV_PATH}}"                                                       \
+               -p:Laerdal_Bindings_MacCatalyst___DotnetTargetPlatformVersion="${{env.BINDINGS_MACCATALYST___DOTNET_TARGET_PLATFORM_VERSION}}"                                           \
                                                                                                                                                                                         \
                                     -p:Laerdal_Dependency_Tracker_Server_Url="${{ env.SCL_DEPENDENCY_TRACKER_SERVER_URL  }}"                                                            \
                              -p:Laerdal_Dependency_Tracker_Api_Key_File_Path="${{ env.BUILD_REPOSITORY_FOLDERPATH        }}/Laerdal.Scripts/dependency_tracker_api_key.ppk"             \

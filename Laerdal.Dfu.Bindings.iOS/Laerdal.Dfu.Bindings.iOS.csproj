@@ -9,18 +9,18 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <IsBindingProject>true</IsBindingProject>
-        
         <TargetFrameworks>$(TargetFrameworks)net8.0-ios;</TargetFrameworks>
         <TargetFrameworks>$(TargetFrameworks)net8.0-maccatalyst</TargetFrameworks>
 
         <IsOSX Condition=" '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' == 'true' ">true</IsOSX>
 
-        <IsNet8IOS Condition="           $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'         ">true</IsNet8IOS>
-        <IsNet8MacCatalyst Condition="   $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst' ">true</IsNet8MacCatalyst>
+        <IsNetIOS Condition="           $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'         ">true</IsNetIOS>
+        <IsNetMacCatalyst Condition="   $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst' ">true</IsNetMacCatalyst>
     </PropertyGroup>
 
     <PropertyGroup>
+        <IsBindingProject>true</IsBindingProject>
+        
         <DebugType>full</DebugType>
         <Optimized>false</Optimized>
         <MtouchExtraArgs>-v -v -v -v</MtouchExtraArgs>
@@ -29,6 +29,15 @@
         <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
 
         <DefaultItemExcludes>$(DefaultItemExcludes);Carthage\**</DefaultItemExcludes>
+
+        <NativeFrameworkParentFolderpath>$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), 'Frameworks'))</NativeFrameworkParentFolderpath>
+        <NativeFrameworkActualTargetFolderpath>$(NativeFrameworkParentFolderpath)/NordicDFU.framework</NativeFrameworkActualTargetFolderpath>
+
+        <!-- set these explicitly here only for experimentation    as far as cicd is concerned these values should be set in the .yml file of the pipeline                                                               -->
+        <!-- <Laerdal_Bindings_iOS___Sdk_Version Condition="           '$(Laerdal_Bindings_iOS___Sdk_Version)'           == '' ">17.0</Laerdal_Bindings_iOS___Sdk_Version>                                               -->
+        <!-- <Laerdal_Bindings_iOS___Xcode_Ide_Dev_Path Condition="    '$(Laerdal_Bindings_iOS___Xcode_Ide_Dev_Path)'    == '' ">/Applications/Xcode_15.4.app/Contents/Developer/</Laerdal_Bindings_iOS___Xcode_Ide_Dev_Path> -->
+        <!-- <Laerdal_Bindings_MacCatalyst___Sdk_Version Condition="        '$(Laerdal_Bindings_MacCatalyst___Sdk_Version)'        == '' ">17.0</Laerdal_Bindings_MacCatalyst___Sdk_Version>                                               -->
+        <!-- <Laerdal_Bindings_MacCatalyst___Xcode_Ide_Dev_Path Condition=" '$(Laerdal_Bindings_MacCatalyst___Xcode_Ide_Dev_Path)' == '' ">/Applications/Xcode_15.4.app/Contents/Developer</Laerdal_Bindings_MacCatalyst___Xcode_Ide_Dev_Path>  -->
 
         <!-- 1. under net8 we need Optimized=false otherwise release builds cause the resulting apps to crash right upon getting launched in the iphone! -->
         <!-- 2. NoBindingEmbedding=true per https://github.com/Laerdal/Laerdal.Dfu/issues/29#issuecomment-1904057544 -->
@@ -51,14 +60,26 @@
         <!-- #1 these properties must be kept in sync between this file and laerdal.mcumgr.bindings.[android|ios|maccatalyst].csproj   -->
         <!-- #2 even though this is library is pure csharp we still have to specify the target-plaform-version for each target because -->
         <!--    if we dont dont the build system throws a tantrum from oct 2024 onwards                                                -->
-        <TargetPlatformVersion Condition="       '$(IsNet8IOS)'         == 'true' ">17.0</TargetPlatformVersion>
-        <SupportedOSPlatformVersion  Condition=" '$(IsNet8IOS)'         == 'true' ">11.0</SupportedOSPlatformVersion>
+        <TargetPlatformVersion Condition="       '$(IsNetIOS)'         == 'true' ">17.0</TargetPlatformVersion>
+        <TargetPlatformMinVersion Condition="    '$(IsNetIOS)'         == 'true' ">14.2</TargetPlatformMinVersion>
+        <SupportedOSPlatformVersion  Condition=" '$(IsNetIOS)'         == 'true' ">14.2</SupportedOSPlatformVersion>
 
-        <TargetPlatformVersion Condition="       '$(IsNet8MacCatalyst)' == 'true' ">17.0</TargetPlatformVersion>
-        <SupportedOSPlatformVersion  Condition=" '$(IsNet8MacCatalyst)' == 'true' ">13.1</SupportedOSPlatformVersion>
+        <TargetPlatformVersion Condition="       '$(IsNetMacCatalyst)' == 'true' ">17.0</TargetPlatformVersion>
+        <TargetPlatformMinVersion Condition="    '$(IsNetMacCatalyst)' == 'true' ">13.1</TargetPlatformMinVersion>
+        <SupportedOSPlatformVersion  Condition=" '$(IsNetMacCatalyst)' == 'true' ">13.1</SupportedOSPlatformVersion>
     </PropertyGroup>
 
     <Import Project="Laerdal.targets"/>
+
+    <!-- considering the highly customized nature of the build system we need to ensure that parallelization is turned off otherwise we will end up with   -->
+    <!-- cryptic errors in azure due to target-frameworks trying to build themselves in parallel thus stepping onto eachothers toes    thats because the   -->
+    <!-- intended way of building stuff is to let net8.0-maccatalyst build the maccatalyst libs and once that is done then and only then proceed to        -->
+    <!-- compiling any additional target-framework which will find the compiled framework-libs already in place                                            -->
+    <Target Name="EnsureThatParallelizedBuildingIsDisabled"
+            BeforeTargets="CompileProxyProjectAndGenerateFatLibs">
+        <Error Condition=" '$(MSBuildNodeCount)' != '' and $(MSBuildNodeCount) &gt; 1 "
+               Text="Detected that parallelization is turned on (MSBuildNodeCount: $(MSBuildNodeCount) > 1). Refusing to build because parallelized builds are destined to fail with cryptic errors. Turn off parallelization via BuildInParallel=false or /m:1 (see: https://stackoverflow.com/a/76340699/863651)"/>
+    </Target>
 
     <ItemGroup>
         <!-- unfortunately the files autogenerated by sharpie need a lot of hand tweaking to -->
@@ -70,63 +91,104 @@
         <ObjcBindingApiDefinition Include="ApiDefinition.cs"/>
     </ItemGroup>
 
-    <ItemGroup>
-        <NativeReference Include="Carthage/Carthage/Build/NordicDFU.xcframework/ios-arm64/NordicDFU.framework">
-            <Kind>Framework</Kind>
-            <SmartLink>False</SmartLink>
-            <Frameworks>Foundation</Frameworks>
-        </NativeReference>
-    </ItemGroup>
 
-    <Target Condition=" '$(DesignTimeBuild)' != 'true' and '$(BuildingProject)' == 'true' and !Exists('Carthage\Carthage\Checkouts\IOS-Pods-DFU-Library\Package.swift') "
-            Name="_DownloadAndBuildIosNativeLibraries"
-            BeforeTargets="PrepareForBuild">
+    <!-- 1  its important to ensure that we only build the native libs once and only once otherwise we will get them build twice in parallel       -->
+    <!--                                                                                                                                           -->
+    <!-- 2  also note that we hook onto the PrepareForBuild task    if we target the task CoreCompile then this task will be invoked on localdev   -->
+    <!--    but on in the azure pipelines for some weird reason                                                                                    -->
+    <Target Name="CompileProxyProjectAndGenerateFatLibs"
+            BeforeTargets="PrepareForBuild"
+            Condition=" '$(DesignTimeBuild)' != 'true' and '$(BuildingProject)' == 'true' ">
 
         <Error Condition=" '$(IsOSX)' != 'true'                   " Text="This project can only be built on MacOS because it relies on the Carthage family of cli utils."/>
         <Error Condition=" '$(Laerdal_Github_Access_Token)' == '' " Text="'Laerdal_Github_Access_Token' is not defined. Please define it in your environment variables otherwise Carthage will fail most of the times."/>
 
-        <Message Importance="High" Text="** Downloading Carthage iOS packages ..."/>
+        <!-- 0. checkout the libraries -->
+        <ItemGroup>
+            <_PreexistingFilesToClean Include="$(NativeFrameworkActualTargetFolderpath)\**\*"/>
+        </ItemGroup>
 
+        <Delete Files="@(_PreexistingFilesToClean)" ContinueOnError="true"/>
+
+        <!-- 1. checkout the libraries -->
+        <Message Importance="High" Text="** Downloading Carthage Packages ..."/>
         <WriteLinesToFile
                 File="Carthage\Cartfile"
                 Lines="github    &quot;NordicSemiconductor/IOS-Pods-DFU-Library&quot;    &quot;$(Nordic_Package_Version)&quot;"
                 Overwrite="true"/>
 
         <PropertyGroup>
-            <_CarthageBuildCommand>$(_CarthageBuildCommand) GITHUB_ACCESS_TOKEN=&quot;github.com=$(Laerdal_Github_Access_Token)&quot;</_CarthageBuildCommand>
-            <_CarthageBuildCommand>$(_CarthageBuildCommand) carthage update</_CarthageBuildCommand>
-            <_CarthageBuildCommand>$(_CarthageBuildCommand) --platform iOS</_CarthageBuildCommand>
-            <_CarthageBuildCommand>$(_CarthageBuildCommand) --no-use-binaries</_CarthageBuildCommand>
-            <_CarthageBuildCommand>$(_CarthageBuildCommand) --use-xcframeworks</_CarthageBuildCommand>
-            <_CarthageBuildCommand>$(_CarthageBuildCommand) --project-directory Carthage</_CarthageBuildCommand>
+            <_CarthageCheckoutCommand>$(_CarthageCheckoutCommand) GITHUB_ACCESS_TOKEN=&quot;github.com=$(Laerdal_Github_Access_Token)&quot;</_CarthageCheckoutCommand>
+            <_CarthageCheckoutCommand>$(_CarthageCheckoutCommand) carthage update</_CarthageCheckoutCommand>
+            <_CarthageCheckoutCommand>$(_CarthageCheckoutCommand) --no-build</_CarthageCheckoutCommand>
+
+            <_CarthageBase_FolderPath>$(MSBuildThisFileDirectory)\Carthage</_CarthageBase_FolderPath>
+            <_CarthageCheckout_FolderPath>$(_CarthageBase_FolderPath)\Carthage\Checkouts</_CarthageCheckout_FolderPath>
+            <_CarthageCheckoutNordicIosPodsDfuLibrary_FolderPath>$(_CarthageCheckout_FolderPath)\IOS-Pods-DFU-Library</_CarthageCheckoutNordicIosPodsDfuLibrary_FolderPath>
+
+            <_CompileAndGenerateFatLibs_FilePath>$(MSBuildThisFileDirectory)/Laerdal.Mac.CompileAndGenerateFatLibs.sh</_CompileAndGenerateFatLibs_FilePath>
         </PropertyGroup>
 
         <!-- noticed that we had to resort to no-use-bindaries because we would constantly -->
         <!-- into ratelimiting problems without it causing our github pipelines to fail    -->
-        <Exec WorkingDirectory="$(MSBuildThisFileDirectory)" Command=" $(_CarthageBuildCommand) "/>
+        <Exec WorkingDirectory="$(_CarthageBase_FolderPath)" Command=" $(_CarthageCheckoutCommand) "/>
 
-        <RemoveDir
-                Condition="Exists('Carthage\Carthage\Checkouts\IOS-Pods-DFU-Library\Example')"
-                Directories="Carthage\Carthage\Checkouts\IOS-Pods-DFU-Library\Example"/>
+        <RemoveDir Directories="$(_CarthageCheckoutNordicIosPodsDfuLibrary_FolderPath)\Example" Condition="Exists('$(_CarthageCheckoutNordicIosPodsDfuLibrary_FolderPath)\Example')"/>
 
-        <!-- use this whenever you need to refresh apidefinition.cs and structsandenums.cs   -->
-        <!--                                                                                 -->
-        <!-- unfortunately the files autogenerated by sharpie need a lot of hand tweaking to -->
-        <!-- be really aligned with the underlying native libs so we cannot use them as-is   -->
-        <!--                                                                                 -->
-        <!--        <Message Importance="High" Text="** Regenerating sharpie files ..."/>    -->
-        <!--        <Exec Command="sharpie bind -o Sharpie &#45;&#45;namespace=Laerdal.Dfu.Bindings.iOS -f Carthage/Carthage/Build/NordicDFU.xcframework/ios-arm64/NordicDFU.framework"/>-->
+        <!-- 2. build and generate the fat libs from the proxy swift project -->
+        <Exec WorkingDirectory="$(MSBuildThisFileDirectory)" Command=" bash -c &quot; chmod +x  '$(_CompileAndGenerateFatLibs_FilePath)' &quot; "/>
+
+        <PropertyGroup Condition=" '$(IsNetIOS)' == 'true' ">
+            <_CompileAndGenerateFatLibs_Config>$(_CompileAndGenerateFatLibs_Config) SUPPORTS_MACCATALYST='NO'</_CompileAndGenerateFatLibs_Config>
+            <_CompileAndGenerateFatLibs_Config>$(_CompileAndGenerateFatLibs_Config) XCODEBUILD_TARGET_SDK='iphoneos'</_CompileAndGenerateFatLibs_Config>
+            <_CompileAndGenerateFatLibs_Config>$(_CompileAndGenerateFatLibs_Config) XCODE_IDE_DEV_PATH='$(Laerdal_Bindings_iOS___Xcode_Ide_Dev_Path)'</_CompileAndGenerateFatLibs_Config>
+            <_CompileAndGenerateFatLibs_Config>$(_CompileAndGenerateFatLibs_Config) XCODEBUILD_TARGET_SDK_VERSION='$(Laerdal_Bindings_iOS___Sdk_Version)'</_CompileAndGenerateFatLibs_Config>
+        </PropertyGroup>
+
+        <PropertyGroup Condition=" '$(IsNetMacCatalyst)' == 'true' ">
+            <_CompileAndGenerateFatLibs_Config>$(_CompileAndGenerateFatLibs_Config) SUPPORTS_MACCATALYST='YES'</_CompileAndGenerateFatLibs_Config>
+            <_CompileAndGenerateFatLibs_Config>$(_CompileAndGenerateFatLibs_Config) XCODEBUILD_TARGET_SDK='macosx'</_CompileAndGenerateFatLibs_Config>
+            <_CompileAndGenerateFatLibs_Config>$(_CompileAndGenerateFatLibs_Config) XCODE_IDE_DEV_PATH='$(Laerdal_Bindings_MacCatalyst___Xcode_Ide_Dev_Path)'</_CompileAndGenerateFatLibs_Config>
+            <_CompileAndGenerateFatLibs_Config>$(_CompileAndGenerateFatLibs_Config) XCODEBUILD_TARGET_SDK_VERSION='$(Laerdal_Bindings_MacCatalyst___Sdk_Version)'</_CompileAndGenerateFatLibs_Config>
+        </PropertyGroup>
+
+        <PropertyGroup>
+            <!-- common flags for both ios and maccatalyst -->
+            <_CompileAndGenerateFatLibs_Config>$(_CompileAndGenerateFatLibs_Config) INVOKE_SHARPIE='NO'</_CompileAndGenerateFatLibs_Config>
+            <_CompileAndGenerateFatLibs_Config>$(_CompileAndGenerateFatLibs_Config) SWIFT_OUTPUT_PATH='$(NativeFrameworkParentFolderpath)'</_CompileAndGenerateFatLibs_Config>
+        </PropertyGroup>
+
+        <Exec WorkingDirectory="$(_CarthageCheckout_FolderPath)" Command=" $(_CompileAndGenerateFatLibs_Config)  '$(_CompileAndGenerateFatLibs_FilePath)' "/>
+
+        <!-- warning   its absolutely vital to remove any softlink files as they are causing        -->
+        <!-- warning   codesign to fail when using the resulting nuget in maui apps   go figure ... -->
+        <Exec WorkingDirectory="$(NativeFrameworkParentFolderpath)" Command=" bash -c &quot; find . -type l -ls -delete &quot; "/>
+
+        <!-- remove any .DS_Store files from the .framework folder just be on the safe side -->
+        <Exec WorkingDirectory="$(NativeFrameworkParentFolderpath)" Command=" bash -c &quot; find . -name '.DS_Store' -type f -delete &quot; "/>
     </Target>
 
-    <!--    use this whenever you need to refresh apidefinition.cs and structsandenums.cs                                                                                             -->
-    <!--                                                                                                                                                                              -->
-    <!--             Condition=" Exists('Carthage\Carthage\Build\NordicDFU.xcframework') and !Exists('Sharpie\') and '$(ContinuousIntegrationBuild)' != 'true' "                      -->
-    <!--                                                                                                                                                                              -->
-    <!--    <Target Name="_RunObjectiveSharpie"-->
-    <!--            BeforeTargets="PrepareForBuild"-->
-    <!--            DependsOnTargets="_DownloadAndBuildIosNativeLibraries">-->
-    <!--        <Message Importance="High" Text="** Regenerating sharpie files ..."/>-->
-    <!--                                                                                                                                                                              -->
-    <!--        <Exec Command="sharpie bind -o Sharpie &#45;&#45;namespace=Laerdal.Dfu.Bindings.iOS -f Carthage/Carthage/Build/NordicDFU.xcframework/ios-arm64/NordicDFU.framework"/> -->
-    <!--    </Target>-->
+    <!-- this is meant to be invoked by the builder script separately before the main build kicks in   so keep it around -->
+    <Target Name="EnsureFrameworkFolderIsCreated">
+        <MakeDir Directories="$(NativeFrameworkActualTargetFolderpath)" Condition=" !Exists('$(NativeFrameworkActualTargetFolderpath)') "  />
+    </Target>
+
+    <Target Name="CreateKeepMeFileUnderFrameworkFolder" AfterTargets="CoreBuild">
+        <!-- to future maintainers     we need to keep this dummy file around in order to ensure that the folder Frameworks/McuMgrBindingsiOS.framework -->
+        <!-- to future maintainers     will always be automatically created upon git checkout in the azure pipelines  if we dont do this then the azure -->
+        <!-- to future maintainers     pipelines will generate a nuget without the Frameworks/McuMgrBindingsiOS.framework folder as a <NativeReference> -->
+        <!-- to future maintainers     causing the iOS nuget to be poisoned and cause cryptic errors in runtime about missing symbols etc               -->
+
+        <Touch Files="$(NativeFrameworkActualTargetFolderpath)/.keepme_in_git_otherwise_azure_pipelines_will_break" AlwaysCreate="true"/>
+    </Target>
+
+    <!-- https://learn.microsoft.com/en-us/xamarin/ios/platform/binding-objective-c/walkthrough?tabs=windows#create-a-xamarinios-binding-project -->
+    <ItemGroup>
+        <NativeReference Include="$(NativeFrameworkActualTargetFolderpath)">
+            <Kind>Framework</Kind>
+            <SmartLink>False</SmartLink>
+            <Frameworks>Foundation</Frameworks>
+        </NativeReference>
+    </ItemGroup>
+
 </Project>
