@@ -15,7 +15,12 @@ declare XCODE_IDE_DEV_PATH="${XCODE_IDE_DEV_PATH:-}"
 declare XCODEBUILD_TARGET_SDK="${XCODEBUILD_TARGET_SDK:-iphoneos}"
 declare XCODEBUILD_TARGET_SDK_VERSION="${XCODEBUILD_TARGET_SDK_VERSION}" # xcodebuild -showsdks
 
+declare XCODEBUILD_TARGET_ARCH="${XCODEBUILD_TARGET_ARCH:-arm64}"
+
 if [ "${XCODEBUILD_TARGET_SDK}" == "iphoneos" ] && [ -z "${XCODEBUILD_TARGET_SDK_VERSION}" ]; then # ios
+  XCODEBUILD_TARGET_SDK_VERSION="18.1" # requires xcode 16.1
+
+elif [ "${XCODEBUILD_TARGET_SDK}" == "iphonesimulator" ] && [ -z "${XCODEBUILD_TARGET_SDK_VERSION}" ]; then # ios-simulator for desktop debugging of apps
   XCODEBUILD_TARGET_SDK_VERSION="18.1" # requires xcode 16.1
 
 elif [ "${XCODEBUILD_TARGET_SDK}" == "macosx" ] && [ -z "${XCODEBUILD_TARGET_SDK_VERSION}" ]; then # maccatalyst
@@ -104,7 +109,7 @@ function build() {
 
   xcodebuild \
     -sdk "${XCODEBUILD_TARGET_SDK_WITH_VERSION_IF_ANY}" \
-    -arch "arm64" \
+    -arch "${XCODEBUILD_TARGET_ARCH}" \
     -scheme "${SWIFT_BUILD_SCHEME}" \
     -project "${SWIFT_PROJECT_PATH}" \
     -configuration "${SWIFT_BUILD_CONFIGURATION}" \
@@ -122,7 +127,7 @@ function build() {
   # https://stackoverflow.com/a/74478244/863651
   xcodebuild \
     -sdk "${XCODEBUILD_TARGET_SDK_WITH_VERSION_IF_ANY}" \
-    -arch "arm64" \
+    -arch "${XCODEBUILD_TARGET_ARCH}" \
     -scheme "${SWIFT_BUILD_SCHEME}" \
     -project "${SWIFT_PROJECT_PATH}" \
     -configuration "${SWIFT_BUILD_CONFIGURATION}" \
@@ -143,6 +148,12 @@ function build() {
 function create_fat_binaries() {
   echo "** Create fat binaries for '${XCODEBUILD_TARGET_SDK_WITH_VERSION_IF_ANY}-${SWIFT_BUILD_CONFIGURATION}'"
 
+  echo "**** LISTING 'PRODUCTS' FILES"
+  ls -lR "${SWIFT_BUILD_PATH}/Build/Products/"
+
+  echo "**** LISTING LIPO INPUT FILES"
+  ls -lR "${SWIFT_BUILD_PATH}/Build/Products/${OUTPUT_FOLDER_NAME}/${SWIFT_PROJECT_NAME}.framework/${SWIFT_PROJECT_NAME}"
+
   echo "**** (FatBinaries 1/8) Copy '${XCODEBUILD_TARGET_SDK_WITH_VERSION_IF_ANY}' build as a fat framework"
   cp \
     -R \
@@ -154,12 +165,6 @@ function create_fat_binaries() {
     echo "** [FAILED] Failed to copy"
     exit 1
   fi
-
-  echo "**** LISTING 'PRODUCTS' FILES"
-  ls -lR "${SWIFT_BUILD_PATH}/Build/Products/"
-
-  echo "**** LISTING LIPO INPUT FILES"
-  ls -lR "${SWIFT_BUILD_PATH}/Build/Products/${OUTPUT_FOLDER_NAME}/${SWIFT_PROJECT_NAME}.framework/${SWIFT_PROJECT_NAME}"
 
   echo "**** (FatBinaries 2/8) Turn artifacts in '${OUTPUT_FOLDER_NAME}' into fat libraries"
   lipo \
@@ -214,7 +219,7 @@ function create_fat_binaries() {
     -output "${OUTPUT_SHARPIE_HEADER_FILES_PATH}" \
     -namespace "${SWIFT_PROJECT_NAME}" \
     "${SWIFT_OUTPUT_PATH}/${SWIFT_PROJECT_NAME}.framework/Headers/${SWIFT_PROJECT_NAME}-Swift.h" \
-    -clang -arch arm64 # vital   needed for mac-catalyst
+    -clang -arch "${XCODEBUILD_TARGET_ARCH}" # vital   needed for mac-catalyst
   local exitCode=$?
   set +x
 
