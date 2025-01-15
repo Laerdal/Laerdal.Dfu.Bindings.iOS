@@ -65,6 +65,10 @@ if [ $exitCode != 0 ]; then
   exit 20
 fi
 
+echo "** XCode Installations:"
+
+ls  -ld  /Applications/Xcode* || exit 90
+
 #
 # we do our best to explicitly version-pin our workloads so as to preemptively avoid problems that
 # would be bound to crop up sooner or later by blindly auto-upgrading to bleeding-edge workloads

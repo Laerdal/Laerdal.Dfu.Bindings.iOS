@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <ProjectRootPath>$(MSBuildThisFileDirectory)</ProjectRootPath>
+
+        <Laerdal_Package_Name>Laerdal.Dfu.Bindings.MacCatalyst</Laerdal_Package_Name>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <TargetFramework>net8.0-maccatalyst</TargetFramework>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <_CompileAndGenerateFatLibs_Config>$(_CompileAndGenerateFatLibs_Config) SUPPORTS_MACCATALYST='YES'</_CompileAndGenerateFatLibs_Config>
+        <_CompileAndGenerateFatLibs_Config>$(_CompileAndGenerateFatLibs_Config) XCODEBUILD_TARGET_SDK='macosx'</_CompileAndGenerateFatLibs_Config>
+        <_CompileAndGenerateFatLibs_Config>$(_CompileAndGenerateFatLibs_Config) XCODEBUILD_TARGET_ARCH='arm64'</_CompileAndGenerateFatLibs_Config>
+        
+        <_CompileAndGenerateFatLibs_Config>$(_CompileAndGenerateFatLibs_Config) XCODE_IDE_DEV_PATH='$(Laerdal_Bindings_MacCatalyst___Xcode_Ide_Dev_Path)'</_CompileAndGenerateFatLibs_Config>
+        <_CompileAndGenerateFatLibs_Config>$(_CompileAndGenerateFatLibs_Config) XCODEBUILD_TARGET_SDK_VERSION='$(Laerdal_Bindings_MacCatalyst___Sdk_Version)'</_CompileAndGenerateFatLibs_Config>
+    </PropertyGroup>
+
+    <Import Project="../Laerdal.Scripts/Laerdal.targets"/>
+</Project>

@@ -2,7 +2,7 @@
     <PropertyGroup>
         <ProjectRootPath>$(MSBuildThisFileDirectory)</ProjectRootPath>
 
-        <Laerdal_Package_Name>Laerdal.Dfu.Bindings.iOS</Laerdal_Package_Name>
+        <Laerdal_Package_Name>Laerdal.Dfu.Bindings.iOSSimulator.x64</Laerdal_Package_Name>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -11,16 +11,12 @@
 
     <PropertyGroup>
         <_CompileAndGenerateFatLibs_Config>$(_CompileAndGenerateFatLibs_Config) SUPPORTS_MACCATALYST='NO'</_CompileAndGenerateFatLibs_Config>
-        <_CompileAndGenerateFatLibs_Config>$(_CompileAndGenerateFatLibs_Config) XCODEBUILD_TARGET_SDK='iphoneos'</_CompileAndGenerateFatLibs_Config>
-        <_CompileAndGenerateFatLibs_Config>$(_CompileAndGenerateFatLibs_Config) XCODEBUILD_TARGET_ARCH='arm64'</_CompileAndGenerateFatLibs_Config>
-        
+        <_CompileAndGenerateFatLibs_Config>$(_CompileAndGenerateFatLibs_Config) XCODEBUILD_TARGET_SDK='iphonesimulator'</_CompileAndGenerateFatLibs_Config>
+        <_CompileAndGenerateFatLibs_Config>$(_CompileAndGenerateFatLibs_Config) XCODEBUILD_TARGET_ARCH='x86_64'</_CompileAndGenerateFatLibs_Config>
+
         <_CompileAndGenerateFatLibs_Config>$(_CompileAndGenerateFatLibs_Config) XCODE_IDE_DEV_PATH='$(Laerdal_Bindings_iOS___Xcode_Ide_Dev_Path)'</_CompileAndGenerateFatLibs_Config>
         <_CompileAndGenerateFatLibs_Config>$(_CompileAndGenerateFatLibs_Config) XCODEBUILD_TARGET_SDK_VERSION='$(Laerdal_Bindings_iOS___Sdk_Version)'</_CompileAndGenerateFatLibs_Config>
     </PropertyGroup>
-
-    <ItemGroup>
-      <Folder Include="Frameworks\NordicDFU.framework\" />
-    </ItemGroup>
 
     <Import Project="../Laerdal.Scripts/Laerdal.targets"/>
 </Project>

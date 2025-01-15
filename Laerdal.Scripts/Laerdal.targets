@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+
+    <PropertyGroup>
+        <!--<Laerdal_Package_Name>Laerdal.Dfu.Bindings.iOS</Laerdal_Package_Name>-->
+        <Laerdal_Package_Tags>Ble;Tools;Xamarin;Dfu;Bluetooth;Nordic;Semiconductor</Laerdal_Package_Tags>
+        <Laerdal_Package_Copyright>Laerdal Medical, Francois Raminosona</Laerdal_Package_Copyright>
+        <Laerdal_Package_Description>Xamarin wrapper around Nordic.Dfu for iOS.</Laerdal_Package_Description>
+
+        <!-- <BuildWithMSBuildOnMono>false</BuildWithMSBuildOnMono> -->
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <IsOSX Condition=" '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' == 'true' ">true</IsOSX>
+
+        <IsNetIOS Condition="           $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'         ">true</IsNetIOS>
+        <IsNetMacCatalyst Condition="   $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst' ">true</IsNetMacCatalyst>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <IsBindingProject>true</IsBindingProject>
+
+        <DebugType>full</DebugType>
+        <Optimized>false</Optimized>
+        <MtouchExtraArgs>-v -v -v -v</MtouchExtraArgs>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <NoBindingEmbedding>true</NoBindingEmbedding>
+        <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
+
+        <DefaultItemExcludes>$(DefaultItemExcludes);Carthage\**</DefaultItemExcludes>
+
+        <!-- this must be set by each .csproj file -->
+        <!-- <ProjectRootPath>$(MSBuildThisFileDirectory)</ProjectRootPath> -->
+
+        <NativeFrameworkParentFolderpath>$([System.IO.Path]::Combine($(ProjectRootPath), 'Frameworks'))</NativeFrameworkParentFolderpath>
+        <NativeFrameworkActualTargetFolderpath>$(NativeFrameworkParentFolderpath)/NordicDFU.framework</NativeFrameworkActualTargetFolderpath>
+
+        <!-- set these explicitly here only for experimentation    as far as cicd is concerned these values should be set in the .yml file of the pipeline                                                                                      -->
+        <!-- <Laerdal_Bindings_iOS___Sdk_Version Condition="                '$(Laerdal_Bindings_iOS___Sdk_Version)'                == '' ">17.0</Laerdal_Bindings_iOS___Sdk_Version>                                                            -->
+        <!-- <Laerdal_Bindings_iOS___Xcode_Ide_Dev_Path Condition="         '$(Laerdal_Bindings_iOS___Xcode_Ide_Dev_Path)'         == '' ">/Applications/Xcode_15.4.app/Contents/Developer/</Laerdal_Bindings_iOS___Xcode_Ide_Dev_Path>         -->
+        <!-- <Laerdal_Bindings_MacCatalyst___Sdk_Version Condition="        '$(Laerdal_Bindings_MacCatalyst___Sdk_Version)'        == '' ">17.0</Laerdal_Bindings_MacCatalyst___Sdk_Version>                                                    -->
+        <!-- <Laerdal_Bindings_MacCatalyst___Xcode_Ide_Dev_Path Condition=" '$(Laerdal_Bindings_MacCatalyst___Xcode_Ide_Dev_Path)' == '' ">/Applications/Xcode_15.4.app/Contents/Developer</Laerdal_Bindings_MacCatalyst___Xcode_Ide_Dev_Path>  -->
+
+        <!-- 1. under net8 we need Optimized=false otherwise release builds cause the resulting apps to crash right upon getting launched in the iphone! -->
+        <!-- 2. NoBindingEmbedding=true per https://github.com/Laerdal/Laerdal.Dfu/issues/29#issuecomment-1904057544 -->
+    </PropertyGroup>
+
+    <!-- ==================== VERSION ==================== -->
+    <PropertyGroup>
+        <!-- when updating this version it is imperative to also update it manually inside laerdal.builder.targets too -->
+        <!-- failing to do so will cause the release mechanism to fail in terms of creating a new release on github    -->
+        <Nordic_Package_Version Condition=" '$(Nordic_Package_Version)' == '' ">4.15.3</Nordic_Package_Version>
+        <Laerdal_Revision Condition="       '$(Laerdal_Revision)'       == '' ">0</Laerdal_Revision>
+
+        <Laerdal_Version_Full Condition=" '$(Laerdal_Version_Full)' == '' ">$(Nordic_Package_Version).$(Laerdal_Revision)</Laerdal_Version_Full>
+    </PropertyGroup>
+
+    <!-- ==================== TARGET PLATFORM VERSION ======================= -->
+    <PropertyGroup>
+        <!-- you will need to be specific when it comes to workloads ->    dotnet workload install maui -/-version 8.0.402   -->
+
+        <!-- #1 these properties must be kept in sync between this file and laerdal.mcumgr.bindings.[android|ios|maccatalyst].csproj   -->
+        <!-- #2 even though this is library is pure csharp we still have to specify the target-plaform-version for each target because -->
+        <!--    if we dont dont the build system throws a tantrum from oct 2024 onwards                                                -->
+        <TargetPlatformVersion Condition="       '$(IsNetIOS)'         == 'true' ">17.0</TargetPlatformVersion>
+        <TargetPlatformMinVersion Condition="    '$(IsNetIOS)'         == 'true' ">14.2</TargetPlatformMinVersion>
+        <SupportedOSPlatformVersion  Condition=" '$(IsNetIOS)'         == 'true' ">14.2</SupportedOSPlatformVersion>
+
+        <TargetPlatformVersion Condition="       '$(IsNetMacCatalyst)' == 'true' ">17.0</TargetPlatformVersion>
+        <TargetPlatformMinVersion Condition="    '$(IsNetMacCatalyst)' == 'true' ">13.1</TargetPlatformMinVersion>
+        <SupportedOSPlatformVersion  Condition=" '$(IsNetMacCatalyst)' == 'true' ">13.1</SupportedOSPlatformVersion>
+    </PropertyGroup>
+
+    <!-- ==================== DEFAULT CONFIGURATION ==================== -->
+    <PropertyGroup>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+
+        <IncludeSource>True</IncludeSource>
+        <IncludeSymbols>True</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <Deterministic>true</Deterministic>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>true</ImplicitUsings>
+    </PropertyGroup>
+
+    <!-- ==================== DEFAULT CI CONFIGURATION ==================== -->
+    <PropertyGroup>
+        <ContinuousIntegrationBuild>false</ContinuousIntegrationBuild>
+        <!-- https://learn.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml&WT.mc_id=DT-MVP-5003978#system-variables -->
+        <ContinuousIntegrationBuild Condition="'$(TF_BUILD)' == 'true'">true</ContinuousIntegrationBuild>
+        <!-- https://help.github.com/en/actions/configuring-and-managing-workflows/using-environment-variables -->
+        <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
+        <!-- https://docs.gitlab.com/ee/ci/variables/predefined_variables.html -->
+        <ContinuousIntegrationBuild Condition="'$(GITLAB_CI)' == 'true'">true</ContinuousIntegrationBuild>
+    </PropertyGroup>
+
+    <!-- ==================== PACKAGING ==================== -->
+    <PropertyGroup>
+        <!-- Laerdal_Package_Name -->
+        <RootNamespace>$(Laerdal_Package_Name)</RootNamespace>
+        <PackageId>$(Laerdal_Package_Name)</PackageId>
+        <AssemblyName>$(Laerdal_Package_Name)</AssemblyName>
+        <Title>$(Laerdal_Package_Name)</Title>
+
+        <!-- Laerdal_Package_Copyright -->
+        <Authors>$(Laerdal_Package_Copyright)</Authors>
+        <Owners>$(Laerdal_Package_Copyright)</Owners>
+        <Copyright>$(Laerdal_Package_Copyright)</Copyright>
+
+        <!-- Laerdal_Package_Description -->
+        <Summary>$(Laerdal_Package_Description)</Summary>
+        <Description>$(Laerdal_Package_Description)</Description>
+        <PackageDescription>$(Laerdal_Package_Description)</PackageDescription>
+
+        <!-- Laerdal_Package_Description -->
+        <Summary>$(Laerdal_Package_Description)</Summary>
+        <Description>$(Laerdal_Package_Description)</Description>
+        <PackageDescription>$(Laerdal_Package_Description)</PackageDescription>
+
+        <!-- Laerdal_Package_Output -->
+        <PackageOutputPath Condition="'$(PackageOutputPath)' == ''" >$(Laerdal_Package_Output)</PackageOutputPath>
+        <PackageOutputPath Condition="'$(PackageOutputPath)' == '' ">$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), `../Output/`))</PackageOutputPath> <!-- default -->
+        <PackageOutputPath>$([System.IO.Path]::GetFullPath( '$(PackageOutputPath)' ))</PackageOutputPath>
+        
+        <!-- Extra files and properties -->
+        <PackageTags>Laerdal;Internal;$(Laerdal_Package_Tags)</PackageTags>
+        <PackageIconPath>$([System.IO.Path]::Combine($(MSBuildProjectDirectory), `../icon.png`))</PackageIconPath>
+        <PackageLicencePath>$([System.IO.Path]::Combine($(MSBuildProjectDirectory), `../LICENSE`))</PackageLicencePath>
+        <PackageReadMePath>$([System.IO.Path]::Combine($(MSBuildProjectDirectory), `../README.md`))</PackageReadMePath>
+        <PackageIcon Condition="Exists('$(PackageIconPath)')">icon.png</PackageIcon>
+        <PackageLicenseFile Condition="Exists('$(PackageLicencePath)')">LICENSE</PackageLicenseFile>
+        <PackageReadmeFile Condition="Exists('$(PackageReadMePath)')">README.md</PackageReadmeFile>
+    </PropertyGroup>
+    <ItemGroup>
+        <None Include="$(PackageIconPath)" Pack="true" PackagePath="\" Condition="Exists('$(PackageIconPath)')" />
+        <None Include="$(PackageLicencePath)" Pack="true" PackagePath="\" Condition="Exists('$(PackageLicencePath)')" />
+        <None Include="$(PackageReadMePath)" Pack="true" PackagePath="\" Condition="Exists('$(PackageReadMePath)')" />
+    </ItemGroup>
+
+    <!-- ==================== SOURCELINK ==================== -->
+    <PropertyGroup>
+        <!-- https://github.com/dotnet/sourcelink -->
+        <!-- sourcelink: Declare that the Repository URL can be published to NuSpec -->
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <!-- sourcelink: Embed source files that are not tracked by the source control manager to the PDB -->
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <!-- sourcelink: Include PDB in the built .nupkg -->
+        <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb;.md</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All"/>
+    </ItemGroup>
+
+    <!-- ==================== LOGGING ==================== -->
+    <Target Name="PrintBuildInfo" BeforeTargets="BeforeBuild">
+        <Message Importance="High" Text="*** Package Info ***"/>
+        <Message Importance="High" Text="Version :                                              $(Version)                                           "/>
+        <Message Importance="High" Text="Platform :                                             $(Platform)                                          "/>
+        <Message Importance="High" Text="PackageId :                                            $(PackageId)                                         "/>
+        <Message Importance="High" Text="Configuration :                                        $(Configuration)                                     "/>
+        <Message Importance="High" Text="PackageVersion :                                       $(PackageVersion)                                    "/>
+        <Message Importance="High" Text="DesignTimeBuild :                                      $(DesignTimeBuild)                                   "/>
+        <Message Importance="High" Text="BuildingProject :                                      $(BuildingProject)                                   "/>
+        <Message Importance="High" Text="TargetFramework :                                      $(TargetFramework)                                   "/>
+        <Message Importance="High" Text="DefineConstants :                                      $(DefineConstants)                                   "/>
+        <Message Importance="High" Text="AssemblyVersion :                                      $(AssemblyVersion)                                   "/>
+        <Message Importance="High" Text="MSBuildRuntimeType :                                   $(MSBuildRuntimeType)                                "/>
+        <Message Importance="High" Text="AssemblyFileVersion :                                  $(AssemblyFileVersion)                               "/>
+        <Message Importance="High" Text="NativeFrameworkActualTargetFolderpath :                $(NativeFrameworkActualTargetFolderpath)             "/>
+        <Message Importance="High" Text="                                                                                                            "/>
+        <Message Importance="High" Text="Laerdal_Bindings_iOS___Sdk_Version :                   $(Laerdal_Bindings_iOS___Sdk_Version)                "/>
+        <Message Importance="High" Text="Laerdal_Bindings_iOS___Xcode_Ide_Dev_Path :            $(Laerdal_Bindings_iOS___Xcode_Ide_Dev_Path)         "/>
+        <Message Importance="High" Text="Laerdal_Bindings_MacCatalyst___Sdk_Version :           $(Laerdal_Bindings_MacCatalyst___Sdk_Version)        "/>
+        <Message Importance="High" Text="Laerdal_Bindings_MacCatalyst___Xcode_Ide_Dev_Path :    $(Laerdal_Bindings_MacCatalyst___Xcode_Ide_Dev_Path) "/>
+
+        <Exec Command="echo 'BUILD_NUMBER=$(PackageVersion)' >> $GITHUB_ENV" Condition="'$(GITHUB_ACTIONS)' == 'true'" />
+        <Exec Command="echo 'CI_PIPELINE_IID=$(PackageVersion)' >> $CI_ENVIRONMENT_URL" Condition="'$(GITLAB_CI)' == 'true'" />
+        <Message Importance="High" Text="##vso[build.updatebuildnumber]$(PackageVersion)" Condition=" '$(TF_BUILD)' == 'true' " />
+    </Target>
+
+    <!-- ==================== VERSION ==================== -->
+    <PropertyGroup>
+        <Laerdal_Version_Full Condition="'$(Laerdal_Version_Full)' == ''">1.0.0-local.0</Laerdal_Version_Full>
+        <!-- Apply Version parts according to packaging standards -->
+        <AssemblyVersion>$(Laerdal_Version_Full)</AssemblyVersion>
+        <AssemblyFileVersion>$(Laerdal_Version_Full)</AssemblyFileVersion>
+        <AssemblyInformationalVersion>$(Laerdal_Version_Full)</AssemblyInformationalVersion>
+        <Version>$(Laerdal_Version_Full)</Version>
+        <PackageVersion>$(Laerdal_Version_Full)</PackageVersion>
+    </PropertyGroup>
+
+    <!-- considering the highly customized nature of the build system we need to ensure that parallelization is turned off otherwise we will end up with   -->
+    <!-- cryptic errors in azure due to target-frameworks trying to build themselves in parallel thus stepping onto eachothers toes    thats because the   -->
+    <!-- intended way of building stuff is to let net8.0-maccatalyst build the maccatalyst libs and once that is done then and only then proceed to        -->
+    <!-- compiling any additional target-framework which will find the compiled framework-libs already in place                                            -->
+    <Target Name="RunHealthchecksBeforeNativeBuild"
+            BeforeTargets="CompileProxyProjectAndGenerateFatLibs">
+        
+        <ProjectRootPath Condition=" '$(ProjectRootPath)' == '' " Text="'ProjectRootPath' is not set!" />
+        
+        <Error Condition=" '$(MSBuildNodeCount)' != '' and $(MSBuildNodeCount) &gt; 1 " Text="Detected that parallelization is turned on (MSBuildNodeCount: $(MSBuildNodeCount) > 1). Refusing to build because parallelized builds are destined to fail with cryptic errors. Turn off parallelization via BuildInParallel=false or /m:1 (see: https://stackoverflow.com/a/76340699/863651)"/>
+    </Target>
+
+    <ItemGroup>
+        <!-- unfortunately the files autogenerated by sharpie need a lot of hand tweaking to -->
+        <!-- be really aligned with the underlying native libs so we cannot use them as-is   -->
+        <None Include="Sharpie\**\*.cs"/>
+        <Compile Remove="Sharpie\**\*.cs"/>
+
+        <ObjcBindingCoreSource Include="StructsAndEnums.cs"/>
+        <ObjcBindingApiDefinition Include="ApiDefinition.cs"/>
+    </ItemGroup>
+
+    <!-- 1  its important to ensure that we only build the native libs once and only once otherwise we will get them build twice in parallel       -->
+    <!--                                                                                                                                           -->
+    <!-- 2  also note that we hook onto the PrepareForBuild task    if we target the task CoreCompile then this task will be invoked on localdev   -->
+    <!--    but on in the azure pipelines for some weird reason                                                                                    -->
+    <Target Name="CompileProxyProjectAndGenerateFatLibs"
+            BeforeTargets="PrepareForBuild"
+            Condition=" '$(DesignTimeBuild)' != 'true' and '$(BuildingProject)' == 'true' ">
+
+        <Error Condition=" '$(IsOSX)' != 'true'                   " Text="This project can only be built on MacOS because it relies on the Carthage family of cli utils."/>
+        <Error Condition=" '$(Laerdal_Github_Access_Token)' == '' " Text="'Laerdal_Github_Access_Token' is not defined. Please define it in your environment variables otherwise Carthage will fail most of the times."/>
+
+        <!-- 0. checkout the libraries -->
+        <ItemGroup Condition=" '$(CleanNativeFolder)' == 'true' ">
+            <_PreexistingFilesToClean Include="$(NativeFrameworkActualTargetFolderpath)\**\*"/>
+        </ItemGroup>
+
+        <Delete Condition=" '$(CleanNativeFolder)' == 'true' "
+                Files="@(_PreexistingFilesToClean)"
+                ContinueOnError="true"/>
+
+        <!-- 1. checkout the libraries -->
+        <Message Importance="High" Text="** Downloading Carthage Packages ..."/>
+
+        <PropertyGroup>
+            <_CarthageCheckoutCommand>$(_CarthageCheckoutCommand) GITHUB_ACCESS_TOKEN=&quot;github.com=$(Laerdal_Github_Access_Token)&quot;</_CarthageCheckoutCommand>
+            <_CarthageCheckoutCommand>$(_CarthageCheckoutCommand) carthage update</_CarthageCheckoutCommand>
+            <_CarthageCheckoutCommand>$(_CarthageCheckoutCommand) --no-build</_CarthageCheckoutCommand>
+
+            <_RootFolderPath>$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), `..`))</_RootFolderPath>
+            <_RootFolderPath>$([System.IO.Path]::GetFullPath( '$(_RootFolderPath)' ))</_RootFolderPath>
+
+            <_CarthageBase_FolderPath>$([System.IO.Path]::Combine($(_RootFolderPath), `Laerdal.Dfu.Native`))</_CarthageBase_FolderPath>
+            <_CarthageCheckout_FolderPath>$([System.IO.Path]::Combine($(_CarthageBase_FolderPath), `Carthage`, `Checkouts`))</_CarthageCheckout_FolderPath>
+            <_CarthageCheckoutNordicIosPodsDfuLibrary_FolderPath>$([System.IO.Path]::Combine($(_CarthageCheckout_FolderPath), `IOS-Pods-DFU-Library`))</_CarthageCheckoutNordicIosPodsDfuLibrary_FolderPath>
+
+            <_CompileAndGenerateFatLibs_FilePath>$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), `Laerdal.Mac.CompileAndGenerateFatLibs.sh`))</_CompileAndGenerateFatLibs_FilePath>
+
+            <_CartfileFilePath>$([System.IO.Path]::Combine($(_CarthageBase_FolderPath), 'Cartfile'))</_CartfileFilePath>
+        </PropertyGroup>
+
+        <WriteLinesToFile
+                File="$(_CartfileFilePath)"
+                Lines="github    &quot;NordicSemiconductor/IOS-Pods-DFU-Library&quot;    &quot;$(Nordic_Package_Version)&quot;"
+                Overwrite="true"/>
+
+        <!-- noticed that we had to resort to no-use-bindaries because we would constantly -->
+        <!-- into ratelimiting problems without it causing our github pipelines to fail    -->
+        <MakeDir Directories="$(_CarthageBase_FolderPath)" Condition=" !Exists('$(_CarthageBase_FolderPath)') "  />
+        <Exec WorkingDirectory="$(_CarthageBase_FolderPath)" Command=" $(_CarthageCheckoutCommand) "/>
+
+        <RemoveDir Directories="$(_CarthageCheckoutNordicIosPodsDfuLibrary_FolderPath)\Example" Condition="Exists('$(_CarthageCheckoutNordicIosPodsDfuLibrary_FolderPath)\Example')"/>
+
+        <!-- 2. build and generate the fat libs from the proxy swift project -->
+        <Exec WorkingDirectory="$(MSBuildThisFileDirectory)" Command=" bash -c &quot; chmod +x  '$(_CompileAndGenerateFatLibs_FilePath)' &quot; "/>
+
+        <PropertyGroup>
+            <!-- common flags for both ios and maccatalyst -->
+            <_CompileAndGenerateFatLibs_Config>$(_CompileAndGenerateFatLibs_Config) INVOKE_SHARPIE='NO'</_CompileAndGenerateFatLibs_Config>
+            <_CompileAndGenerateFatLibs_Config>$(_CompileAndGenerateFatLibs_Config) SWIFT_OUTPUT_PATH='$(NativeFrameworkParentFolderpath)'</_CompileAndGenerateFatLibs_Config>
+        </PropertyGroup>
+
+        <MakeDir Directories="$(_CarthageCheckout_FolderPath)" Condition=" !Exists('$(_CarthageCheckout_FolderPath)') "  />
+        <Exec WorkingDirectory="$(_CarthageCheckout_FolderPath)" Command=" $(_CompileAndGenerateFatLibs_Config)  '$(_CompileAndGenerateFatLibs_FilePath)' "/>
+
+        <!-- warning   its absolutely vital to remove any softlink files as they are causing        -->
+        <!-- warning   codesign to fail when using the resulting nuget in maui apps   go figure ... -->
+        <Exec WorkingDirectory="$(NativeFrameworkParentFolderpath)" Command=" bash -c &quot; find . -type l -ls -delete &quot; "/>
+
+        <!-- remove any .DS_Store files from the .framework folder just be on the safe side -->
+        <Exec WorkingDirectory="$(NativeFrameworkParentFolderpath)" Command=" bash -c &quot; find . -name '.DS_Store' -type f -delete &quot; "/>
+    </Target>
+
+    <!-- this is meant to be invoked by the builder script separately before the main build kicks in   so keep it around -->
+    <Target Name="EnsureFrameworkFolderIsCreated">
+        <MakeDir Directories="$(NativeFrameworkActualTargetFolderpath)" Condition=" !Exists('$(NativeFrameworkActualTargetFolderpath)') "  />
+    </Target>
+
+    <Target Name="CreateKeepMeFileUnderFrameworkFolder" AfterTargets="CoreBuild">
+        <!-- to future maintainers     we need to keep this dummy file around in order to ensure that the folder Frameworks/McuMgrBindingsiOS.framework -->
+        <!-- to future maintainers     will always be automatically created upon git checkout in the azure pipelines  if we dont do this then the azure -->
+        <!-- to future maintainers     pipelines will generate a nuget without the Frameworks/McuMgrBindingsiOS.framework folder as a <NativeReference> -->
+        <!-- to future maintainers     causing the iOS nuget to be poisoned and cause cryptic errors in runtime about missing symbols etc               -->
+
+        <Touch Files="$(NativeFrameworkActualTargetFolderpath)/.keepme_in_git_otherwise_azure_pipelines_will_break" AlwaysCreate="true"/>
+    </Target>
+
+    <!-- https://learn.microsoft.com/en-us/xamarin/ios/platform/binding-objective-c/walkthrough?tabs=windows#create-a-xamarinios-binding-project -->
+    <ItemGroup>
+        <NativeReference Include="$(NativeFrameworkActualTargetFolderpath)">
+            <Kind>Framework</Kind>
+            <SmartLink>False</SmartLink>
+            <Frameworks>Foundation</Frameworks>
+        </NativeReference>
+    </ItemGroup>
+
+</Project>
