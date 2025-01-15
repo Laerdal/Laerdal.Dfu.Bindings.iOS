@@ -97,14 +97,15 @@
     <!-- ==================== PACKAGING ==================== -->
     <PropertyGroup>
         <!-- Laerdal_Package_Name -->
-        <RootNamespace>$(Laerdal_Package_Name)</RootNamespace>
         <PackageId>$(Laerdal_Package_Name)</PackageId>
-        <AssemblyName>$(Laerdal_Package_Name)</AssemblyName>
-        <Title>$(Laerdal_Package_Name)</Title>
+
+        <Title>Laerdal.Dfu.Bindings.iOS</Title>
+        <AssemblyName>Laerdal.Dfu.Bindings.iOS</AssemblyName>
+        <RootNamespace>Laerdal.Dfu.Bindings.iOS</RootNamespace>
 
         <!-- Laerdal_Package_Copyright -->
-        <Authors>$(Laerdal_Package_Copyright)</Authors>
         <Owners>$(Laerdal_Package_Copyright)</Owners>
+        <Authors>$(Laerdal_Package_Copyright)</Authors>
         <Copyright>$(Laerdal_Package_Copyright)</Copyright>
 
         <!-- Laerdal_Package_Description -->
