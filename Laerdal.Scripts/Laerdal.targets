@@ -3,7 +3,7 @@
 
     <PropertyGroup>
         <!--<Laerdal_Package_Name>Laerdal.Dfu.Bindings.iOS</Laerdal_Package_Name>-->
-        <Laerdal_Package_Tags>Ble;Tools;Xamarin;Dfu;Bluetooth;Nordic;Semiconductor</Laerdal_Package_Tags>
+        <Laerdal_Package_Tags>$(Laerdal_Package_Tags);Ble;Tools;Xamarin;Dfu;Bluetooth;Nordic;Semiconductor</Laerdal_Package_Tags>
         <Laerdal_Package_Copyright>Laerdal Medical, Francois Raminosona</Laerdal_Package_Copyright>
         <Laerdal_Package_Description>Xamarin wrapper around Nordic.Dfu for iOS.</Laerdal_Package_Description>
 
@@ -124,7 +124,7 @@
         <PackageOutputPath>$([System.IO.Path]::GetFullPath( '$(PackageOutputPath)' ))</PackageOutputPath>
         
         <!-- Extra files and properties -->
-        <PackageTags>Laerdal;Internal;$(Laerdal_Package_Tags)</PackageTags>
+        <PackageTags>$(Laerdal_Package_Tags)</PackageTags>
         <PackageIconPath>$([System.IO.Path]::Combine($(MSBuildProjectDirectory), `../icon.png`))</PackageIconPath>
         <PackageLicencePath>$([System.IO.Path]::Combine($(MSBuildProjectDirectory), `../LICENSE`))</PackageLicencePath>
         <PackageReadMePath>$([System.IO.Path]::Combine($(MSBuildProjectDirectory), `../README.md`))</PackageReadMePath>
@@ -182,12 +182,15 @@
     <!-- ==================== VERSION ==================== -->
     <PropertyGroup>
         <Laerdal_Version_Full Condition="'$(Laerdal_Version_Full)' == ''">1.0.0-local.0</Laerdal_Version_Full>
+        
         <!-- Apply Version parts according to packaging standards -->
+        <Version>$(Laerdal_Version_Full)</Version>
         <AssemblyVersion>$(Laerdal_Version_Full)</AssemblyVersion>
         <AssemblyFileVersion>$(Laerdal_Version_Full)</AssemblyFileVersion>
         <AssemblyInformationalVersion>$(Laerdal_Version_Full)</AssemblyInformationalVersion>
-        <Version>$(Laerdal_Version_Full)</Version>
-        <PackageVersion>$(Laerdal_Version_Full)</PackageVersion>
+        
+        <!-- note that it is absolutely vital to append $(Laerdal_Package_Version_Postfix) because the iphone-simulator nugets need it! -->
+        <PackageVersion>$(Laerdal_Version_Full)$(Laerdal_Package_Version_Postfix)</PackageVersion>
     </PropertyGroup>
 
     <!-- considering the highly customized nature of the build system we need to ensure that parallelization is turned off otherwise we will end up with   -->

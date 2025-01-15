@@ -175,11 +175,12 @@
         <Error Condition=" '$(Laerdal_Dependency_Tracker_Api_Key_File_Path)'             == '' " Text="'Laerdal_Dependency_Tracker_Api_Key_File_Path' has to be set. Please call this script again with the argument '/p:Laerdal_Dependency_Tracker_Api_Key_File_Path=...'"/>
         <Error Condition=" '$(Laerdal_Dependency_Tracker_Private_Signing_Key_File_Path)' == '' " Text="'Laerdal_Dependency_Tracker_Private_Signing_Key_File_Path' has to be set. Please call this script again with the argument '/p:Laerdal_Dependency_Tracker_Private_Signing_Key_File_Path=...'"/>
 
+        <!--  IOS  -->
         <PropertyGroup>
             <!-- notice that we intentionally use $(Laerdal_Version_Assembly) instead of $(Laerdal_Version_Full) -->
             <!-- because cyclonedx inherently ear-tags sboms with the former rather than the later               -->
 
-            <_Laerdal_Project_iOS_Name>$([System.IO.Path]::GetFileName('$(Laerdal_Project_iOS)').Replace('.csproj', ''))</_Laerdal_Project_iOS_Name>
+            <_Laerdal_Project_Name>$([System.IO.Path]::GetFileName('$(Laerdal_Project_iOS)').Replace('.csproj', ''))</_Laerdal_Project_Name>
 
             <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --project-version &quot;$(Laerdal_Version_Assembly)&quot;</_Laerdal_Sbom_Script_Parameters>
             <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --output-directory-path &quot;$(PackageOutputPath)&quot;</_Laerdal_Sbom_Script_Parameters>
@@ -191,7 +192,7 @@
             <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --csproj-classifier &quot;Library&quot;</_Laerdal_Sbom_Script_Parameters>
             <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --csproj-file-path &quot;$(Laerdal_Project_iOS)&quot;</_Laerdal_Sbom_Script_Parameters>
 
-            <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --project-name &quot;$(_Laerdal_Project_iOS_Name)&quot;</_Laerdal_Sbom_Script_Parameters>
+            <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --project-name &quot;$(_Laerdal_Project_Name)&quot;</_Laerdal_Sbom_Script_Parameters>
             <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --output-sbom-file-name &quot;sbom.laerdal.dfu.bindings.ios.xml&quot;</_Laerdal_Sbom_Script_Parameters>
 
             <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --parent-project-name &quot;[Group(Legacy)::Laerdal.Dfu.Bindings.iOS]&quot;</_Laerdal_Sbom_Script_Parameters>
@@ -202,6 +203,37 @@
         <Message Importance="High" Text="** Generating, Singing and Uploading SBOMs:"/>
 
         <Exec Command="   bash    Laerdal.GenerateSignAndUploadSbom.sh     $(_Laerdal_Sbom_Script_Parameters)  " ConsoleToMSBuild="true" WorkingDirectory="$(Laerdal_Script_FolderPath)"/>
+
+        <!--  MACCATALYST  -->
+        <PropertyGroup>
+            <!-- notice that we intentionally use $(Laerdal_Version_Assembly) instead of $(Laerdal_Version_Full) -->
+            <!-- because cyclonedx inherently ear-tags sboms with the former rather than the later               -->
+
+            <_Laerdal_Project_Name>$([System.IO.Path]::GetFileName('$(Laerdal_Project_MacCatalyst)').Replace('.csproj', ''))</_Laerdal_Project_Name>
+
+            <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --project-version &quot;$(Laerdal_Version_Assembly)&quot;</_Laerdal_Sbom_Script_Parameters>
+            <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --output-directory-path &quot;$(PackageOutputPath)&quot;</_Laerdal_Sbom_Script_Parameters>
+            <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --sbom-signing-key-file-path &quot;$(Laerdal_Dependency_Tracker_Private_Signing_Key_File_Path)&quot;</_Laerdal_Sbom_Script_Parameters>
+
+            <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --dependency-tracker-url &quot;$(Laerdal_Dependency_Tracker_Server_Url)&quot;</_Laerdal_Sbom_Script_Parameters>
+            <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --dependency-tracker-api-key-file-path &quot;$(Laerdal_Dependency_Tracker_Api_Key_File_Path)&quot;</_Laerdal_Sbom_Script_Parameters>
+
+            <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --csproj-classifier &quot;Library&quot;</_Laerdal_Sbom_Script_Parameters>
+            <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --csproj-file-path &quot;$(Laerdal_Project_MacCatalyst)&quot;</_Laerdal_Sbom_Script_Parameters>
+
+            <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --project-name &quot;$(_Laerdal_Project_Name)&quot;</_Laerdal_Sbom_Script_Parameters>
+            <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --output-sbom-file-name &quot;sbom.laerdal.dfu.bindings.maccatalyst.xml&quot;</_Laerdal_Sbom_Script_Parameters>
+
+            <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --parent-project-name &quot;[Group(Legacy)::Laerdal.Dfu.Bindings.MacCatalyst]&quot;</_Laerdal_Sbom_Script_Parameters>
+        </PropertyGroup>
+
+        <!-- https://docs.dependencytrack.org/usage/cicd/#large-payloads   also notice that we are forced to target           -->
+        <!-- /api/api/v1/bom instead of /api/v1/bom due to an inherent misconfiguration of laerdal's dependency-track server  -->
+        <Message Importance="High" Text="** Generating, Singing and Uploading SBOMs:"/>
+
+        <Exec Command="   bash    Laerdal.GenerateSignAndUploadSbom.sh     $(_Laerdal_Sbom_Script_Parameters)  " ConsoleToMSBuild="true" WorkingDirectory="$(Laerdal_Script_FolderPath)"/>
+
+
     </Target>
 
 </Project>
