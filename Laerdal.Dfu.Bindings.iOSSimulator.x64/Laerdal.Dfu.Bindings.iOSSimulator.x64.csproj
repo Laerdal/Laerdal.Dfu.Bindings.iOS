@@ -1,0 +1,40 @@
+<!-- to future maintainers   if you are asking yourself:                                                                                                                                      -->
+<!-- to future maintainers                                                                                                                                                                    -->
+<!-- to future maintainers   "can't we just use the lipo cli to combine iphonesimulator-x64 and iphoneos-arm64 into a single native binary and generate a single nuget instead of two?"       -->
+<!-- to future maintainers                                                                                                                                                                    -->
+<!-- to future maintainers   the answer is:                                                                                                                                                   -->
+<!-- to future maintainers                                                                                                                                                                    -->
+<!-- to future maintainers   lipo does indeed support that sort of thing   however it does NOT support the same for the new iphonesimulator-arm64 approach for M1+ apple silicon   we chose   -->
+<!-- to future maintainers   to side with the new approach used in iphonesimulator-arm64 in which we generate separate nuget packages differentiated by a phony version-postfix like so:      -->
+<!-- to future maintainers                                                                                                                                                                    -->
+<!-- to future maintainers            Laerdal.Dfu.Bindings.iOS     version: 1.2.3                                                                                                             -->
+<!-- to future maintainers            Laerdal.Dfu.Bindings.iOS     version: 1.2.3-ios-sim-x64                                                                                                 -->
+<!-- to future maintainers            Laerdal.Dfu.Bindings.iOS     version: 1.2.3-ios-sim-arm64                                                                                               -->
+<!-- to future maintainers                                                                                                                                                                    -->
+
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <ProjectRootPath>$(MSBuildThisFileDirectory)</ProjectRootPath>
+
+        <Laerdal_Package_Tags>Simulators</Laerdal_Package_Tags>
+        <Laerdal_Package_Name>Laerdal.Dfu.Bindings.iOS</Laerdal_Package_Name>
+
+        <!-- this is absolutely vital! -->
+        <Laerdal_Package_Version_Postfix>-ios-sim-x64</Laerdal_Package_Version_Postfix>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <TargetFramework>net8.0-ios</TargetFramework>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <_CompileAndGenerateFatLibs_Config>$(_CompileAndGenerateFatLibs_Config) SUPPORTS_MACCATALYST='NO'</_CompileAndGenerateFatLibs_Config>
+        <_CompileAndGenerateFatLibs_Config>$(_CompileAndGenerateFatLibs_Config) XCODEBUILD_TARGET_SDK='iphonesimulator'</_CompileAndGenerateFatLibs_Config>
+        <_CompileAndGenerateFatLibs_Config>$(_CompileAndGenerateFatLibs_Config) XCODEBUILD_TARGET_ARCH='x86_64'</_CompileAndGenerateFatLibs_Config>
+
+        <_CompileAndGenerateFatLibs_Config>$(_CompileAndGenerateFatLibs_Config) XCODE_IDE_DEV_PATH='$(Laerdal_Bindings_iOS___Xcode_Ide_Dev_Path)'</_CompileAndGenerateFatLibs_Config>
+        <_CompileAndGenerateFatLibs_Config>$(_CompileAndGenerateFatLibs_Config) XCODEBUILD_TARGET_SDK_VERSION='$(Laerdal_Bindings_iOS___Sdk_Version)'</_CompileAndGenerateFatLibs_Config>
+    </PropertyGroup>
+
+    <Import Project="../Laerdal.Scripts/Laerdal.targets"/>
+</Project>
