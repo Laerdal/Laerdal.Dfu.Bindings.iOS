@@ -34,7 +34,6 @@ defaults:
 env:
   DOTNET_CLI_TELEMETRY_OPTOUT: '1'
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: '1'
-  NORDIC_PACKAGE_VERSION: '4.16.0'
   XCODE_APP: '/Applications/Xcode_16.1.app'
   IOS_SDK_VERSION: '18.1'       # iphoneos SDK — xcodebuild -showsdks
   MACOS_SDK_VERSION: '15.1'     # macosx SDK   — xcodebuild -showsdks
@@ -53,11 +52,21 @@ jobs:
           fetch-depth: 0
           fetch-tags: true
 
+      - name: '📐 Read Nordic package version'
+        id: nordic-version
+        run: |
+          VERSION=$(sed -n 's/.*<Nordic_Package_Version[^>]*>\([0-9.]*\)<\/Nordic_Package_Version>.*/\1/p' Laerdal.Scripts/Laerdal.targets | head -1)
+          if [ -z "$VERSION" ]; then
+            echo "::error::Could not extract Nordic_Package_Version from Laerdal.Scripts/Laerdal.targets"
+            exit 1
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
       - name: '🔢 Compute version'
         id: version
         run: |
           REVISION=$(( 43857 + $GITHUB_RUN_NUMBER ))
-          echo "version=${{ env.NORDIC_PACKAGE_VERSION }}.${REVISION}" >> "$GITHUB_OUTPUT"
+          echo "version=${{ steps.nordic-version.outputs.version }}.${REVISION}" >> "$GITHUB_OUTPUT"
 
       - name: '🍎 Select Xcode'
         run: sudo xcode-select -s '${{ env.XCODE_APP }}/Contents/Developer'
@@ -95,6 +104,24 @@ jobs:
         with:
           name: packages
           path: '${{ github.workspace }}/Artifacts/**/*.nupkg'
+          if-no-files-found: error
+
+      - name: '📄 Generate CycloneDX SBOM'
+        uses: laerdal/github_actions/dotnet-cyclonedx@main
+        with:
+          path: '${{ github.workspace }}/Laerdal.Dfu.Bindings.iOS.sln'
+          output: '${{ github.workspace }}/Artifacts'
+          filename: 'Laerdal.Dfu.Bindings.iOS.cyclonedx.json'
+          output-format: 'Json'
+          set-name: 'Laerdal.Dfu.Bindings.iOS'
+          set-version: '${{ steps.version.outputs.version }}'
+          show-summary: true
+
+      - name: '📦 Upload SBOM'
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom
+          path: '${{ github.workspace }}/Artifacts/Laerdal.Dfu.Bindings.iOS.cyclonedx.json'
           if-no-files-found: error
 
   publish-github-packages:
@@ -153,10 +180,17 @@ jobs:
           fetch-depth: 0
           fetch-tags: true
 
+      - name: '⬇️ Download SBOM'
+        uses: actions/download-artifact@v4
+        with:
+          name: sbom
+          path: sbom
+
       - name: '🚀 Create GitHub Release'
         uses: laerdal/github_actions/github-release@main
         with:
           tag: ${{ needs.build.outputs.version }}
           title: 'Release ${{ needs.build.outputs.version }}'
           generate-notes: 'true'
+          assets: 'sbom/Laerdal.Dfu.Bindings.iOS.cyclonedx.json'
           show-summary: 'true'
