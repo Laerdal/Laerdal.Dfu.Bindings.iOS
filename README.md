@@ -44,8 +44,11 @@ automatically for the right target platform.
 
 Requires **macOS** with:
 
-- **Xcode 16.1+**
-- **.NET 10 SDK** with the `ios`/`maccatalyst` workloads (`dotnet workload install maui`)
+- **Xcode** with an iOS/macOS SDK matching the `TargetPlatformVersion` set in
+  `Laerdal.Scripts/Laerdal.targets` (currently `26.5`) — check with `xcodebuild -showsdks`
+- **.NET 10 SDK** (feature band `10.0.400`+; older bands' `ios`/`maccatalyst` workload manifests
+  don't support platform version `26.5` and fail with `NETSDK1140`) with the `ios`/`maccatalyst`
+  workloads (`dotnet workload install maui`)
 - **Carthage** (`brew install carthage`)
 
 ```bash
@@ -54,8 +57,18 @@ cd Laerdal.Dfu.Bindings.iOS
 
 dotnet msbuild Laerdal.Scripts/Laerdal.Builder.targets \
     /m:1 \
-    /p:Laerdal_Github_Access_Token=<your GitHub token, needed by Carthage>
+    -p:Laerdal_Github_Access_Token=<your GitHub token, needed by Carthage> \
+    -p:Laerdal_Bindings_iOS___Sdk_Version=26.5 \
+    -p:Laerdal_Bindings_iOS___Xcode_Ide_Dev_Path="$(xcode-select -p)" \
+    -p:Laerdal_Bindings_MacCatalyst___Sdk_Version=26.5 \
+    -p:Laerdal_Bindings_MacCatalyst___Xcode_Ide_Dev_Path="$(xcode-select -p)"
 ```
+
+The 2 `___Sdk_Version` overrides are not optional either if your Xcode doesn't happen to have the
+`iphoneos18.1`/`macosx15.1` SDKs installed (recent Xcode versions only ship the latest SDK) —
+`Laerdal.Scripts/Laerdal.Mac.CompileAndGenerateFatLibs.sh` falls back to those hardcoded values
+when unset, and `xcodebuild` will fail outright if that exact SDK isn't present. Check
+`xcodebuild -showsdks` for what's actually available and pass the matching version.
 
 `/m:1` is not optional — see [Known issues](#known-issues). The resulting `.nupkg` files land in
 `Artifacts/`. To pin an explicit version:

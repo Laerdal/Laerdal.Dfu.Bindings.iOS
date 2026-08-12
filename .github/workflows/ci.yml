@@ -34,14 +34,14 @@ defaults:
 env:
   DOTNET_CLI_TELEMETRY_OPTOUT: '1'
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: '1'
-  XCODE_APP: '/Applications/Xcode_16.1.app'
-  IOS_SDK_VERSION: '18.1'       # iphoneos SDK — xcodebuild -showsdks
-  MACOS_SDK_VERSION: '15.1'     # macosx SDK   — xcodebuild -showsdks
+  XCODE_APP: '/Applications/Xcode_26.5.app'
+  IOS_SDK_VERSION: '26.5'       # iphoneos SDK — xcodebuild -showsdks; must match Laerdal.Scripts/Laerdal.targets' TargetPlatformVersion
+  MACOS_SDK_VERSION: '26.5'     # macosx SDK   — xcodebuild -showsdks; must match Laerdal.Scripts/Laerdal.targets' TargetPlatformVersion
 
 jobs:
   build:
     name: '🛠️ Build & Package'
-    runs-on: macos-15
+    runs-on: macos-26 # macos-15's newest Xcode is 26.3 (SDK 26.2) - doesn't have the 26.5 SDK this repo needs
     timeout-minutes: 60
     outputs:
       version: ${{ steps.version.outputs.version }}
