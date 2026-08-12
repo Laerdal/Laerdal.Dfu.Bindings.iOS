@@ -1,0 +1,91 @@
+name: 📝 Documentation Issue
+description: Report an issue with documentation or suggest documentation improvements
+title: "[DOCS] "
+labels: ["documentation", "needs-triage"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for helping improve our documentation! Please describe the documentation issue or improvement you'd like to see.
+
+  - type: dropdown
+    id: doc-type
+    attributes:
+      label: Documentation Type
+      description: What type of documentation needs attention?
+      options:
+        - "README"
+        - "Known issues section"
+        - "Build instructions"
+        - "Code Comments"
+        - "Other"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: issue-type
+    attributes:
+      label: Issue Type
+      description: What kind of documentation issue is this?
+      options:
+        - "Missing information"
+        - "Incorrect information"
+        - "Unclear explanation"
+        - "Broken link"
+        - "Typo/Grammar"
+        - "Outdated content"
+        - "Missing example"
+        - "Formatting issue"
+        - "Suggestion for improvement"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Issue Description
+      description: Describe the documentation issue or improvement needed
+      placeholder: What's wrong with the current documentation or what's missing?
+    validations:
+      required: true
+
+  - type: textarea
+    id: location
+    attributes:
+      label: Location
+      description: Where is this documentation issue located?
+      placeholder: |
+        - File path: e.g., ./README.md
+        - Section: e.g., "Known issues", "Building locally"
+        - Line number (if applicable): e.g., Line 45
+    validations:
+      required: false
+
+  - type: textarea
+    id: current
+    attributes:
+      label: Current Content
+      description: What does the current documentation say? (copy/paste if applicable)
+      placeholder: Quote the current text that needs to be changed
+    validations:
+      required: false
+
+  - type: textarea
+    id: suggested
+    attributes:
+      label: Suggested Improvement
+      description: What should the documentation say instead?
+      placeholder: Provide suggested text or describe what should be added/changed
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Any other context about this documentation issue
+      placeholder: Screenshots, related issues, external references, etc.
+    validations:
+      required: false
