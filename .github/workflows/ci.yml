@@ -47,7 +47,7 @@ jobs:
       version: ${{ steps.version.outputs.version }}
     steps:
       - name: '🔄 Checkout'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
           fetch-tags: true
@@ -175,7 +175,7 @@ jobs:
     needs: [build, publish-nuget]
     steps:
       - name: '🔄 Checkout'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
           fetch-tags: true
