@@ -100,7 +100,7 @@ jobs:
             -p:Laerdal_Bindings_MacCatalyst___Xcode_Ide_Dev_Path='${{ env.XCODE_APP }}/Contents/Developer'
 
       - name: '📦 Upload NuGet packages'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: packages
           path: '${{ github.workspace }}/Artifacts/**/*.nupkg'
@@ -118,7 +118,7 @@ jobs:
           show-summary: true
 
       - name: '📦 Upload SBOM'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: sbom
           path: '${{ github.workspace }}/Artifacts/Laerdal.Dfu.Bindings.iOS.cyclonedx.json'
