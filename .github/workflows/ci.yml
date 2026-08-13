@@ -1,4 +1,4 @@
-name: CI
+name: '🏗 Build & Package'
 run-name: >-
   ${{ github.event_name == 'pull_request' &&
       format('🏗 {0} - {1} → {2} by {3}', github.event_name, github.head_ref, github.base_ref, github.actor) ||
@@ -6,22 +6,16 @@ run-name: >-
 
 on:
   push:
-    branches: [main, master]
+    branches: [main]
     paths-ignore: ['.github/ISSUE_TEMPLATE/**']
   pull_request:
-    branches: [main, master]
+    branches: [main]
     paths-ignore: ['.github/ISSUE_TEMPLATE/**']
   workflow_dispatch:
   workflow_call:
 
 permissions:
   contents: write
-  packages: write
-  actions: read
-  checks: write
-  id-token: write
-  pull-requests: write
-  issues: read
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -39,18 +33,14 @@ env:
   MACOS_SDK_VERSION: '26.5'     # macosx SDK   — xcodebuild -showsdks; must match Laerdal.Scripts/Laerdal.targets' TargetPlatformVersion
 
 jobs:
-  build:
-    name: '🛠️ Build & Package'
-    runs-on: macos-26 # macos-15's newest Xcode is 26.3 (SDK 26.2) - doesn't have the 26.5 SDK this repo needs
-    timeout-minutes: 60
+  version:
+    name: '🔢 Compute version'
+    runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.version.outputs.version }}
     steps:
       - name: '🔄 Checkout'
         uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
-          fetch-tags: true
 
       - name: '📐 Read Nordic package version'
         id: nordic-version
@@ -65,8 +55,39 @@ jobs:
       - name: '🔢 Compute version'
         id: version
         run: |
-          REVISION=$(( 43857 + $GITHUB_RUN_NUMBER ))
-          echo "version=${{ steps.nordic-version.outputs.version }}.${REVISION}" >> "$GITHUB_OUTPUT"
+          # Package version tracks the wrapped Nordic native library: {Nordic_Package_Version}.{revision}.
+          # The revision is derived from the highest already-published revision on NuGet.org (not
+          # GITHUB_RUN_NUMBER) so it survives workflow-file replacements/renames without regressing
+          # below, or colliding with, a version that's already live.
+          NORDIC_PACKAGE_VERSION="${{ steps.nordic-version.outputs.version }}"
+
+          VERSIONS_JSON=$(curl -sf 'https://api.nuget.org/v3-flatcontainer/laerdal.dfu.bindings.ios/index.json' || echo '{"versions":[]}')
+
+          LATEST_REVISION=$(echo "$VERSIONS_JSON" | jq -r --arg prefix "${NORDIC_PACKAGE_VERSION}." '
+            [ .versions[] | select(startswith($prefix)) | select(test("^[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+$")) | split(".")[3] | tonumber ] | max // empty')
+
+          if [ -z "$LATEST_REVISION" ]; then
+            # first release under a freshly-bumped Nordic version - float above every revision published so far
+            LATEST_REVISION=$(echo "$VERSIONS_JSON" | jq -r '
+              [ .versions[] | select(test("^[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+$")) | split(".")[3] | tonumber ] | max // 0')
+          fi
+
+          VERSION="${NORDIC_PACKAGE_VERSION}.$((LATEST_REVISION + 1))"
+
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "### 🔢 Version: \`${VERSION}\`" >> "$GITHUB_STEP_SUMMARY"
+
+  build:
+    name: '🏗️ Build & Pack'
+    runs-on: macos-26 # macos-15's newest Xcode is 26.3 (SDK 26.2) - doesn't have the 26.5 SDK this repo needs
+    timeout-minutes: 60
+    needs: version
+    steps:
+      - name: '🔄 Checkout'
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          fetch-tags: true
 
       - name: '🍎 Select Xcode'
         run: sudo xcode-select -s '${{ env.XCODE_APP }}/Contents/Developer'
@@ -86,13 +107,13 @@ jobs:
       - name: '🍺 Install Carthage'
         run: brew install carthage
 
-      - name: '🏗️ Build & Package'
+      - name: '🔨 Build & Pack'
         run: |
           dotnet msbuild Laerdal.Scripts/Laerdal.Builder.targets \
             /m:1 \
             -p:Configuration=Release \
             -p:PackageOutputPath='${{ github.workspace }}/Artifacts' \
-            -p:Laerdal_Version_Full='${{ steps.version.outputs.version }}' \
+            -p:Laerdal_Version_Full='${{ needs.version.outputs.version }}' \
             -p:Laerdal_Github_Access_Token='${{ secrets.GITHUB_TOKEN }}' \
             -p:Laerdal_Bindings_iOS___Sdk_Version='${{ env.IOS_SDK_VERSION }}' \
             -p:Laerdal_Bindings_iOS___Xcode_Ide_Dev_Path='${{ env.XCODE_APP }}/Contents/Developer' \
@@ -114,7 +135,7 @@ jobs:
           filename: 'Laerdal.Dfu.Bindings.iOS.cyclonedx.json'
           output-format: 'Json'
           set-name: 'Laerdal.Dfu.Bindings.iOS'
-          set-version: '${{ steps.version.outputs.version }}'
+          set-version: '${{ needs.version.outputs.version }}'
           show-summary: true
 
       - name: '📦 Upload SBOM'
@@ -124,30 +145,9 @@ jobs:
           path: '${{ github.workspace }}/Artifacts/Laerdal.Dfu.Bindings.iOS.cyclonedx.json'
           if-no-files-found: error
 
-  publish-github-packages:
-    name: '🚀 Publish to GitHub Packages'
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: '📦 Download NuGet packages'
-        uses: actions/download-artifact@v8
-        with:
-          name: packages
-          path: packages
-
-      - name: '🚀 Push to GitHub Packages'
-        uses: laerdal/github_actions/dotnet-nuget-upload@main
-        with:
-          package-path: 'packages/*.nupkg'
-          api-key: ${{ secrets.GITHUB_TOKEN }}
-          source: 'https://nuget.pkg.github.com/Laerdal/index.json'
-          skip-duplicate: true
-          show-summary: true
-
   publish-nuget:
     name: '🚀 Publish to NuGet.org'
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     needs: build
     environment:
@@ -170,9 +170,9 @@ jobs:
 
   tag-and-release:
     name: '🏷️ Tag & Release'
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    needs: [build, publish-nuget]
+    needs: [version, publish-nuget]
     steps:
       - name: '🔄 Checkout'
         uses: actions/checkout@v7
@@ -189,8 +189,8 @@ jobs:
       - name: '🚀 Create GitHub Release'
         uses: laerdal/github_actions/github-release@main
         with:
-          tag: ${{ needs.build.outputs.version }}
-          title: 'Release ${{ needs.build.outputs.version }}'
+          tag: ${{ needs.version.outputs.version }}
+          title: 'Release ${{ needs.version.outputs.version }}'
           generate-notes: 'true'
           assets: 'sbom/Laerdal.Dfu.Bindings.iOS.cyclonedx.json'
           show-summary: 'true'
