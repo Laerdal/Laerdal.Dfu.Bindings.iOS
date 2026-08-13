@@ -1,0 +1,40 @@
+name: '📊 Dependency Submission'
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  submit:
+    name: '📊 Submit NuGet dependencies'
+    runs-on: macos-26
+    steps:
+
+      - name: '🔽 Checkout'
+        uses: actions/checkout@v7
+
+      - name: '🍎 Select Xcode'
+        run: sudo xcode-select -s '/Applications/Xcode_26.5.app/Contents/Developer'
+
+      - name: '🔧 Setup .NET'
+        uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+
+      - name: '📲 Restore .NET workloads'
+        run: dotnet workload restore Laerdal.Dfu.Bindings.iOS.sln
+
+      - name: '🍺 Install Carthage'
+        run: brew install carthage
+
+      - name: '📊 Submit dependency snapshot'
+        uses: advanced-security/component-detection-dependency-submission-action@v0.1.4
+        with:
+          detectorsCategories: NuGet
