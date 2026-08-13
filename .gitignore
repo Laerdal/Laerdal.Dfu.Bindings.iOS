@@ -418,3 +418,8 @@ Laerdal.Dfu.Bindings.*/Frameworks/
 # nuget feed and this is something we definitely want to avoid at all costs for obvious reasons    such nuget.config files should be remain local to each dev machine
 [Nn][Uu][Gg][Ee][Tt].[Cc][Oo][Nn][Ff][Ii][Gg]
 
+# local secrets (e.g. Laerdal_Github_Access_Token for local Carthage builds) - never commit these
+.env
+.env.*
+!.env.example
+

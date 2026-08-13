@@ -25,7 +25,7 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <TargetFramework>net8.0-ios</TargetFramework>
+        <TargetFramework>net10.0-ios</TargetFramework>
     </PropertyGroup>
 
     <PropertyGroup>

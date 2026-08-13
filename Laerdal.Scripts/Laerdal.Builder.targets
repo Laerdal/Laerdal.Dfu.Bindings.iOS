@@ -1,239 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- to test stuff out on your localdev try these                                                              -->
-<!--                                                                                                           -->
-<!--   - to build with an explicit version specified in the cli:                                               -->
-<!--                                                                                                           -->
-<!--                                                                                                           -->
-<!--    # Note    If carthage fails in macos try cleaning up your carthage cache like so and then try again    -->
-<!--    # Note                                                                                                 -->
-<!--    # Note                       rm -rf ~/Library/Caches/org.carthage.CarthageKit                          -->
-<!--    # Note                                                                                                 -->
-<!--    #                                                                                                      -->
-<!--    # on macos                                                                                             -->
-<!--    dotnet    msbuild                                    \                                                 -->
-<!--        Laerdal.Scripts/Laerdal.Builder.targets          \                                                 -->
-<!--        '"/m:1"'                                         \                                                 -->
-<!--        '"/p:Laerdal_Version_Full=1.0.x.0"'              \                                                 -->
-<!--        '"/p:Laerdal_Github_Access_Token=<place your github access token here - its needed by carthage>"'  -->
-<!--                                                                                                           -->
-
+<!--                                                                                                                                    -->
+<!--  Local build (macOS only):                                                                                                         -->
+<!--                                                                                                                                    -->
+<!--      dotnet msbuild Laerdal.Scripts/Laerdal.Builder.targets /m:1                                                                   -->
+<!--                                                                                                                                    -->
+<!--  To specify an explicit version:                                                                                                    -->
+<!--                                                                                                                                    -->
+<!--      dotnet msbuild Laerdal.Scripts/Laerdal.Builder.targets /m:1 /p:Laerdal_Version_Full=4.16.0.0                                  -->
+<!--                                                                                                                                    -->
+<!--  Notes:                                                                                                                            -->
+<!--    - Requires macOS with Xcode and Carthage installed (brew install carthage)                                                      -->
+<!--    - If Carthage fails, clear the cache:  rm -rf ~/Library/Caches/org.carthage.CarthageKit                                        -->
+<!--    - Pass your GitHub token for Carthage:  /p:Laerdal_Github_Access_Token=<token>                                                  -->
+<!--                                                                                                                                    -->
 <Project DefaultTargets="BuildProjects">
 
     <PropertyGroup>
-        <Laerdal_Log_Level>High</Laerdal_Log_Level>
-
         <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
 
-        <RootFolderPath>$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), `..`))</RootFolderPath>
-        <RootFolderPath>$([System.IO.Path]::GetFullPath( '$(RootFolderPath)' ))</RootFolderPath>
+        <RootFolderPath>$([System.IO.Path]::GetFullPath($([System.IO.Path]::Combine($(MSBuildThisFileDirectory), '..'))))</RootFolderPath>
 
-        <PackageOutputPath Condition=" '$(PackageOutputPath)' == '' ">$(BUILD_ARTIFACTSTAGINGDIRECTORY)</PackageOutputPath>
-        <PackageOutputPath Condition=" '$(PackageOutputPath)' == '' ">$([System.IO.Path]::Combine($(RootFolderPath), `Artifacts/`))</PackageOutputPath>
-        <PackageOutputPath>$([System.IO.Path]::GetFullPath( '$(PackageOutputPath)' ))</PackageOutputPath>
+        <PackageOutputPath Condition=" '$(PackageOutputPath)' == '' ">$([System.IO.Path]::Combine($(RootFolderPath), 'Artifacts/'))</PackageOutputPath>
+        <PackageOutputPath>$([System.IO.Path]::GetFullPath('$(PackageOutputPath)'))</PackageOutputPath>
 
-        <Laerdal_Project_iOS>$([System.IO.Path]::Combine($(RootFolderPath), `Laerdal.Dfu.Bindings.iOS`, `Laerdal.Dfu.Bindings.iOS.csproj`))</Laerdal_Project_iOS>
-        <Laerdal_Project_iOS>$([System.IO.Path]::GetFullPath( '$(Laerdal_Project_iOS)' ))</Laerdal_Project_iOS>
-
-        <Laerdal_Project_iOSSimulator_x64>$([System.IO.Path]::Combine($(RootFolderPath), `Laerdal.Dfu.Bindings.iOSSimulator.x64`, `Laerdal.Dfu.Bindings.iOSSimulator.x64.csproj`))</Laerdal_Project_iOSSimulator_x64>
-        <Laerdal_Project_iOSSimulator_x64>$([System.IO.Path]::GetFullPath( '$(Laerdal_Project_iOSSimulator_x64)' ))</Laerdal_Project_iOSSimulator_x64>
-
-        <Laerdal_Project_iOSSimulator_Arm64>$([System.IO.Path]::Combine($(RootFolderPath), `Laerdal.Dfu.Bindings.iOSSimulator.Arm64`, `Laerdal.Dfu.Bindings.iOSSimulator.Arm64.csproj`))</Laerdal_Project_iOSSimulator_Arm64>
-        <Laerdal_Project_iOSSimulator_Arm64>$([System.IO.Path]::GetFullPath( '$(Laerdal_Project_iOSSimulator_Arm64)' ))</Laerdal_Project_iOSSimulator_Arm64>
-
-        <Laerdal_Project_MacCatalyst>$([System.IO.Path]::Combine($(RootFolderPath), `Laerdal.Dfu.Bindings.MacCatalyst`, `Laerdal.Dfu.Bindings.MacCatalyst.csproj`))</Laerdal_Project_MacCatalyst>
-        <Laerdal_Project_MacCatalyst>$([System.IO.Path]::GetFullPath( '$(Laerdal_Project_MacCatalyst)' ))</Laerdal_Project_MacCatalyst>
+        <Laerdal_Project_iOS>$([System.IO.Path]::GetFullPath($([System.IO.Path]::Combine($(RootFolderPath), 'Laerdal.Dfu.Bindings.iOS', 'Laerdal.Dfu.Bindings.iOS.csproj'))))</Laerdal_Project_iOS>
+        <Laerdal_Project_iOSSimulator_x64>$([System.IO.Path]::GetFullPath($([System.IO.Path]::Combine($(RootFolderPath), 'Laerdal.Dfu.Bindings.iOSSimulator.x64', 'Laerdal.Dfu.Bindings.iOSSimulator.x64.csproj'))))</Laerdal_Project_iOSSimulator_x64>
+        <Laerdal_Project_iOSSimulator_Arm64>$([System.IO.Path]::GetFullPath($([System.IO.Path]::Combine($(RootFolderPath), 'Laerdal.Dfu.Bindings.iOSSimulator.Arm64', 'Laerdal.Dfu.Bindings.iOSSimulator.Arm64.csproj'))))</Laerdal_Project_iOSSimulator_Arm64>
+        <Laerdal_Project_MacCatalyst>$([System.IO.Path]::GetFullPath($([System.IO.Path]::Combine($(RootFolderPath), 'Laerdal.Dfu.Bindings.MacCatalyst', 'Laerdal.Dfu.Bindings.MacCatalyst.csproj'))))</Laerdal_Project_MacCatalyst>
 
         <Laerdal_Script_FolderPath>$(MSBuildThisFileDirectory)</Laerdal_Script_FolderPath>
 
-        <Laerdal_Source_Branch Condition="                    '$(Laerdal_Source_Branch)'                    == '' ">$(BUILD_SOURCEBRANCH)</Laerdal_Source_Branch>
-        <Laerdal_Repository_Path Condition="                  '$(Laerdal_Repository_Path)'                  == '' ">$(BUILD_REPOSITORY_NAME)</Laerdal_Repository_Path>
-        <Laerdal_Dependency_Tracker_Server_Url Condition="    '$(Laerdal_Dependency_Tracker_Server_Url)'    == '' ">https://dep-tracker.laerdal.com/api/api/v1/bom</Laerdal_Dependency_Tracker_Server_Url>
-
-        <!-- https://docs.gitlab.com/ee/ci/variables/predefined_variables.html                                                                             -->
-        <!-- https://help.github.com/en/actions/configuring-and-managing-workflows/using-environment-variables                                             -->
-        <!-- https://learn.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml&WT.mc_id=DT-MVP-5003978#system-variables -->
-        <Is_CI_Build Condition="     '$(TF_BUILD)' == 'true'  or  '$(GITHUB_ACTIONS)' == 'true'  or  '$(GITLAB_CI)' == 'true' ">true</Is_CI_Build>
-        <Is_Core_Branch Condition="  '$(Laerdal_Source_Branch)' == 'refs/heads/main'  or  '$(Laerdal_Source_Branch)' == 'refs/heads/master'  or  '$(Laerdal_Source_Branch)' == 'refs/heads/develop' ">true</Is_Core_Branch>
-        <Is_Pull_Request Condition=" '$(Laerdal_Source_Branch.StartsWith(refs/pull))' == 'true'  and  '$(Laerdal_Source_Branch.EndsWith(/merge))' == 'true' ">true</Is_Pull_Request>
-
-        <!-- in github-ci these variables are provided by the .yml file   in localdev you can set them here if you want to experiment  just dont commit them                                                            -->
-        <!--                                                                                                                                                                                                            -->
-        <!-- <Laerdal_Bindings_iOS___Sdk_Version Condition="           '$(Laerdal_Bindings_iOS___Sdk_Version)'           == '' ">17.2</Laerdal_Bindings_iOS___Sdk_Version>                                              -->
-        <!-- <Laerdal_Bindings_iOS___Xcode_Ide_Dev_Path Condition="    '$(Laerdal_Bindings_iOS___Xcode_Ide_Dev_Path)'    == '' ">/Applications/Xcode.app/Contents/Developer</Laerdal_Bindings_iOS___Xcode_Ide_Dev_Path> -->
-
-        <!-- in github-ci these variables are provided by the .yml file   in localdev you can set them here if you want to experiment  just dont commit them                                                                               -->
-        <!--                                                                                                                                                                                                                               -->
-        <!-- <Laerdal_Bindings_MacCatalyst___Sdk_Version Condition="        '$(Laerdal_Bindings_MacCatalyst___Sdk_Version)'        == '' ">14.2</Laerdal_Bindings_MacCatalyst___Sdk_Version>                                               -->
-        <!-- <Laerdal_Bindings_MacCatalyst___Xcode_Ide_Dev_Path Condition=" '$(Laerdal_Bindings_MacCatalyst___Xcode_Ide_Dev_Path)' == '' ">/Applications/Xcode.app/Contents/Developer</Laerdal_Bindings_MacCatalyst___Xcode_Ide_Dev_Path>  -->
-
-        <!-- version -->
-        <Nordic_Package_Version Condition=" '$(Nordic_Package_Version)' == '' ">4.15.3</Nordic_Package_Version>
-        <Laerdal_Revision Condition=" '$(Laerdal_Revision)'  == '' and '$(BUILD_BUILDID)'     != '' ">$(BUILD_BUILDID)</Laerdal_Revision> <!-- Azure DevOps, Last build was 43857 -->
-        <Laerdal_Revision Condition=" '$(Laerdal_Revision)'  == '' and '$(GITHUB_RUN_NUMBER)' != '' ">$([MSBuild]::Add(43857, $(GITHUB_RUN_NUMBER)))</Laerdal_Revision> <!-- GitHub Actions, auto-increment from 0 -->
-        <Laerdal_Revision Condition=" '$(Laerdal_Revision)'  == '' and '$(CI_PIPELINE_IID)'   != '' ">$([MSBuild]::Add(43857, $(CI_PIPELINE_IID)))</Laerdal_Revision> <!-- GitLab, auto-increment from 0 -->
-        <Laerdal_Revision Condition=" '$(Laerdal_Revision)'  == ''                                  ">0</Laerdal_Revision> <!-- Fallback value -->
-
-        <Laerdal_Should_Tag_And_Release Condition="           '$(Laerdal_Should_Tag_And_Release)'           == ''  and    '$(Is_Core_Branch)' == 'true' ">True</Laerdal_Should_Tag_And_Release>
-        <Laerdal_Should_Generate_and_Upload_Sbom Condition="  '$(Laerdal_Should_Generate_and_Upload_Sbom)'  == ''  and  ( '$(Is_Core_Branch)' == 'true'  or  '$(Is_Pull_Request)' == 'true' ) ">True</Laerdal_Should_Generate_and_Upload_Sbom>
-
+        <!-- version: {Nordic_Package_Version}.{build_number}   override with /p:Laerdal_Version_Full=... -->
+        <Nordic_Package_Version Condition=" '$(Nordic_Package_Version)' == '' ">4.16.0</Nordic_Package_Version>
+        <Laerdal_Revision Condition=" '$(Laerdal_Revision)' == '' and '$(GITHUB_RUN_NUMBER)' != '' ">$([MSBuild]::Add(43857, $(GITHUB_RUN_NUMBER)))</Laerdal_Revision>
+        <Laerdal_Revision Condition=" '$(Laerdal_Revision)' == '' ">0</Laerdal_Revision>
         <Laerdal_Version_Full     Condition=" '$(Laerdal_Version_Full)'     == '' ">$(Nordic_Package_Version).$(Laerdal_Revision)</Laerdal_Version_Full>
-        <Laerdal_Version_Assembly Condition=" '$(Laerdal_Version_Assembly)' == '' ">$(Laerdal_Version_Full)</Laerdal_Version_Assembly>        
+        <Laerdal_Version_Assembly Condition=" '$(Laerdal_Version_Assembly)' == '' ">$(Laerdal_Version_Full)</Laerdal_Version_Assembly>
+
+        <!--                                                                                                                                          -->
+        <!-- Xcode / SDK settings — set these here for local builds, or pass them on the command line                                                 -->
+        <!--                                                                                                                                          -->
+        <!-- <Laerdal_Bindings_iOS___Sdk_Version Condition="        '$(Laerdal_Bindings_iOS___Sdk_Version)'        == '' ">18.1</Laerdal_Bindings_iOS___Sdk_Version>                          -->
+        <!-- <Laerdal_Bindings_iOS___Xcode_Ide_Dev_Path Condition=" '$(Laerdal_Bindings_iOS___Xcode_Ide_Dev_Path)' == '' ">/Applications/Xcode.app/Contents/Developer</Laerdal_Bindings_iOS___Xcode_Ide_Dev_Path> -->
+        <!-- <Laerdal_Bindings_MacCatalyst___Sdk_Version Condition="        '$(Laerdal_Bindings_MacCatalyst___Sdk_Version)'        == '' ">15.1</Laerdal_Bindings_MacCatalyst___Sdk_Version>  -->
+        <!-- <Laerdal_Bindings_MacCatalyst___Xcode_Ide_Dev_Path Condition=" '$(Laerdal_Bindings_MacCatalyst___Xcode_Ide_Dev_Path)' == '' ">/Applications/Xcode.app/Contents/Developer</Laerdal_Bindings_MacCatalyst___Xcode_Ide_Dev_Path> -->
     </PropertyGroup>
 
-    <!-- BUILD -->
     <Target Name="BuildProjects">
-        <!-- REQUIRED PARAMETERS -->
-        <Error Condition=" '$(Configuration)'                        == '' " Text="'Configuration' has to be set. Please call this script again with the argument '/p:Configuration=...'"/>
-        <Error Condition=" '$(PackageOutputPath)'                    == '' " Text="'PackageOutputPath' has to be set. Please call this script again with the argument '/p:PackageOutputPath=...'"/>
-        <Error Condition=" '$(Laerdal_Project_iOS)'                  == '' " Text="'Laerdal_Project_iOS' has to be set. Please call this script again with the argument '/p:Laerdal_Project_iOS=...'"/>
-        <Error Condition=" '$(Laerdal_Project_MacCatalyst)'          == '' " Text="'Laerdal_Project_MacCatalyst' has to be set. Please call this script again with the argument '/p:Laerdal_Project_MacCatalyst=...'"/>
-        <Error Condition=" '$(Laerdal_Project_iOSSimulator_x64)'     == '' " Text="'Laerdal_Project_iOSSimulator_x64' has to be set. Please call this script again with the argument '/p:Laerdal_Project_iOSSimulator_x64=...'"/>
-        <Error Condition=" '$(Laerdal_Project_iOSSimulator_Arm64)'   == '' " Text="'Laerdal_Project_iOSSimulator_Arm64' has to be set. Please call this script again with the argument '/p:Laerdal_Project_iOSSimulator_Arm64=...'"/>
-
-        <!-- PARAMETERS -->
-        <PropertyGroup>
-            <_Laerdal_Build_Parameters>$(_Laerdal_Build_Parameters);Configuration=$(Configuration)</_Laerdal_Build_Parameters>
-            <_Laerdal_Build_Parameters>$(_Laerdal_Build_Parameters);PackageOutputPath=$(PackageOutputPath)</_Laerdal_Build_Parameters>
-            <_Laerdal_Build_Parameters>$(_Laerdal_Build_Parameters);SourceRoot=$(Laerdal_RootDirectory_Folderpath)/Laerdal.McuMgr.Bindings.MacCatalyst/</_Laerdal_Build_Parameters>
-
-            <_Laerdal_Build_Parameters>$(_Laerdal_Build_Parameters);Laerdal_Version_Full=$(Laerdal_Version_Full)</_Laerdal_Build_Parameters>
-            <_Laerdal_Build_Parameters>$(_Laerdal_Build_Parameters);Laerdal_Github_Access_Token=$(Laerdal_Github_Access_Token)</_Laerdal_Build_Parameters>
-
-            <_Laerdal_Build_Parameters>$(_Laerdal_Build_Parameters);Laerdal_Bindings_iOS___Sdk_Version=$(Laerdal_Bindings_iOS___Sdk_Version)</_Laerdal_Build_Parameters>
-            <_Laerdal_Build_Parameters>$(_Laerdal_Build_Parameters);Laerdal_Bindings_iOS___Xcode_Ide_Dev_Path=$(Laerdal_Bindings_iOS___Xcode_Ide_Dev_Path)</_Laerdal_Build_Parameters>
-            <_Laerdal_Build_Parameters>$(_Laerdal_Build_Parameters);Laerdal_Bindings_iOS___DotnetTargetPlatformVersion=$(Laerdal_Bindings_iOS___DotnetTargetPlatformVersion)</_Laerdal_Build_Parameters>
-
-            <_Laerdal_Build_Parameters>$(_Laerdal_Build_Parameters);Laerdal_Bindings_MacCatalyst___Sdk_Version=$(Laerdal_Bindings_MacCatalyst___Sdk_Version)</_Laerdal_Build_Parameters>
-            <_Laerdal_Build_Parameters>$(_Laerdal_Build_Parameters);Laerdal_Bindings_MacCatalyst___Xcode_Ide_Dev_Path=$(Laerdal_Bindings_MacCatalyst___Xcode_Ide_Dev_Path)</_Laerdal_Build_Parameters>
-            <_Laerdal_Build_Parameters>$(_Laerdal_Build_Parameters);Laerdal_Bindings_MacCatalyst___DotnetTargetPlatformVersion=$(Laerdal_Bindings_MacCatalyst___DotnetTargetPlatformVersion)</_Laerdal_Build_Parameters>
-        </PropertyGroup>
-        
-        <!-- BUILD -->
-        
-        <!-- [warning] its absolute vital to first call the EnsureFrameworkFolderIsCreated target explicitly and separately from the main          -->
-        <!-- [warning] build otherwise the resulting nugets will be poisoned and will not work in maui apps at all due to missing native symbols   -->
-        <MSBuild Projects="$(Laerdal_Project_iOS)" Targets="EnsureFrameworkFolderIsCreated" Properties="$(_Laerdal_Build_Parameters)"/>
-        <MSBuild Projects="$(Laerdal_Project_iOS)" Targets="Restore" Properties="$(_Laerdal_Build_Parameters)"/>
-        <MSBuild Projects="$(Laerdal_Project_iOS)" Targets="Rebuild" Properties="$(_Laerdal_Build_Parameters);CleanNativeFolder=true;BuildingProject=true"/>
-
-        <!-- [warning] its absolute vital to first call the EnsureFrameworkFolderIsCreated target explicitly and separately from the main          -->
-        <!-- [warning] build otherwise the resulting nugets will be poisoned and will not work in maui apps at all due to missing native symbols   -->
-        <MSBuild Projects="$(Laerdal_Project_iOSSimulator_Arm64)" Targets="EnsureFrameworkFolderIsCreated" Properties="$(_Laerdal_Build_Parameters)"/>
-        <MSBuild Projects="$(Laerdal_Project_iOSSimulator_Arm64)" Targets="Restore" Properties="$(_Laerdal_Build_Parameters)"/>
-        <MSBuild Projects="$(Laerdal_Project_iOSSimulator_Arm64)" Targets="Rebuild" Properties="$(_Laerdal_Build_Parameters);BuildingProject=true"/>
-
-        <!-- [warning] its absolute vital to first call the EnsureFrameworkFolderIsCreated target explicitly and separately from the main          -->
-        <!-- [warning] build otherwise the resulting nugets will be poisoned and will not work in maui apps at all due to missing native symbols   -->
-        <MSBuild Projects="$(Laerdal_Project_iOSSimulator_x64)" Targets="EnsureFrameworkFolderIsCreated" Properties="$(_Laerdal_Build_Parameters)"/>
-        <MSBuild Projects="$(Laerdal_Project_iOSSimulator_x64)" Targets="Restore" Properties="$(_Laerdal_Build_Parameters)"/>
-        <MSBuild Projects="$(Laerdal_Project_iOSSimulator_x64)" Targets="Rebuild" Properties="$(_Laerdal_Build_Parameters);BuildingProject=true"/>
-
-        <!-- [warning] its absolute vital to first call the EnsureFrameworkFolderIsCreated target explicitly and separately from the main          -->
-        <!-- [warning] build otherwise the resulting nugets will be poisoned and will not work in maui apps at all due to missing native symbols   -->
-        <MSBuild Projects="$(Laerdal_Project_MacCatalyst)" Targets="EnsureFrameworkFolderIsCreated" Properties="$(_Laerdal_Build_Parameters)"/>
-        <MSBuild Projects="$(Laerdal_Project_MacCatalyst)" Targets="Restore" Properties="$(_Laerdal_Build_Parameters)"/>
-        <MSBuild Projects="$(Laerdal_Project_MacCatalyst)" Targets="Rebuild" Properties="$(_Laerdal_Build_Parameters);BuildingProject=true"/>
-    </Target>
-
-    <!-- GITHUB RELEASE -->
-    <Target Name="CreateGithubReleaseWithTag"
-            Condition=" '$(Laerdal_Should_Tag_And_Release)' == 'True' "
-            AfterTargets="BuildProjects">
-
-        <Error Condition=" '$(Laerdal_Version_Full)'        == '' " Text="'Laerdal_Version_Full' has to be set. Please call this script again with the argument '/p:Laerdal_Version_Full=...'" />
-        <Error Condition=" '$(Laerdal_Source_Branch)'       == '' " Text="'Laerdal_Source_Branch' has to be set. Please call this script again with the argument '/p:Laerdal_Source_Branch=...'" />
-        <Error Condition=" '$(Laerdal_Repository_Path)'     == '' " Text="'Laerdal_Repository_Path' has to be set. Please call this script again with the argument '/p:Laerdal_Repository_Path=...'" />
-        <Error Condition=" '$(Laerdal_Github_Access_Token)' == '' " Text="'Laerdal_Github_Access_Token' has to be set. Please call this script again with the argument '/p:Laerdal_Github_Access_Token=...'" />
+        <Error Condition=" '$(Configuration)'              == '' " Text="'Configuration' must be set." />
+        <Error Condition=" '$(PackageOutputPath)'          == '' " Text="'PackageOutputPath' must be set." />
+        <Error Condition=" '$(Laerdal_Project_iOS)'        == '' " Text="'Laerdal_Project_iOS' must be set." />
+        <Error Condition=" '$(Laerdal_Project_MacCatalyst)' == '' " Text="'Laerdal_Project_MacCatalyst' must be set." />
+        <Error Condition=" '$(Laerdal_Project_iOSSimulator_x64)' == '' " Text="'Laerdal_Project_iOSSimulator_x64' must be set." />
+        <Error Condition=" '$(Laerdal_Project_iOSSimulator_Arm64)' == '' " Text="'Laerdal_Project_iOSSimulator_Arm64' must be set." />
 
         <PropertyGroup>
-            <Laerdal_Create_Github_Release_Script_Filepath Condition=" '$(Laerdal_Create_Github_Release_Script_Filepath)' == '' ">$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), `Laerdal.CreateNewReleaseInGithub.sh`))</Laerdal_Create_Github_Release_Script_Filepath>
-
-            <_Laerdal_Create_Github_Release_Script_Parameters>$(_Laerdal_Create_Github_Release_Script_Parameters) --git-branch       '$(Laerdal_Source_Branch)'</_Laerdal_Create_Github_Release_Script_Parameters>
-            <_Laerdal_Create_Github_Release_Script_Parameters>$(_Laerdal_Create_Github_Release_Script_Parameters) --tag-version      '$(Laerdal_Version_Full)'</_Laerdal_Create_Github_Release_Script_Parameters>
-            <_Laerdal_Create_Github_Release_Script_Parameters>$(_Laerdal_Create_Github_Release_Script_Parameters) --access-token     '$(Laerdal_Github_Access_Token)'</_Laerdal_Create_Github_Release_Script_Parameters>
-            <_Laerdal_Create_Github_Release_Script_Parameters>$(_Laerdal_Create_Github_Release_Script_Parameters) --repository-path  '$(Laerdal_Repository_Path)'</_Laerdal_Create_Github_Release_Script_Parameters>
+            <_Params>Configuration=$(Configuration)</_Params>
+            <_Params>$(_Params);PackageOutputPath=$(PackageOutputPath)</_Params>
+            <_Params>$(_Params);Laerdal_Version_Full=$(Laerdal_Version_Full)</_Params>
+            <_Params>$(_Params);Laerdal_Github_Access_Token=$(Laerdal_Github_Access_Token)</_Params>
+            <_Params>$(_Params);Laerdal_Bindings_iOS___Sdk_Version=$(Laerdal_Bindings_iOS___Sdk_Version)</_Params>
+            <_Params>$(_Params);Laerdal_Bindings_iOS___Xcode_Ide_Dev_Path=$(Laerdal_Bindings_iOS___Xcode_Ide_Dev_Path)</_Params>
+            <_Params>$(_Params);Laerdal_Bindings_MacCatalyst___Sdk_Version=$(Laerdal_Bindings_MacCatalyst___Sdk_Version)</_Params>
+            <_Params>$(_Params);Laerdal_Bindings_MacCatalyst___Xcode_Ide_Dev_Path=$(Laerdal_Bindings_MacCatalyst___Xcode_Ide_Dev_Path)</_Params>
         </PropertyGroup>
 
-        <Message Importance="High" Text="   bash    '$(Laerdal_Create_Github_Release_Script_Filepath)'    $(_Laerdal_Create_Github_Release_Script_Parameters) "/>
+        <!-- [warning] EnsureFrameworkFolderIsCreated must be called first and separately — otherwise nugets are poisoned with missing native symbols -->
+        <MSBuild Projects="$(Laerdal_Project_iOS)"              Targets="EnsureFrameworkFolderIsCreated" Properties="$(_Params)"/>
+        <MSBuild Projects="$(Laerdal_Project_iOS)"              Targets="Restore"  Properties="$(_Params)"/>
+        <MSBuild Projects="$(Laerdal_Project_iOS)"              Targets="Rebuild"  Properties="$(_Params);CleanNativeFolder=true;BuildingProject=true"/>
 
-        <Exec Command="   bash    '$(Laerdal_Create_Github_Release_Script_Filepath)'    $(_Laerdal_Create_Github_Release_Script_Parameters) "
-              EchoOff="true"
-              ConsoleToMSBuild="true"
-              WorkingDirectory="$(RootFolderPath)"/>
-    </Target>
+        <MSBuild Projects="$(Laerdal_Project_iOSSimulator_Arm64)" Targets="EnsureFrameworkFolderIsCreated" Properties="$(_Params)"/>
+        <MSBuild Projects="$(Laerdal_Project_iOSSimulator_Arm64)" Targets="Restore"  Properties="$(_Params)"/>
+        <MSBuild Projects="$(Laerdal_Project_iOSSimulator_Arm64)" Targets="Rebuild"  Properties="$(_Params);BuildingProject=true"/>
 
-    <!-- GENERATE + UPLOAD SBOM -->
-    <Target Name="GenerateSBOM"
-            Condition=" '$(Laerdal_Should_Generate_and_Upload_Sbom)' == 'True' "
-            AfterTargets="CreateGithubReleaseWithTag">
+        <MSBuild Projects="$(Laerdal_Project_iOSSimulator_x64)"   Targets="EnsureFrameworkFolderIsCreated" Properties="$(_Params)"/>
+        <MSBuild Projects="$(Laerdal_Project_iOSSimulator_x64)"   Targets="Restore"  Properties="$(_Params)"/>
+        <MSBuild Projects="$(Laerdal_Project_iOSSimulator_x64)"   Targets="Rebuild"  Properties="$(_Params);BuildingProject=true"/>
 
-        <Error Condition=" '$(PackageOutputPath)'                                        == '' " Text="'PackageOutputPath' has to be set. Please call this script again with the argument '/p:PackageOutputPath=...'"/>
-        <Error Condition=" '$(Laerdal_Project_iOS)'                                      == '' " Text="'Laerdal_Project_iOS' has to be set. Please call this script again with the argument '/p:Laerdal_Project_iOS=...'"/>
-        <Error Condition=" '$(Laerdal_Version_Full)'                                     == '' " Text="'Laerdal_Version_Full' has to be set. Please call this script again with the argument '/p:Laerdal_Version_Full=...'"/>
-        <Error Condition=" '$(Laerdal_Version_Assembly)'                                 == '' " Text="'Laerdal_Version_Assembly' has to be set. Please call this script again with the argument '/p:Laerdal_Version_Assembly=...'"/>
-        <Error Condition=" '$(Laerdal_Dependency_Tracker_Api_Key_File_Path)'             == '' " Text="'Laerdal_Dependency_Tracker_Api_Key_File_Path' has to be set. Please call this script again with the argument '/p:Laerdal_Dependency_Tracker_Api_Key_File_Path=...'"/>
-        <Error Condition=" '$(Laerdal_Dependency_Tracker_Private_Signing_Key_File_Path)' == '' " Text="'Laerdal_Dependency_Tracker_Private_Signing_Key_File_Path' has to be set. Please call this script again with the argument '/p:Laerdal_Dependency_Tracker_Private_Signing_Key_File_Path=...'"/>
-
-        <!--  IOS  -->
-        <PropertyGroup>
-            <!-- notice that we intentionally use $(Laerdal_Version_Assembly) instead of $(Laerdal_Version_Full) -->
-            <!-- because cyclonedx inherently ear-tags sboms with the former rather than the later               -->
-
-            <_Laerdal_Project_Name>$([System.IO.Path]::GetFileName('$(Laerdal_Project_iOS)').Replace('.csproj', ''))</_Laerdal_Project_Name>
-
-            <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --project-version &quot;$(Laerdal_Version_Assembly)&quot;</_Laerdal_Sbom_Script_Parameters>
-            <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --output-directory-path &quot;$(PackageOutputPath)&quot;</_Laerdal_Sbom_Script_Parameters>
-            <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --sbom-signing-key-file-path &quot;$(Laerdal_Dependency_Tracker_Private_Signing_Key_File_Path)&quot;</_Laerdal_Sbom_Script_Parameters>
-
-            <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --dependency-tracker-url &quot;$(Laerdal_Dependency_Tracker_Server_Url)&quot;</_Laerdal_Sbom_Script_Parameters>
-            <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --dependency-tracker-api-key-file-path &quot;$(Laerdal_Dependency_Tracker_Api_Key_File_Path)&quot;</_Laerdal_Sbom_Script_Parameters>
-
-            <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --csproj-classifier &quot;Library&quot;</_Laerdal_Sbom_Script_Parameters>
-            <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --csproj-file-path &quot;$(Laerdal_Project_iOS)&quot;</_Laerdal_Sbom_Script_Parameters>
-
-            <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --project-name &quot;$(_Laerdal_Project_Name)&quot;</_Laerdal_Sbom_Script_Parameters>
-            <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --output-sbom-file-name &quot;sbom.laerdal.dfu.bindings.ios.xml&quot;</_Laerdal_Sbom_Script_Parameters>
-
-            <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --parent-project-name &quot;[Group(Legacy)::Laerdal.Dfu.Bindings.iOS]&quot;</_Laerdal_Sbom_Script_Parameters>
-        </PropertyGroup>
-
-        <!-- https://docs.dependencytrack.org/usage/cicd/#large-payloads   also notice that we are forced to target           -->
-        <!-- /api/api/v1/bom instead of /api/v1/bom due to an inherent misconfiguration of laerdal's dependency-track server  -->
-        <Message Importance="High" Text="** Generating, Singing and Uploading SBOMs:"/>
-
-        <Exec Command="   bash    Laerdal.GenerateSignAndUploadSbom.sh     $(_Laerdal_Sbom_Script_Parameters)  " ConsoleToMSBuild="true" WorkingDirectory="$(Laerdal_Script_FolderPath)"/>
-
-        <!--  MACCATALYST  -->
-        <PropertyGroup>
-            <!-- notice that we intentionally use $(Laerdal_Version_Assembly) instead of $(Laerdal_Version_Full) -->
-            <!-- because cyclonedx inherently ear-tags sboms with the former rather than the later               -->
-
-            <_Laerdal_Project_Name>$([System.IO.Path]::GetFileName('$(Laerdal_Project_MacCatalyst)').Replace('.csproj', ''))</_Laerdal_Project_Name>
-
-            <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --project-version &quot;$(Laerdal_Version_Assembly)&quot;</_Laerdal_Sbom_Script_Parameters>
-            <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --output-directory-path &quot;$(PackageOutputPath)&quot;</_Laerdal_Sbom_Script_Parameters>
-            <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --sbom-signing-key-file-path &quot;$(Laerdal_Dependency_Tracker_Private_Signing_Key_File_Path)&quot;</_Laerdal_Sbom_Script_Parameters>
-
-            <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --dependency-tracker-url &quot;$(Laerdal_Dependency_Tracker_Server_Url)&quot;</_Laerdal_Sbom_Script_Parameters>
-            <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --dependency-tracker-api-key-file-path &quot;$(Laerdal_Dependency_Tracker_Api_Key_File_Path)&quot;</_Laerdal_Sbom_Script_Parameters>
-
-            <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --csproj-classifier &quot;Library&quot;</_Laerdal_Sbom_Script_Parameters>
-            <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --csproj-file-path &quot;$(Laerdal_Project_MacCatalyst)&quot;</_Laerdal_Sbom_Script_Parameters>
-
-            <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --project-name &quot;$(_Laerdal_Project_Name)&quot;</_Laerdal_Sbom_Script_Parameters>
-            <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --output-sbom-file-name &quot;sbom.laerdal.dfu.bindings.maccatalyst.xml&quot;</_Laerdal_Sbom_Script_Parameters>
-
-            <_Laerdal_Sbom_Script_Parameters>$(_Laerdal_Sbom_Script_Parameters)  --parent-project-name &quot;[Group(Legacy)::Laerdal.Dfu.Bindings.MacCatalyst]&quot;</_Laerdal_Sbom_Script_Parameters>
-        </PropertyGroup>
-
-        <!-- https://docs.dependencytrack.org/usage/cicd/#large-payloads   also notice that we are forced to target           -->
-        <!-- /api/api/v1/bom instead of /api/v1/bom due to an inherent misconfiguration of laerdal's dependency-track server  -->
-        <Message Importance="High" Text="** Generating, Singing and Uploading SBOMs:"/>
-
-        <Exec Command="   bash    Laerdal.GenerateSignAndUploadSbom.sh     $(_Laerdal_Sbom_Script_Parameters)  " ConsoleToMSBuild="true" WorkingDirectory="$(Laerdal_Script_FolderPath)"/>
-
-
+        <MSBuild Projects="$(Laerdal_Project_MacCatalyst)"        Targets="EnsureFrameworkFolderIsCreated" Properties="$(_Params)"/>
+        <MSBuild Projects="$(Laerdal_Project_MacCatalyst)"        Targets="Restore"  Properties="$(_Params)"/>
+        <MSBuild Projects="$(Laerdal_Project_MacCatalyst)"        Targets="Rebuild"  Properties="$(_Params);BuildingProject=true"/>
     </Target>
 
 </Project>
