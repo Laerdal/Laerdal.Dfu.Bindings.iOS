@@ -74,7 +74,7 @@ when unset, and `xcodebuild` will fail outright if that exact SDK isn't present.
 `Artifacts/`. To pin an explicit version:
 
 ```bash
-dotnet msbuild Laerdal.Scripts/Laerdal.Builder.targets /m:1 /p:Laerdal_Version_Full=4.16.0.123
+dotnet msbuild Laerdal.Scripts/Laerdal.Builder.targets /m:1 /p:Laerdal_Version_Full=4.17.0.123
 ```
 
 If Carthage fails outright, clear its cache and retry:
@@ -130,17 +130,30 @@ silently reintroduced.
   simulator-specific prerelease package for your architecture:
 
   ```xml
-  <PackageReference Include="Laerdal.Dfu.Bindings.iOS" Version="4.16.0.123-ios-sim-arm64">
+  <PackageReference Include="Laerdal.Dfu.Bindings.iOS" Version="4.17.0.123-ios-sim-arm64">
       <NoWarn>$(NoWarn);NU1605</NoWarn>
   </PackageReference>
   ```
 
 - **Manual version-sync footgun.**
-  `Nordic_Package_Version` (currently `4.16.0`) is defined in both `Laerdal.Builder.targets` and
+  `Nordic_Package_Version` (currently `4.17.0`) is defined in both `Laerdal.Builder.targets` and
   `Laerdal.targets`, and letting the two drift apart breaks the GitHub release step silently. CI
   (`ci.yml`) reads this value directly out of `Laerdal.targets` rather than keeping its own copy,
   so there are only 2 places left to keep in sync, not 3 — but they're still manual. Bump the
   Nordic version in both `.targets` files together.
+
+- **Bumping `Nordic_Package_Version` can silently corrupt `DFUState` without any build error.**
+  Nordic's native `DFUState` Swift enum has no explicit raw values — Swift assigns them
+  sequentially by declaration order — and this repo's `[Native] enum : long` binding
+  (`StructsAndEnums.cs`, duplicated per-project) hardcodes those numbers. `4.16.0 → 4.17.0`
+  inserted `connected`/`disconnected` mid-sequence, which renumbered every case declared after
+  each insertion point (`Completed`/`Aborted` shifted from `6`/`7` to `8`/`9`). Copying the old
+  numbers forward would have consumers silently misreport DFU states — e.g. an actual
+  `Disconnecting` event read back as `Completed` — with no compile-time signal at all.
+  **Before ever bumping this version, diff the actual Swift source for `DFUState` (and any other
+  `[Native] enum`-bound type) against the previous tag — never assume "additive-sounding"
+  changelog entries are safe.** `DFUError` is safe from this specific trap since every one of its
+  cases has an explicit raw value in Nordic's source.
 
 ## License
 
