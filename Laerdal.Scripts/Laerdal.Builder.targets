@@ -32,7 +32,7 @@
         <Laerdal_Script_FolderPath>$(MSBuildThisFileDirectory)</Laerdal_Script_FolderPath>
 
         <!-- version: {Nordic_Package_Version}.{build_number}   override with /p:Laerdal_Version_Full=... -->
-        <Nordic_Package_Version Condition=" '$(Nordic_Package_Version)' == '' ">4.16.0</Nordic_Package_Version>
+        <Nordic_Package_Version Condition=" '$(Nordic_Package_Version)' == '' ">4.17.0</Nordic_Package_Version>
         <Laerdal_Revision Condition=" '$(Laerdal_Revision)' == '' and '$(GITHUB_RUN_NUMBER)' != '' ">$([MSBuild]::Add(43857, $(GITHUB_RUN_NUMBER)))</Laerdal_Revision>
         <Laerdal_Revision Condition=" '$(Laerdal_Revision)' == '' ">0</Laerdal_Revision>
         <Laerdal_Version_Full     Condition=" '$(Laerdal_Version_Full)'     == '' ">$(Nordic_Package_Version).$(Laerdal_Revision)</Laerdal_Version_Full>
