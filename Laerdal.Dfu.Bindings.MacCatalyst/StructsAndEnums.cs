@@ -58,6 +58,7 @@ namespace Laerdal.Dfu.Bindings.iOS
 		UnsupportedResponse = 307,
 		BytesLost = 308,
 		CrcError = 309,
+		InvalidAdvertisementName = 310,
 		InvalidInternalState = 500
 	}
 
@@ -73,14 +74,21 @@ namespace Laerdal.Dfu.Bindings.iOS
 	[Native]
 	public enum DFUState : long
 	{
+		// note: Nordic's native DFUState enum has no explicit raw values - Swift auto-assigns them
+		// sequentially by declaration order. 4.17.0 inserted Connected/Disconnected mid-sequence,
+		// which renumbers every case declared after each insertion point vs. 4.16.0. These values
+		// MUST be re-verified against the actual Swift source on every future Nordic_Package_Version
+		// bump, not just copied forward - see README's "Known issues" section.
 		Connecting = 0,
-		Starting = 1,
-		EnablingDfuMode = 2,
-		Uploading = 3,
-		Validating = 4,
-		Disconnecting = 5,
-		Completed = 6,
-		Aborted = 7
+		Connected = 1,
+		Starting = 2,
+		EnablingDfuMode = 3,
+		Uploading = 4,
+		Validating = 5,
+		Disconnecting = 6,
+		Disconnected = 7,
+		Completed = 8,
+		Aborted = 9
 	}
 
 	[Native]
