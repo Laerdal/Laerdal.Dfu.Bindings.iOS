@@ -150,6 +150,14 @@
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All"/>
+
+        <!-- Microsoft.NET.ILLink.Tasks is an SDK-implicit reference on iOS/MacCatalyst target frameworks (added
+             automatically even for the sibling projects below that never reference it explicitly) - NuGet's Central
+             Package Management forbids a central PackageVersion for a package that's implicit anywhere in the
+             solution (NU1009), so the version override has to go here instead, applied uniformly to every project
+             that imports this file (iOS, MacCatalyst, iOSSimulator.Arm64, iOSSimulator.x64) - see
+             https://aka.ms/sdkimplicitrefs -->
+        <PackageReference Update="Microsoft.NET.ILLink.Tasks" Version="10.0.12" />
     </ItemGroup>
 
     <!-- ==================== LOGGING ==================== -->
