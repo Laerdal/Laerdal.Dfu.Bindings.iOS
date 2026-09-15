@@ -21,6 +21,7 @@ Explain the reason for this change.
 - [ ] iOS Simulator bindings (`iOSSimulator.Arm64` / `iOSSimulator.x64`)
 - [ ] Native framework (`Frameworks/NordicDFU.framework`)
 - [ ] Build scripts (`Laerdal.Scripts`)
+- [ ] Central package management (`Directory.Packages.props`)
 - [ ] Documentation
 
 ## Behavior And Compatibility
@@ -46,6 +47,8 @@ Validation notes:
 
 ## Checklist
 
-- [ ] Commit messages follow Conventional Commits (`type(scope): subject`)
+- [ ] Commit header follows `type(scope): short imperative` and is <= 72 chars
+- [ ] Commit type is one of: feat, fix, refa, perf, docs, ci, chore, test, build
+- [ ] Commit body is 1-2 factual sentences (what/why), no emojis, refs, or co-authors
 - [ ] CI passes
 - [ ] Change is scoped to one logical unit of work
