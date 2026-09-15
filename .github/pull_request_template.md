@@ -33,6 +33,7 @@ If any box above is checked, describe impact:
 
 ## Tests
 
+- [ ] Ran the end-to-end `/m:1` build (`dotnet msbuild Laerdal.Scripts/Laerdal.Builder.targets /m:1 ...`) — mandatory per README; parallel MSBuild corrupts native fat-library generation
 - [ ] Manual validation performed (device/simulator, against real hardware where applicable)
 - [ ] Not applicable (explain)
 
