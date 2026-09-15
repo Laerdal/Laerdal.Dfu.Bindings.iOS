@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <!-- Enable Central Package Management -->
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+
+  <!-- ==================== BUILD & ANALYSIS DEPENDENCIES ==================== -->
+  <ItemGroup>
+    <PackageVersion Include="Microsoft.NET.ILLink.Tasks" Version="10.0.12" />
+  </ItemGroup>
+</Project>

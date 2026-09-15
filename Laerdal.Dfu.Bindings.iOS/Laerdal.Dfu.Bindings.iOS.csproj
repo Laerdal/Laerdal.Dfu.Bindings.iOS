@@ -23,7 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.NET.ILLink.Tasks" Version="10.0.12" />
+      <PackageReference Include="Microsoft.NET.ILLink.Tasks" />
     </ItemGroup>
 
     <Import Project="../Laerdal.Scripts/Laerdal.targets"/>
