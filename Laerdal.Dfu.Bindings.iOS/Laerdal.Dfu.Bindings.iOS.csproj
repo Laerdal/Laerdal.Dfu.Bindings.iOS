@@ -22,9 +22,5 @@
       <Folder Include="Frameworks\NordicDFU.framework\" />
     </ItemGroup>
 
-    <ItemGroup>
-      <PackageReference Include="Microsoft.NET.ILLink.Tasks" Version="10.0.12" />
-    </ItemGroup>
-
     <Import Project="../Laerdal.Scripts/Laerdal.targets"/>
 </Project>
