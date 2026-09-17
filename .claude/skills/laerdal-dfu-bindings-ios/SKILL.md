@@ -39,6 +39,9 @@ contributor reading it top-to-bottom would:
   shifting `Completed`/`Aborted` from `6`/`7` to `8`/`9`). **Before ever bumping this version,
   diff the actual Swift source for `DFUState` (and any other `[Native] enum`-bound type)
   against the previous tag** — never assume an "additive-sounding" changelog entry is safe.
+  Diffing alone isn't the fix: if declaration order changed, you must also update and verify
+  each duplicated `StructsAndEnums.cs` copy across the platform-specific binding projects to
+  match the new numbering — a completed diff with stale copies still ships wrong values.
 
 ## What's not written down in this repo alone — cross-repo Nordic version bumps
 
