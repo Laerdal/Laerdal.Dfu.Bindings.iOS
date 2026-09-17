@@ -25,15 +25,26 @@ written for `Laerdal.McuMgr`'s delegate-style classes and reproduces this exact 
 native fat-lib generation; and the stale-Carthage-symlink codesign failure. Everything below
 this point only adds what that file doesn't cover.
 
+## Before bumping the Nordic version in this repo
+
+Two real gotchas already in this repo's own README ("Known issues") that a version-bump task
+must not skip — restated here because Claude Code won't auto-load the README the way a human
+contributor reading it top-to-bottom would:
+- **`Nordic_Package_Version` is defined in *both* `Laerdal.Scripts/Laerdal.targets` and
+  `Laerdal.Scripts/Laerdal.Builder.targets`.** Bump both together — CI reads it from
+  `Laerdal.targets`, but letting the two drift apart breaks the release step silently.
+- **A Nordic version bump can silently corrupt `[Native] DFUState`.** Nordic's Swift `DFUState`
+  enum has no explicit raw values — they're assigned by declaration order — so an upstream
+  insertion renumbers every case declared after it (this happened going `4.16.0 → 4.17.0`,
+  shifting `Completed`/`Aborted` from `6`/`7` to `8`/`9`). **Before ever bumping this version,
+  diff the actual Swift source for `DFUState` (and any other `[Native] enum`-bound type)
+  against the previous tag** — never assume an "additive-sounding" changelog entry is safe.
+
 ## What's not written down in this repo alone — cross-repo Nordic version bumps
 
-Bumping the wrapped Nordic native DFU library version is a **3-repo coordinated change**, not
-a single-repo one, and no single repo's docs say so:
-- This repo's native version pin (`Laerdal.targets` / Carthage fetch).
-- `Laerdal.Dfu.Bindings.Android`'s `Nordic_Package_Version`.
-- `Laerdal.Dfu`'s `NordicDfuUuids` (Legacy/Secure DFU GATT constants) needs re-verifying
-  against the new native version before republishing — a GATT UUID or attribute layout change
-  upstream wouldn't be caught by either binding repo's own build.
-
-Bump all three together and re-validate against real hardware before publishing any of them
-individually.
+`Laerdal.Dfu.Bindings.iOS` and `Laerdal.Dfu.Bindings.Android` wrap **independently-versioned**
+native libraries (`IOS-Pods-DFU-Library` vs `Android-DFU-Library`) — bumping this repo's Nordic
+version does **not** imply bumping the Android binding too. What *does* need re-checking
+whenever either platform's native library moves is `Laerdal.Dfu`'s `NordicDfuUuids`
+(Legacy/Secure DFU GATT constants) — re-verify it against the new native version before
+republishing, since neither binding repo's own build would catch a drift there.
