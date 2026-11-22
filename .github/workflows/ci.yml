@@ -29,8 +29,8 @@ env:
   DOTNET_CLI_TELEMETRY_OPTOUT: '1'
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: '1'
   XCODE_APP: '/Applications/Xcode_26.5.app'
-  IOS_SDK_VERSION: '26.5'       # iphoneos SDK — xcodebuild -showsdks; must match Laerdal.Scripts/Laerdal.targets' TargetPlatformVersion
-  MACOS_SDK_VERSION: '26.5'     # macosx SDK   — xcodebuild -showsdks; must match Laerdal.Scripts/Laerdal.targets' TargetPlatformVersion
+  IOS_SDK_VERSION: '26.5'       # iphoneos SDK the native framework is compiled with — xcodebuild -showsdks; independent of the TargetPlatformVersion (26.0) in Laerdal.Scripts/Laerdal.targets
+  MACOS_SDK_VERSION: '26.5'     # macosx SDK   the native framework is compiled with — xcodebuild -showsdks; independent of the TargetPlatformVersion (26.0) in Laerdal.Scripts/Laerdal.targets
 
 jobs:
   version:

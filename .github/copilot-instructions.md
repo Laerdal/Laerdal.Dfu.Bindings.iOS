@@ -45,11 +45,11 @@ Laerdal.Dfu.Bindings.iOS/
 
 ## Building Locally
 
-Requires **macOS** with Xcode (SDK matching `TargetPlatformVersion` in
-`Laerdal.Scripts/Laerdal.targets`, currently `26.5` — check with `xcodebuild -showsdks`),
-**.NET SDK feature band `10.0.400`+** (older bands' `ios`/`maccatalyst` workload manifests don't
-support platform version `26.5` and fail with `NETSDK1140`), and **Carthage**
-(`brew install carthage`).
+Requires **macOS** with Xcode (any recent one; pass its SDK versions to the build below, see
+`xcodebuild -showsdks`: the native framework is compiled with them), **.NET SDK feature band
+`10.0.400`+** with the `ios`/`maccatalyst` workloads (the managed projects target platform version
+`26.0` in `Laerdal.Scripts/Laerdal.targets`, which every 26.x and 27.x workload set offers), and
+**Carthage** (`brew install carthage`).
 
 **Always build with `/m:1`** — see Known Gotchas below; this is not optional.
 

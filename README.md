@@ -44,11 +44,11 @@ automatically for the right target platform.
 
 Requires **macOS** with:
 
-- **Xcode** with an iOS/macOS SDK matching the `TargetPlatformVersion` set in
-  `Laerdal.Scripts/Laerdal.targets` (currently `26.5`) — check with `xcodebuild -showsdks`
-- **.NET 10 SDK** (feature band `10.0.400`+; older bands' `ios`/`maccatalyst` workload manifests
-  don't support platform version `26.5` and fail with `NETSDK1140`) with the `ios`/`maccatalyst`
-  workloads (`dotnet workload install maui`)
+- **Xcode** (any recent one): its iOS and macOS SDK versions go into the build command below
+  (`xcodebuild -showsdks`), because the native framework is compiled with them. The managed projects target platform version
+  `26.0` (`Laerdal.Scripts/Laerdal.targets`), which every 26.x and 27.x workload set offers
+- **.NET 10 SDK** (feature band `10.0.400`+) with the `ios`/`maccatalyst` workloads
+  (`dotnet workload install maui`)
 - **Carthage** (`brew install carthage`)
 
 ```bash
