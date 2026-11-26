@@ -98,7 +98,7 @@ jobs:
           global-json-file: global.json
 
       - name: '📲 Restore .NET workloads'
-        uses: laerdal/github_actions/dotnet@8f534aa9d64b01cd26b73cb2ae4b08a39d836cfe # v1.0.83
+        uses: laerdal/github_actions/dotnet@78f59c71c57cdf4f11f86fb35f301e378b0f51e0 # v1.0.90
         with:
           command: workload
           arguments: restore '${{ github.workspace }}/Laerdal.Dfu.Bindings.iOS.sln'
@@ -128,7 +128,7 @@ jobs:
           if-no-files-found: error
 
       - name: '📄 Generate CycloneDX SBOM'
-        uses: laerdal/github_actions/dotnet-cyclonedx@8f534aa9d64b01cd26b73cb2ae4b08a39d836cfe # v1.0.83
+        uses: laerdal/github_actions/dotnet-cyclonedx@78f59c71c57cdf4f11f86fb35f301e378b0f51e0 # v1.0.90
         with:
           path: '${{ github.workspace }}/Laerdal.Dfu.Bindings.iOS.sln'
           output: '${{ github.workspace }}/Artifacts'
@@ -169,7 +169,7 @@ jobs:
           user: ${{ secrets.NUGET_ORG_USER }}
 
       - name: '🚀 Push to NuGet.org'
-        uses: laerdal/github_actions/dotnet-nuget-upload@8f534aa9d64b01cd26b73cb2ae4b08a39d836cfe # v1.0.83
+        uses: laerdal/github_actions/dotnet-nuget-upload@78f59c71c57cdf4f11f86fb35f301e378b0f51e0 # v1.0.90
         with:
           package-path: 'packages/*.nupkg'
           api-key: ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
@@ -196,7 +196,7 @@ jobs:
           path: sbom
 
       - name: '🚀 Create GitHub Release'
-        uses: laerdal/github_actions/github-release@8f534aa9d64b01cd26b73cb2ae4b08a39d836cfe # v1.0.83
+        uses: laerdal/github_actions/github-release@78f59c71c57cdf4f11f86fb35f301e378b0f51e0 # v1.0.90
         with:
           tag: ${{ needs.version.outputs.version }}
           title: 'Release ${{ needs.version.outputs.version }}'
